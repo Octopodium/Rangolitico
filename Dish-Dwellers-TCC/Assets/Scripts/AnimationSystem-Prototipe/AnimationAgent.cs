@@ -15,16 +15,12 @@ public class AnimationAgent : MonoBehaviour
     public static readonly int Throw = Animator.StringToHash(nameof(Throw));
     public static readonly int Dead = Animator.StringToHash(nameof(Dead));
     public static readonly int Damage = Animator.StringToHash(nameof(Damage));
+    public bool iddle, run , change;
     
     
 
     private void Start(){
         animator = GetComponent<Animator>();
-        for( int i = 0; i < animator.parameterCount; i++){
-            AnimatorControllerParameter parameter = animator.GetParameter(i);
-            
-            Debug.Log($"\t parameter: {parameter.name} \t id: {parameter.GetHashCode()}");
-        }
     }
 
     [Tooltip("Set moving animation in accordance with the speed value informed.")]
@@ -43,5 +39,17 @@ public class AnimationAgent : MonoBehaviour
 
         float relativeSpeed = ((speed.x * speed.x) + (speed.z * speed.z)) / (maxSpeed * maxSpeed);
         animator.SetFloat(WalkSpeed, relativeSpeed);
+    }
+
+    private void Update(){
+        if(change){
+            float sinVal = Mathf.PingPong(Time.time, 1);
+            animator.SetFloat(WalkSpeed, sinVal);
+        }
+        else if(run){
+            animator.SetFloat(WalkSpeed, 1);
+        }
+        else if(iddle){
+        }
     }
 }

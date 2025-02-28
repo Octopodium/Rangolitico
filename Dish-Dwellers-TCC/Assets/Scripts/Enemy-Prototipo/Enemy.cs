@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour
 {
    #region Declaration
@@ -7,7 +8,6 @@ public class Enemy : MonoBehaviour
     [Header("References")]
     [Space(10)]
     public Transform target;
-    public Transform rotatePoint;
     public LayerMask playerLayer;
     public GameObject projectile;
     public Transform fireAction;
@@ -44,7 +44,17 @@ public class Enemy : MonoBehaviour
 
     private void FollowPlayer()
     {
-        if(_playerInSightZone) transform.LookAt(target.position);
+        if (_playerInSightZone)
+        {
+            Vector3 direction = target.position - transform.position;
+            direction.y = 0; // Ignora a diferença de altura no eixo Y
+
+            if (direction != Vector3.zero) // Garante que o inimigo rotacione o apenas no eixo Y
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
+            }
+        }
     }
 
     private void AttackPlayer()
@@ -52,7 +62,7 @@ public class Enemy : MonoBehaviour
         if(_playerInAtkZone && Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
-            Instantiate(projectile, fireAction.transform.position, transform.rotation); 
+            Instantiate(projectile, fireAction.transform.position, transform.rotation);
         }
     }
 

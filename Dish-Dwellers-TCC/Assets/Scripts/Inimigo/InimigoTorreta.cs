@@ -2,49 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// tenho que passar esse códigos para português depois :p
+//Tenho que passar esse código para português depois... :p
 public class InimigoTorreta : Inimigo
 {
     #region Declaration
 
-    [Header("References")]
+    [Header("Referências de ação do inimigo")]
     [Space(10)]
     public GameObject projectile;
     public Transform fireAction;
 
-    [Header("Range zone values")]
+    [Header("Valores de ação do inimigo torreta")]
     [Space(10)]
-    [SerializeField] private float atkZone;
-    [SerializeField] private float sightZone;
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float fireRate;
     [SerializeField] private float nextFire;
-
-    private bool _canFollow;
-    private bool _playerInSightZone;
-    private bool _playerInAtkZone;
 
     #endregion
 
     void Awake()
     {
         target = GameObject.FindWithTag("Player").transform;
+        cc = GetComponent<CharacterController>();
     }
 
     void FixedUpdate()
     {
-        //Checa se o player está no campo de visão ou na zona de ataque, para a tomada de ações...
-        _playerInSightZone = Physics.CheckSphere(transform.position, sightZone, playerLayer);
-        _playerInAtkZone = Physics.CheckSphere(transform.position, atkZone, playerLayer);
-        
+        ChecagemDeZonas();
         Movimento();
         Atacar();
     }
 
-    #region Metodos Genéricos que foram herdados da Classe Inimigo
+    #region Métodos Genéricos que foram herdados da Classe Inimigo
+    protected override void ChecagemDeZonas()
+    {
+        base.ChecagemDeZonas();
+    }
+
     protected override void Movimento()
     {        
-        if(_playerInSightZone)
+        if(_playerNoCampoDeVisao)
         {
             Vector3 direction = target.position - transform.position;
             direction.y = 0;
@@ -59,7 +56,7 @@ public class InimigoTorreta : Inimigo
 
     protected override void Atacar()
     {
-        if(_playerInAtkZone && Time.time > nextFire)
+        if(_playerNaZonaDeAtaque && Time.time > nextFire)
         {
             base.Atacar();
             nextFire = Time.time + fireRate;
@@ -67,13 +64,18 @@ public class InimigoTorreta : Inimigo
         }
     }
 
+    protected override void TomaDano(int valor)
+    {
+        base.TomaDano(valor);
+    }
+
     #endregion
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, sightZone);
+        Gizmos.DrawWireSphere(transform.position, campoDeVisao);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, atkZone);
+        Gizmos.DrawWireSphere(transform.position, zonaDeAtaque);
     }
 }

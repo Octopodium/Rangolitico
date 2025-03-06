@@ -4,7 +4,7 @@ using UnityEngine;
 
 //<summary>
 //Classe genérica usada para a construção de inimigos, eles herdaram seus valores e metodos base daqui.
-//Herdam caso necessário, a implementação de todos os metodos não é obrigatoria.
+//Herdam caso necessário, a implementação de todos os métodos não é obrigatoria.
 //</summary>
 public class Inimigo : MonoBehaviour
 {
@@ -12,9 +12,14 @@ public class Inimigo : MonoBehaviour
 
     [Header("Valores genéricos dos inimigos")]
     [Space(10)]
-    public int vidas;
-    public int dano;
-    public float velocidade;
+    [SerializeField] protected int vidas;
+    [SerializeField] protected int dano;
+    [SerializeField] protected float velocidade;
+
+    [Header("Valores de zonas de percepção do player")]
+    [Space(10)]
+    [SerializeField] protected float campoDeVisao;
+    [SerializeField] protected float zonaDeAtaque;
 
     [Header("Referências do player")]
     [Space(10)]
@@ -22,10 +27,19 @@ public class Inimigo : MonoBehaviour
     public LayerMask playerLayer;
     
     protected CharacterController cc;
+    [HideInInspector] public bool _playerNoCampoDeVisao;
+    [HideInInspector] public bool _playerNaZonaDeAtaque;
 
     #endregion
 
-    //Metodos estão protegidos para serem usados apenas das classes ques os herdarem
+    //Métodos estão protegidos para serem usados apenas das classes ques os herdarem
+    protected virtual void ChecagemDeZonas()
+    {
+        //Checa se o player está no campo de visão ou na zona de ataque, para a tomada de ações...
+        _playerNoCampoDeVisao = Physics.CheckSphere(transform.position, campoDeVisao, playerLayer);
+        _playerNaZonaDeAtaque = Physics.CheckSphere(transform.position, zonaDeAtaque, playerLayer);
+    }
+
     protected virtual void TomaDano(int valor)
     {
         vidas -= valor;
@@ -38,15 +52,19 @@ public class Inimigo : MonoBehaviour
 
     protected virtual void Movimento()
     {
-        Vector3 mov = new Vector3(transform.position.x, 0, transform.position.z);
-        cc.Move(mov * velocidade * Time.deltaTime);
+        if(target != null)
+        {
+            Vector3 movDirecao = (target.position - transform.position);
+            movDirecao.y = 0; //Garante que fique sempre no plano horizontal
+            cc.Move(movDirecao * velocidade * Time.deltaTime);
+        }
 
         Debug.Log("inimigo se moveu");
     }
 
     protected virtual void Atacar()
     {
-        //Debug.Log("Inimigo Atacou");
+        Debug.Log("Inimigo Atacou");
     }
 
     protected void Morte()

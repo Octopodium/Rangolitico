@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// tenho que passar esse códigos para português depois :p
 public class InimigoTorreta : Inimigo
 {
     #region Declaration
@@ -32,6 +33,7 @@ public class InimigoTorreta : Inimigo
 
     void FixedUpdate()
     {
+        //Checa se o player está no campo de visão ou na zona de ataque, para a tomada de ações...
         _playerInSightZone = Physics.CheckSphere(transform.position, sightZone, playerLayer);
         _playerInAtkZone = Physics.CheckSphere(transform.position, atkZone, playerLayer);
         
@@ -39,6 +41,7 @@ public class InimigoTorreta : Inimigo
         Atacar();
     }
 
+    #region Metodos Genéricos que foram herdados da Classe Inimigo
     protected override void Movimento()
     {        
         if(_playerInSightZone)
@@ -63,6 +66,8 @@ public class InimigoTorreta : Inimigo
             Instantiate(projectile, fireAction.transform.position, transform.rotation); 
         }
     }
+
+    #endregion
 
     private void OnDrawGizmos()
     {

@@ -120,9 +120,9 @@ GameObject:
   - component: {fileID: 8641578080946290225}
   - component: {fileID: 4197510310437144669}
   - component: {fileID: 5565351476236455246}
-  - component: {fileID: 7048336073143870359}
+  - component: {fileID: 6157304089732627659}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: Inimigo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -136,14 +136,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5245129599590942862}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.13, z: 0.13208}
+  m_LocalRotation: {x: -0, y: 0.9310943, z: -0, w: 0.3647786}
+  m_LocalPosition: {x: -3.9, y: 0.6961848, z: 3.48}
   m_LocalScale: {x: 0.61109, y: 1.3923687, z: 0.61109}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2827449992942719714}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 137.212, z: 0}
 --- !u!33 &8641578080946290225
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -218,7 +218,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7048336073143870359
+--- !u!114 &6157304089732627659
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -227,18 +227,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 5245129599590942862}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f76d83ae8a40d349b3a50886a8debb1, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c195367a06c62740855f60e68473b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vidas: 3
+  dano: 1
+  velocidade: 7
   target: {fileID: 0}
-  rotatePoint: {fileID: 0}
   playerLayer:
     serializedVersion: 2
-    m_Bits: 0
-  projectile: {fileID: 0}
-  fireAction: {fileID: 0}
-  atkZone: 0
-  sightZone: 0
-  projectileSpeed: 0
-  fireRate: 0
+    m_Bits: 64
+  projectile: {fileID: 8089034994045674464, guid: e936e0edeb54bfc45a893fcdfed42a5e, type: 3}
+  fireAction: {fileID: 2827449992942719714}
+  atkZone: 4
+  sightZone: 6
+  projectileSpeed: 3
+  fireRate: 1
   nextFire: 0

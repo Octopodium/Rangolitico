@@ -1,14 +1,13 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Enemy : MonoBehaviour
+public class InimigoTorreta : Inimigo
 {
-   #region Declaration
+    #region Declaration
 
     [Header("References")]
     [Space(10)]
-    public Transform target;
-    public LayerMask playerLayer;
     public GameObject projectile;
     public Transform fireAction;
 
@@ -20,8 +19,6 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float fireRate;
     [SerializeField] private float nextFire;
 
-    private Rigidbody rb;
-
     private bool _canFollow;
     private bool _playerInSightZone;
     private bool _playerInAtkZone;
@@ -31,38 +28,39 @@ public class Enemy : MonoBehaviour
     void Awake()
     {
         target = GameObject.FindWithTag("Player").transform;
-        rb = GetComponent<Rigidbody>();
     }
 
     void FixedUpdate()
     {
         _playerInSightZone = Physics.CheckSphere(transform.position, sightZone, playerLayer);
         _playerInAtkZone = Physics.CheckSphere(transform.position, atkZone, playerLayer);
-        FollowPlayer();
-        AttackPlayer();
+        
+        Movimento();
+        Atacar();
     }
 
-    private void FollowPlayer()
-    {
-        if (_playerInSightZone)
+    protected override void Movimento()
+    {        
+        if(_playerInSightZone)
         {
             Vector3 direction = target.position - transform.position;
-            direction.y = 0; // Ignora a diferença de altura no eixo Y
+            direction.y = 0;
 
             if (direction != Vector3.zero) // Garante que o inimigo rotacione o apenas no eixo Y
             {
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * velocidade);
             }
         }
     }
 
-    private void AttackPlayer()
+    protected override void Atacar()
     {
         if(_playerInAtkZone && Time.time > nextFire)
         {
+            base.Atacar();
             nextFire = Time.time + fireRate;
-            Instantiate(projectile, fireAction.transform.position, transform.rotation);
+            Instantiate(projectile, fireAction.transform.position, transform.rotation); 
         }
     }
 

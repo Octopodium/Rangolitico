@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//<summary>
+//Classe genérica usada para a construção de inimigos, eles herdaram seus valores e metodos base daqui.
+//Herdam caso necessário, a implementação de todos os metodos não é obrigatoria.
+//</summary>
 public class Inimigo : MonoBehaviour
 {
     #region Declarações
@@ -13,6 +17,7 @@ public class Inimigo : MonoBehaviour
     public float velocidade;
 
     [Header("Referências do player")]
+    [Space(10)]
     public Transform target;
     public LayerMask playerLayer;
     
@@ -20,6 +25,7 @@ public class Inimigo : MonoBehaviour
 
     #endregion
 
+    //Metodos estão protegidos para serem usados apenas das classes ques os herdarem
     protected virtual void TomaDano(int valor)
     {
         vidas -= valor;

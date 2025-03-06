@@ -1,8 +1,19 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
+public enum QualPlayer { Player1, Player2 }
+
+[RequireComponent(typeof(Carregador)), RequireComponent(typeof(Carregavel))]
 public class Player : MonoBehaviour {
+
+    public QualPlayer qualPlayer = QualPlayer.Player1;
+    InputActionMap inputActionMap;
+
+
     [Header("Atributos do Player")]
     public float velocidade = 6f;
+    Vector3 direcao, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
+
 
     [Header("Configuração de Interação")]
     public int maxInteragiveisEmRaio = 8;
@@ -11,41 +22,61 @@ public class Player : MonoBehaviour {
     Interagivel ultimoInteragivel;
     Collider[] collidersInteragiveis;
 
-    CharacterController controller;
 
+    // Referências internas
+    [HideInInspector] public Carregador carregador;
+    Carregavel carregavel;
+    Rigidbody playerRigidbody;
+
+    
+
+    // Awake: trata de referências/configurações internas
     void Awake() {
-        controller = GetComponent<CharacterController>();
         collidersInteragiveis = new Collider[maxInteragiveisEmRaio];
+
+        playerRigidbody = GetComponent<Rigidbody>();
+        carregador = GetComponent<Carregador>();
+        carregavel = GetComponent<Carregavel>();
     }
 
+    // Start: trata de referências/configurações externas
     void Start() {
-        GameManager.instance.input.Player.Interact.performed += ctx => Interagir();
+        inputActionMap = qualPlayer == QualPlayer.Player1 ? GameManager.instance.input.Player.Get() : GameManager.instance.input.Player2.Get();
+        inputActionMap["Interact"].performed += ctx => Interagir();
     }
 
     void FixedUpdate() {
-        Movimentacao();
-        CheckInteragiveis();
+        if (!carregavel.sendoCarregado) Movimentacao();
+        ChecarInteragiveis();
     }
 
     void Movimentacao() {
-        Vector2 input = GameManager.instance.input.Player.Move.ReadValue<Vector2>();
+        Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
         float x = input.x;
         float z = input.y;
 
-        Vector3 movimentacao = transform.right * x + transform.forward * z;
+        movimentacao = (transform.right * x + transform.forward * z).normalized;
 
-        if (!controller.isGrounded) movimentacao.y = -9f;
+        if (movimentacao.magnitude > 0) {
+            direcao = movimentacao;
+        }
 
-        controller.Move(movimentacao * velocidade * Time.deltaTime);
+        playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
     }
-    
-    void CheckInteragiveis() {
+
+    public bool estaNoChao {
+        get { return Physics.Raycast(transform.position, Vector3.down, 1.1f); }
+    }
+
+    bool ChecarInteragiveis() {
         // Checa por objetos interagíveis no raio de interação
         int quant = Physics.OverlapSphereNonAlloc(transform.position, raioInteracao, collidersInteragiveis, layerInteragivel);
-        if (quant == 0) { // Na maioria das vezes, não haverá interagíveis
+
+        // Na maioria das vezes, não haverá interagíveis (se houver apenas 1 e este for o próprio player, também considera que não há)
+        if (quant == 0 || (quant == 1 && collidersInteragiveis[0].gameObject == gameObject)) { 
             if (ultimoInteragivel != null) ultimoInteragivel.MostarIndicador(false);
             ultimoInteragivel = null;
-            return;
+            return false;
         }
 
         // Procura o interagível mais próximo (não podemos confiar na ordem padrão dos colliders)
@@ -53,6 +84,7 @@ public class Player : MonoBehaviour {
         Collider interagivelMaisProximo = null;
         for (int i = 0; i < quant; i++) { // Na maioria das vezes, só haverá um interagível, e se houver mais, não será muitos (menos de 8)
             Collider collider = collidersInteragiveis[i];
+            if (collider == null || collider.gameObject == gameObject) continue; // Ignora o próprio jogador
 
             float distancia = Vector3.Distance(transform.position, collider.transform.position);
             if (distancia < menorDistancia) {
@@ -60,10 +92,11 @@ public class Player : MonoBehaviour {
                 interagivelMaisProximo = collider;
             }
         }
+        
 
         // Trata do ultimo interagivel
         if (ultimoInteragivel != null) {
-            if (ultimoInteragivel.gameObject == interagivelMaisProximo.gameObject) return; // Se o interagível mais próximo for o mesmo que o último interagível, não faz nada
+            if (ultimoInteragivel.gameObject == interagivelMaisProximo.gameObject) return true; // Se o interagível mais próximo for o mesmo que o último interagível, não faz nada
             ultimoInteragivel.MostarIndicador(false);
         }
 
@@ -71,14 +104,38 @@ public class Player : MonoBehaviour {
         Interagivel interagivel = interagivelMaisProximo.GetComponent<Interagivel>();
         interagivel.MostarIndicador(true);
         ultimoInteragivel = interagivel;
+
+        return true;
     }
 
     void Interagir() {
-        if (ultimoInteragivel != null) ultimoInteragivel.Interagir();
+        if (ultimoInteragivel != null) ultimoInteragivel.Interagir(this);
+        else if (carregador.estaCarregando) carregador.Soltar(direcao, velocidade, movimentacao.magnitude > 0);
     }
 
-    void OnDrawGizmosSelected() {
+    void OnDrawGizmos() {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, raioInteracao);
+        
+        // Direção
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, direcao * 3);
+
+
+        // Previsão arremeresso (Carregador)
+        if (carregador != null && carregador.estaCarregando) {
+            Gizmos.color = Color.blue;
+            Vector3 direcaoArremesso = direcao;
+            direcaoArremesso.y = carregador.alturaArremesso;
+            Vector3 velocidadeInicial = Vector3.zero;
+
+            if (movimentacao.magnitude > 0)
+                velocidadeInicial = carregador.influenciaDaInerciaNoArremesso * (direcao * velocidade);
+
+            Vector3[] pontos = carregador.PreverArremesso(carregador.carregado.GetComponent<Rigidbody>(), direcaoArremesso, carregador.forcaArremesso, velocidadeInicial);
+            for (int i = 0; i < pontos.Length - 1; i++) {
+                Gizmos.DrawLine(pontos[i], pontos[i + 1]);
+            }
+        }
     }
 }

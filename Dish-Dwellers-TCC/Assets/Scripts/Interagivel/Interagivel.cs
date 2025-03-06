@@ -28,8 +28,8 @@ public class Interagivel : MonoBehaviour {
         if (indicador) indicador.SetActive(mostrar);
     }
 
-    public void Interagir() {
+    public void Interagir(Player jogador) {
         Interacao interacao = GetComponent<Interacao>();
-        if (interacao != null) interacao.Interagir();
+        if (interacao != null) interacao.Interagir(jogador);
     }
 }

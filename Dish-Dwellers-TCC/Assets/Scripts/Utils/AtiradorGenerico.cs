@@ -24,7 +24,7 @@ public class AtiradorGenerico : MonoBehaviour, Interacao {
         Instantiate(tiroPrefab, saidaDoTiro.position, saidaDoTiro.rotation);
     }
 
-    public void Interagir() {
+    public void Interagir(Player jogador) {
         ativo = !ativo;
     }
 }

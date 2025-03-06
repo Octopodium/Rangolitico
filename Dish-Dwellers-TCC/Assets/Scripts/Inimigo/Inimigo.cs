@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//<summary>
-//Classe genérica usada para a construção de inimigos, eles herdaram seus valores e metodos base daqui.
-//Herdam caso necessário, a implementação de todos os métodos não é obrigatoria.
-//</summary>
-public class Inimigo : MonoBehaviour
+///<summary>
+///Classe genérica usada para a construção de inimigos, eles herdaram seus valores e metodos base daqui.
+///Herdam caso necessário, a implementação de todos os métodos não é obrigatoria.
+///</summary>
+public abstract class Inimigo : MonoBehaviour
 {
     #region Declarações
 

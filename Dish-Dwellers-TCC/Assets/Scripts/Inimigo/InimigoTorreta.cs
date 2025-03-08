@@ -28,17 +28,12 @@ public class InimigoTorreta : Inimigo
 
     void FixedUpdate()
     {
-        ChecagemDeZonas();
+        base.ChecagemDeZonas();
         Movimento();
         Atacar();
     }
 
     #region Métodos Genéricos que foram herdados da Classe Inimigo
-    protected override void ChecagemDeZonas()
-    {
-        base.ChecagemDeZonas();
-    }
-
     protected override void Movimento()
     {        
         if(_playerNoCampoDeVisao)

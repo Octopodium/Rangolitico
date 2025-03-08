@@ -13,7 +13,7 @@ public class Player : MonoBehaviour {
     [Header("Atributos do Player")]
     public float velocidade = 6f;
     Vector3 direcao, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
-
+    public int playerVidas = 3;
 
     [Header("Configuração de Interação")]
     public int maxInteragiveisEmRaio = 8;

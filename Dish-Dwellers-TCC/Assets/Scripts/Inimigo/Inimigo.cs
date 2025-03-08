@@ -13,8 +13,9 @@ public abstract class Inimigo : MonoBehaviour
     [Header("Valores genéricos dos inimigos")]
     [Space(10)]
     [SerializeField] protected int vidas;
-    [SerializeField] protected int dano;
     [SerializeField] protected float velocidade;
+    [SerializeField] protected int dano = 1;
+    
 
     [Header("Valores de zonas de percepção do player")]
     [Space(10)]
@@ -25,7 +26,6 @@ public abstract class Inimigo : MonoBehaviour
     [Space(10)]
     public Transform target;
     public LayerMask playerLayer;
-    public int playerVidas = 3;
     
     protected CharacterController cc;
 
@@ -66,8 +66,7 @@ public abstract class Inimigo : MonoBehaviour
 
     public virtual void Atacar()
     {
-        playerVidas -= 1;
-        Debug.Log("vida do player -1");
+       //a implementar
     }
 
     protected void Morte()

@@ -54,13 +54,13 @@ public class InimigoTorreta : Inimigo
         }
     }
 
-    protected override void Atacar()
+    public override void Atacar()
     {
         if(_playerNaZonaDeAtaque && Time.time > nextFire)
         {
-            base.Atacar();
             nextFire = Time.time + fireRate;
             Instantiate(projectile, fireAction.transform.position, transform.rotation); 
+            base.Atacar();
         }
     }
 

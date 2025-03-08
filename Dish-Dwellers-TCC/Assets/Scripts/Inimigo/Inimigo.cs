@@ -25,8 +25,10 @@ public abstract class Inimigo : MonoBehaviour
     [Space(10)]
     public Transform target;
     public LayerMask playerLayer;
+    public int playerVidas = 3;
     
     protected CharacterController cc;
+
     [HideInInspector] public bool _playerNoCampoDeVisao;
     [HideInInspector] public bool _playerNaZonaDeAtaque;
 
@@ -62,9 +64,10 @@ public abstract class Inimigo : MonoBehaviour
         Debug.Log("inimigo se moveu");
     }
 
-    protected virtual void Atacar()
+    public virtual void Atacar()
     {
-        Debug.Log("Inimigo Atacou");
+        playerVidas -= 1;
+        Debug.Log("vida do player -1");
     }
 
     protected void Morte()

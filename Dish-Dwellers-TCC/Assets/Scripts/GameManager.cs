@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,15 +27,18 @@ public class GameManager : MonoBehaviour {
     }
 
     #region Protótipo sistema de salas do Lima
-
     [Space(10)][Header("<color=green>Informações da sala :</color>")]
-    public TMP_Text nomeDaSala;
+    [SerializeField] private bool loadingFinished;
+    [SerializeField] private int sala, fase;
+    [SerializeField] private string nomeDaSala;
+
+    [Space(10)][Header("<color=green>Componentes da sala :</color>")]
+    public TMP_Text displayNomeDaSala;
 
     /// <summary>
     /// Metodo para Debug do sistema de salas.
     /// </summary>
     private void MostrarSalaFase(){
-        int sala, fase;
         SalaAtual(out sala, out fase);
         Debug.Log($"Atualmente na <color=green>sala {sala}</color> na <color=green>fase {fase}</color>.");
     }
@@ -49,26 +54,28 @@ public class GameManager : MonoBehaviour {
         string log = string.Empty;
         string[] nome = cena.name.Split('-');
 
-        if(Int32.TryParse(nome[0], out sala)){
-            log = $"Sala : {sala} ";
-        }
-        else{
-            throw new Exception($"Falha ao identificar o numero da sala. \n Nome da cena informado: {SceneManager.GetActiveScene().name} \n Nome da sala informado {nome[0]}");
-        }
-        if(Int32.TryParse(nome[1], out fase)){
-            log += $"Fase : {fase}";
+        if(Int32.TryParse(nome[0], out sala) && Int32.TryParse(nome[1], out fase)){
+            log = $"Sala : {sala} Fase : {fase}";
         }
         else{
             throw new Exception($"Falha ao identificar o numero da fase. \n Nome da cena informado: {SceneManager.GetActiveScene().name} \n Nome da fase informado {nome[1]}");
         }
 
         try{
-            nomeDaSala.text = nome[2];
+            nomeDaSala = nome[2];
+            displayNomeDaSala.text = nomeDaSala;
             //Animação de display do nome.
         }
         catch{
             Debug.Log("Sala não possui nome.");
         }
+    }
+
+    IEnumerator PreCarregarProximaSala(){
+        string nomeProximaSala = $"{sala +1}-{fase}";
+        AsyncOperation op = SceneManager.LoadSceneAsync(nomeProximaSala, LoadSceneMode.Additive);
+        yield return new WaitUntil (() => op.isDone);
+
     }
 
     #endregion

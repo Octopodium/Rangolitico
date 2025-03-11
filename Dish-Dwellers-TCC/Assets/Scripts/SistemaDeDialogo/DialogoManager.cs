@@ -11,6 +11,7 @@ public class DialogoManager : MonoBehaviour
     public string[] linhas;
 
     private int index = -1;
+    public float velocidadeTexto = 0.05f;
 
     void IniciaDialogo(){
         //Caso seja um Panel, ativa o panel, caso seja uma cena, iniciar no Start()
@@ -26,14 +27,15 @@ public class DialogoManager : MonoBehaviour
         index++;
         string linha = linhas[index];
 
-        StartCoroutine(EscreveLinha(linha));
+        StopAllCoroutines(); //para a digitacao anterior
+        StartCoroutine(EscreveLinha(linha)); //inicia a digitacao
     }
 
     IEnumerator EscreveLinha(string linha){
         textoDialogo.text = "";
         foreach(char letra in linha.ToCharArray()){
             textoDialogo.text += letra;
-            yield return null;
+            yield return new WaitForSeconds(velocidadeTexto);
         }
     }
 

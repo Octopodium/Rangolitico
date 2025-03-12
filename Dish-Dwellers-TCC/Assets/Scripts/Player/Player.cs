@@ -12,7 +12,7 @@ public class Player : MonoBehaviour {
 
     [Header("Atributos do Player")]
     public float velocidade = 6f;
-    Vector3 direcao, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
+    public Vector3 direcao, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
     public int playerVidas = 3;
 
     [Header("Configuração de Interação")]
@@ -28,6 +28,7 @@ public class Player : MonoBehaviour {
     [HideInInspector] public Carregador carregador;
     Carregavel carregavel;
     Rigidbody playerRigidbody;
+    AnimadorPLayer animacaoJogador;
     
 
     
@@ -40,6 +41,9 @@ public class Player : MonoBehaviour {
         carregador = GetComponent<Carregador>();
         carregavel = GetComponent<Carregavel>();
         ferramenta = GetComponentInChildren<Ferramenta>();
+        ferramenta.Inicializar(this);
+
+        animacaoJogador = GetComponentInChildren<AnimadorPLayer>();
     }
 
     // Start: trata de referências/configurações externas
@@ -50,7 +54,6 @@ public class Player : MonoBehaviour {
     }
 
     void AcionarFerramenta() {
-        Debug.Log("Acionando ferramenta " + ferramenta);
         if (ferramenta != null) ferramenta.Acionar();
     }
 
@@ -71,6 +74,7 @@ public class Player : MonoBehaviour {
         }
 
         playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
+        animacaoJogador.Mover(movimentacao);
     }
 
     public bool estaNoChao {

@@ -171,6 +171,7 @@ GameObject:
   - component: {fileID: 320426370}
   - component: {fileID: 320426371}
   - component: {fileID: 320426373}
+  - component: {fileID: 320426374}
   m_Layer: 7
   m_Name: Carregar
   m_TagString: Untagged
@@ -187,7 +188,7 @@ Transform:
   m_GameObject: {fileID: 320426368}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.707107, z: -0, w: 0.70710665}
-  m_LocalPosition: {x: 2.65, y: 0, z: -1.02}
+  m_LocalPosition: {x: -0.11, y: 0, z: 5.46}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -274,6 +275,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &320426374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 320426368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06f593ff6c786d248aaf34045c1fab3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onGanchado:
+    m_PersistentCalls:
+      m_Calls: []
+  onDesganchado:
+    m_PersistentCalls:
+      m_Calls: []
+  onPuxado:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &364598344
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,6 +502,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef710d55c18ac6d4b868f64214a167a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  loadingFinished: 0
+  sala: {fileID: 0}
 --- !u!4 &498819073
 Transform:
   m_ObjectHideFlags: 0

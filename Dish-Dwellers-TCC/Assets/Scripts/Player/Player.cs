@@ -24,9 +24,11 @@ public class Player : MonoBehaviour {
 
 
     // Referências internas
+    public Ferramenta ferramenta;
     [HideInInspector] public Carregador carregador;
     Carregavel carregavel;
     Rigidbody playerRigidbody;
+    
 
     
 
@@ -37,12 +39,19 @@ public class Player : MonoBehaviour {
         playerRigidbody = GetComponent<Rigidbody>();
         carregador = GetComponent<Carregador>();
         carregavel = GetComponent<Carregavel>();
+        ferramenta = GetComponentInChildren<Ferramenta>();
     }
 
     // Start: trata de referências/configurações externas
     void Start() {
         inputActionMap = qualPlayer == QualPlayer.Player1 ? GameManager.instance.input.Player.Get() : GameManager.instance.input.Player2.Get();
         inputActionMap["Interact"].performed += ctx => Interagir();
+        inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
+    }
+
+    void AcionarFerramenta() {
+        Debug.Log("Acionando ferramenta " + ferramenta);
+        if (ferramenta != null) ferramenta.Acionar();
     }
 
     void FixedUpdate() {

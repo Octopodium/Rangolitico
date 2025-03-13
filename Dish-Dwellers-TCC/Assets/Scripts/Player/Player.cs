@@ -25,8 +25,9 @@ public class Player : MonoBehaviour {
 
     // Referências internas
     public Ferramenta ferramenta;
-    [HideInInspector] public Carregador carregador;
-    Carregavel carregavel;
+    [HideInInspector] public Carregador carregador; // O que permite o jogador carregar coisas
+    public Carregavel carregando => carregador.carregado; // O que o jogador está carregando
+    Carregavel carregavel; // O que permite o jogador a ser carregado
     Rigidbody playerRigidbody;
     AnimadorPLayer animacaoJogador;
     
@@ -54,7 +55,7 @@ public class Player : MonoBehaviour {
     }
 
     void AcionarFerramenta() {
-        if (ferramenta != null) ferramenta.Acionar();
+        if (!carregador.estaCarregando && ferramenta != null) ferramenta.Acionar();
     }
 
     void FixedUpdate() {

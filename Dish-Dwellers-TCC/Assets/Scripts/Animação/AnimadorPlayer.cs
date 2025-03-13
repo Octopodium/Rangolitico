@@ -35,10 +35,10 @@ public class AnimadorPLayer : MonoBehaviour
             escala.x = -1;
         }
         if(velocidade.z > 0){// Vira de costas
-            Debug.Log("Vira de costas");
+
         }
         else if(velocidade.z < 0){ // Vira para a frente
-            Debug.Log("Vira de frente");
+            
         }
 
         animator.SetBool(Anda, (velocidade.magnitude > 0));

@@ -45,15 +45,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecd549ab2c685340b363a201204dbe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layerGanchavel:
-    serializedVersion: 2
-    m_Bits: 128
-  layerNaoGanchavel:
-    serializedVersion: 2
-    m_Bits: 0
   lineRenderer: {fileID: 7920120956490396868}
   ganchoSpawn: {fileID: 6724440842343381522}
   ganchoPrefab: {fileID: 7144495205656712935, guid: 79d193ee88a72dd4096a9ab0a6925086, type: 3}
+  layerGanchavel:
+    serializedVersion: 2
+    m_Bits: 128
+  layerCortante:
+    serializedVersion: 2
+    m_Bits: 1024
   distanciaMaxima: 15
   velocidadeGancho: 30
   corPadrao: {r: 0.6603774, g: 0.3313846, b: 0, a: 1}
@@ -87,6 +87,8 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 4
     m_NumAlphaKeys: 2
+  forcaDePuxada: 1
+  alturaDePuxada: 6.5
 --- !u!120 &7920120956490396868
 LineRenderer:
   serializedVersion: 2
@@ -323,6 +325,10 @@ MonoBehaviour:
   forcaArremesso: 5
   alturaArremesso: 1.5
   influenciaDaInerciaNoArremesso: 0.33
+  carregarSeCairNaArea: 1
+  layerCarregavel:
+    serializedVersion: 2
+    m_Bits: 192
   carregado: {fileID: 0}
 --- !u!114 &4658130922947179662
 MonoBehaviour:

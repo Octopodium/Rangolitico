@@ -26,19 +26,23 @@ public class AnimadorPLayer : MonoBehaviour
     /// </summary>
     /// <param name="velocidade"></param>
     public void Mover(Vector3 velocidade){
+        Vector3 escala = transform.localScale;
 
         if(velocidade.x > 0){ // Vira para a esquerda
-            transform.localScale = Vector3.Scale(transform.localScale, Vector3.right);
+            escala.x = 1;
         }
         else if(velocidade.x < 0){// Vira para a direita
-            transform.localScale = Vector3.Scale(transform.localScale, Vector3.left);
+            escala.x = -1;
         }
         if(velocidade.z > 0){// Vira de costas
-            Debug.Log("Vira de costas");
+
         }
         else if(velocidade.z < 0){ // Vira para a frente
-            Debug.Log("Vira de frente");
+            
         }
+
+        animator.SetBool(Anda, (velocidade.magnitude > 0));
+        transform.localScale = escala;
     }
 
     /// <summary>
@@ -46,20 +50,7 @@ public class AnimadorPLayer : MonoBehaviour
     /// </summary>
     /// <param name="velocidade"></param>
     public void Mover(Vector2 velocidade){
-        if(velocidade.x > 0){ // Vira para a direita
-            transform.localScale = Vector3.Scale(transform.localScale, Vector3.right);
-        }
-        else if(velocidade.x < 0){// Vira para a esquerda
-            transform.localScale = Vector3.Scale(transform.localScale, Vector3.left);
-        }
-        if(velocidade.y > 0){// Vira de costas      
-            Debug.Log("Vira de costas");
-        }
-        else if(velocidade.y < 0){ // Vira para a frente
-            Debug.Log("Vira de frente");
-        }
-
-        animator.SetBool(Anda, true);
+        Mover(new Vector3(velocidade.x, velocidade.y));
     }
 
     /// <summary>

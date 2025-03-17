@@ -29,7 +29,7 @@ public class Player : MonoBehaviour {
     public Carregavel carregando => carregador.carregado; // O que o jogador está carregando
     Carregavel carregavel; // O que permite o jogador a ser carregado
     Rigidbody playerRigidbody;
-    AnimadorPLayer animacaoJogador;
+    AnimadorPlayer animacaoJogador;
     
 
     
@@ -44,7 +44,7 @@ public class Player : MonoBehaviour {
         ferramenta = GetComponentInChildren<Ferramenta>();
         ferramenta.Inicializar(this);
 
-        animacaoJogador = GetComponentInChildren<AnimadorPLayer>();
+        animacaoJogador = GetComponentInChildren<AnimadorPlayer>();
     }
 
     // Start: trata de referências/configurações externas

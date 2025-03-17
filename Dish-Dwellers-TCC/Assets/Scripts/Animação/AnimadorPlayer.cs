@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class AnimadorPLayer : MonoBehaviour
+public class AnimadorPlayer : MonoBehaviour
 {
     private Animator animator;
 
@@ -28,20 +28,23 @@ public class AnimadorPLayer : MonoBehaviour
     public void Mover(Vector3 velocidade){
         Vector3 escala = transform.localScale;
 
+        // Quando o jogador vira de costas, como a rotação ta em 180, é preciso inverter pra qual direção ele vira.
+        int rotacao = transform.localEulerAngles.y == 180 ? 1 : -1;
+
         if(velocidade.x > 0){ // Vira para a esquerda
-            escala.x = 1;
+            escala.x = rotacao;
         }
         else if(velocidade.x < 0){// Vira para a direita
-            escala.x = -1;
+            escala.x = -rotacao;
         }
         if(velocidade.z > 0){// Vira de costas
-
+            transform.localRotation = Quaternion.Euler(0, 0, 0);
         }
         else if(velocidade.z < 0){ // Vira para a frente
-            
+            transform.localRotation = Quaternion.Euler(0, 180, 0);
         }
 
-        animator.SetBool(Anda, (velocidade.magnitude > 0));
+        animator.SetBool(Anda, velocidade.sqrMagnitude > 0);
         transform.localScale = escala;
     }
 

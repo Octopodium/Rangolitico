@@ -27,7 +27,8 @@ public class GameManager : MonoBehaviour {
     #region Sistema de salas do Lima
     [Space(10)][Header("<color=green>Informações da sala :</color>")]
     
-    [SerializeField] private bool descarregando, carregando;
+    [SerializeField] private bool descarregando;
+    [SerializeField] private bool carregando;
     private sala salaProx, salaAnt;
 
     

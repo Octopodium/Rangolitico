@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 using UnityEngine.Events;
 
 public enum QualPlayer { Player1, Player2 }
@@ -33,6 +32,10 @@ public class Player : MonoBehaviour {
     Interagivel ultimoInteragivel;
     Collider[] collidersInteragiveis;
 
+    [Header("Referências")]
+    public GameObject visualizarDirecao;
+    bool podeMovimentar = true; // Solução TEMPORARIA enquanto não há estados implementados
+
 
     // Referências internas
     public Ferramenta ferramenta;
@@ -40,7 +43,7 @@ public class Player : MonoBehaviour {
     public Carregavel carregando => carregador.carregado; // O que o jogador está carregando
     Carregavel carregavel; // O que permite o jogador a ser carregado
     Rigidbody playerRigidbody;
-    AnimadorPLayer animacaoJogador;
+    AnimadorPlayer animacaoJogador;
     
 
     
@@ -55,9 +58,10 @@ public class Player : MonoBehaviour {
         ferramenta = GetComponentInChildren<Ferramenta>();
         ferramenta.Inicializar(this);
 
-        animacaoJogador = GetComponentInChildren<AnimadorPLayer>();
+        animacaoJogador = GetComponentInChildren<AnimadorPlayer>();
 
         OnVidaMudada += NotificarUI;
+
     }
 
     // Start: trata de referências/configurações externas
@@ -70,10 +74,6 @@ public class Player : MonoBehaviour {
     //OnDestroy apenas desinscreve para nao quebrar tudo
     void OnDestroy(){
         OnVidaMudada -= NotificarUI;
-    }
-
-    void AcionarFerramenta() {
-        if (!carregador.estaCarregando && ferramenta != null) ferramenta.Acionar();
     }
 
     void FixedUpdate() {
@@ -98,6 +98,29 @@ public class Player : MonoBehaviour {
         UIManager.instance.AtualizarDisplayVida(this, valor);
     }
 
+    #region Ferramenta
+
+    /// <summary>
+    /// Chamado quando o botão de "ataque" é pressionado
+    /// </summary>
+    void AcionarFerramenta() {
+        Debug.Log("Acionar ferramenta");
+        if (!carregador.estaCarregando && ferramenta != null) ferramenta.Acionar();
+    }
+
+    /// <summary>
+    /// Chamado quando o botão de "ataque" é solto
+    /// </summary>
+    void SoltarFerramenta() {
+        Debug.Log("Soltar ferramenta");
+        if (!carregador.estaCarregando && ferramenta != null) ferramenta.Soltar();
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Trata da movimentação do jogador
+    /// </summary>
     void Movimentacao() {
         Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
         float x = input.x;
@@ -107,8 +130,12 @@ public class Player : MonoBehaviour {
 
         if (movimentacao.magnitude > 0) {
             direcao = movimentacao;
+
+            visualizarDirecao.transform.forward = direcao;
         }
 
+        if (!podeMovimentar) return;
+        
         playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
         animacaoJogador.Mover(movimentacao);
     }
@@ -117,7 +144,13 @@ public class Player : MonoBehaviour {
         get { return Physics.Raycast(transform.position, Vector3.down, 1.1f); }
     }
 
-    bool ChecarInteragiveis() {
+    #region Interacao
+
+    /// <summary>
+    /// Checa por objetos interagíveis no raio de interação e define o interagível mais próximo em "ultimoInteragivel"
+    /// </summary>
+    /// <returns>Retorna verdadeiro caso tenha um interagivel próximo ao jogador</returns>
+    public bool ChecarInteragiveis() {
         // Checa por objetos interagíveis no raio de interação
         int quant = Physics.OverlapSphereNonAlloc(transform.position, raioInteracao, collidersInteragiveis, layerInteragivel);
 
@@ -157,9 +190,20 @@ public class Player : MonoBehaviour {
         return true;
     }
 
+    /// <summary>
+    /// Interage com o objeto mais próximo (definido em "ultimoInteragivel")
+    /// </summary>
     void Interagir() {
+        // Prioriza interações ao invés de soltar o que carrega (caso a interação necessite de um objeto carregado)
         if (ultimoInteragivel != null) ultimoInteragivel.Interagir(this);
         else if (carregador.estaCarregando) carregador.Soltar(direcao, velocidade, movimentacao.magnitude > 0);
+    }
+
+    #endregion
+
+    public void MostrarDirecional(bool mostrar) {
+        visualizarDirecao.SetActive(mostrar);
+        podeMovimentar = !mostrar;
     }
 
     void OnDrawGizmos() {

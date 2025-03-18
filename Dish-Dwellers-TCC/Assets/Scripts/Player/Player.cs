@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
+using UnityEngine.Events;
 
 public enum QualPlayer { Player1, Player2 }
 
@@ -13,7 +15,16 @@ public class Player : MonoBehaviour {
     [Header("Atributos do Player")]
     public float velocidade = 6f;
     public Vector3 direcao, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
-    public int playerVidas = 3;
+    private int _playerVidas = 3;
+    public int playerVidas {
+        get { return _playerVidas; }
+        set {
+            _playerVidas = Mathf.Clamp(value, 0, 3);
+            OnVidaMudada?.Invoke(this, _playerVidas);
+        }
+    }
+
+    public event UnityAction<Player, int> OnVidaMudada;
 
     [Header("Configuração de Interação")]
     public int maxInteragiveisEmRaio = 8;
@@ -45,6 +56,8 @@ public class Player : MonoBehaviour {
         ferramenta.Inicializar(this);
 
         animacaoJogador = GetComponentInChildren<AnimadorPLayer>();
+
+        OnVidaMudada += NotificarUI;
     }
 
     // Start: trata de referências/configurações externas
@@ -54,6 +67,11 @@ public class Player : MonoBehaviour {
         inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
     }
 
+    //OnDestroy apenas desinscreve para nao quebrar tudo
+    void OnDestroy(){
+        OnVidaMudada -= NotificarUI;
+    }
+
     void AcionarFerramenta() {
         if (!carregador.estaCarregando && ferramenta != null) ferramenta.Acionar();
     }
@@ -61,6 +79,23 @@ public class Player : MonoBehaviour {
     void FixedUpdate() {
         if (!carregavel.sendoCarregado) Movimentacao();
         ChecarInteragiveis();
+    }
+
+    //Mesmo que "Tomar dano" e "Ganhar vida"
+    void MudarVida(int valor){
+        //Se o valor for -1, ele tira vida
+        //se for 1 ele ganha vida
+        if(playerVidas + valor <= 3 && playerVidas > 0){
+            playerVidas += valor;
+        }else{
+            //Morrer
+        }
+    }
+
+    //Notificador para a UI
+    private void NotificarUI(Player player, int valor){
+        //paramentro eh o proprio player e o valor atual de vida
+        UIManager.instance.AtualizarDisplayVida(this, valor);
     }
 
     void Movimentacao() {

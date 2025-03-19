@@ -69,6 +69,7 @@ public class Player : MonoBehaviour {
         inputActionMap = qualPlayer == QualPlayer.Player1 ? GameManager.instance.input.Player.Get() : GameManager.instance.input.Player2.Get();
         inputActionMap["Interact"].performed += ctx => Interagir();
         inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
+        inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
     }
 
     //OnDestroy apenas desinscreve para nao quebrar tudo

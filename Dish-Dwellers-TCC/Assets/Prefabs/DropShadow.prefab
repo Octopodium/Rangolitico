@@ -9,6 +9,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 7751b4eea5ce8884296acef8f868200a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.77
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7751b4eea5ce8884296acef8f868200a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.77
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7751b4eea5ce8884296acef8f868200a, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.77
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7751b4eea5ce8884296acef8f868200a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -89,5 +101,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88517b4f0a0939a48ac1a59d2881b039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  raio: 0
-  transparencia: 0
+  cor: {r: 0, g: 0.08699684, b: 0.3018868, a: 1}
+  tamanho: 0.77
+  transparencia: 0.387

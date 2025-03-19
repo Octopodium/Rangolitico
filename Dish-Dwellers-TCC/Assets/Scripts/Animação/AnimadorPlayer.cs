@@ -14,6 +14,7 @@ public class AnimadorPlayer : MonoBehaviour
     public static readonly int Morre = Animator.StringToHash(nameof(Morre));
     public static readonly int Dano = Animator.StringToHash(nameof(Dano));
     private Quaternion deFrente = Quaternion.Euler(0, 180, 0), deCostas = Quaternion.Euler(0, 0, 0);
+    private float orientacao = 1;
 
     #endregion
 
@@ -30,7 +31,8 @@ public class AnimadorPlayer : MonoBehaviour
     /// <param name="velocidade"></param>
     public void Mover(Vector3 velocidade){
         Vector3 escala = transform.localScale;
-
+        if(velocidade.x != 0) orientacao = velocidade.x;
+        
         if(velocidade.z > 0){// Vira de costas
             transform.localRotation = deCostas;
         }
@@ -41,10 +43,10 @@ public class AnimadorPlayer : MonoBehaviour
         // Quando o jogador vira de costas, como a rotação ta em 180, é preciso inverter pra qual direção ele vira.
         int rotacao = transform.localRotation == deFrente ? 1 : -1;
 
-        if(velocidade.x > 0){ // Vira para a esquerda
+        if(orientacao > 0){ // Vira para a esquerda
             escala.x = rotacao;
         }
-        else if(velocidade.x < 0){// Vira para a direita
+        else if(orientacao < 0){// Vira para a direita
             escala.x = -rotacao;
         }
 

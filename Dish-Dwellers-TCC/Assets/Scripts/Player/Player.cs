@@ -77,8 +77,8 @@ public class Player : MonoBehaviour {
     }
 
     void FixedUpdate() {
-        if (!carregavel.sendoCarregado) Movimentacao();
         ChecarInteragiveis();
+        if (!carregavel.sendoCarregado) Movimentacao();
     }
 
     //Mesmo que "Tomar dano" e "Ganhar vida"

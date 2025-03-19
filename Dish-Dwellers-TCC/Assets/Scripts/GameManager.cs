@@ -46,24 +46,38 @@ public class GameManager : MonoBehaviour {
 
     // Rotina chamada somente ao iniciar o jogo
     IEnumerator OnEntraPrimeiraSala(){
-        // Espera a sala ser encontrada para continuar e trata o caso em que a sala não é encontrada.
+
         float timer = 0;
 
+        // Aguarda que algum MonoBehaviour Sala chame o SetProximaSala(), caso demore mais de 3 segundos, o processo é encerrado.
         while(salaProx == null){
+
             timer += Time.deltaTime;
+
             if(timer >= 3){
                 Debug.Log("<color=yellow>Sala não foi encontrada. O jogo continuará normalmente, porem, o sistema de salas pode não funcionar como esperado.</color>");
                 yield break;
             }
+
             yield return null;
         }
+
+        
         salaAnt = salaProx;
+        Debug.Log($"<color=green> Sala econtrada com Sucesso!</color>\n<color=yellow> Numero da sala : {salaProx.nSala}\t Numero da fase : {salaProx.nFase} ");
+
         StartCoroutine(PreloadProximaSala());
     }
 
     // Realiza todo o processo de desativar e descarregar a sala anterior, e ativar a proxima sala.
     IEnumerator PassarDeSala(){
+
+        // Caso descarregamnento ou carregamento das salas esteja sendo realizado, aguarda pela finalização do processo.
+        if(descarregando || carregando){
+            
+        }
         yield return new WaitUntil(() => descarregando == false && carregando == false);
+
         salaAnt.Desativar();
         salaProx.Ativar();
         StartCoroutine(UnloadSala());
@@ -77,19 +91,15 @@ public class GameManager : MonoBehaviour {
         yield return new WaitWhile(() => descarregando);
         carregando = true;
 
-        try{
-            salaPCarregar = $"{salaAnt.nSala + 1}-{salaAnt.nFase}";
-            op = SceneManager.LoadSceneAsync(salaPCarregar, LoadSceneMode.Additive);
-        }
-        catch{
-            salaPCarregar = $"01-{salaAnt.nFase + 1}";
-            op = SceneManager.LoadSceneAsync(salaPCarregar, LoadSceneMode.Additive);
-        }
+        salaPCarregar = $"{salaAnt.nSala + 1}-{salaAnt.nFase}";
+        op = SceneManager.LoadSceneAsync(salaPCarregar, LoadSceneMode.Additive);
+
 
         yield return new WaitUntil (() => {
             if(op != null) return op.isDone;
             else return true;
         });
+
         carregando = false;
     }
 
@@ -97,9 +107,11 @@ public class GameManager : MonoBehaviour {
         descarregando = true;
         
         AsyncOperation op = SceneManager.UnloadSceneAsync(salaAnt.gameObject.scene);
+        
         yield return new WaitUntil(() => op.isDone);
 
         salaAnt = salaProx;
+
         descarregando = false;
     }
     #endregion

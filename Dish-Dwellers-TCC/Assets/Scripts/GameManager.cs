@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
             Destroy(gameObject);
             return;
         }
+        
         DontDestroyOnLoad(gameObject);
 
         input = new Actions();

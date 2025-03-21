@@ -10,7 +10,6 @@ public class Gancho : MonoBehaviour, Ferramenta {
     public float distanciaMaxima = 10f;
     public float velocidadeGancho = 20f;
     
-    public Color corPadrao;
     public Gradient gradienteCorda;
 
     [Header("Configurações de Puxada")]
@@ -49,26 +48,6 @@ public class Gancho : MonoBehaviour, Ferramenta {
         acabouDePuxar = false;
     }
 
-    void FixedUpdate() {
-        if (gancho != null) {
-            float distancia = Vector3.Distance(ganchoSpawn.position, gancho.transform.position);
-            UpdateCorda(gancho.transform.position);
-
-            if (distancia > distanciaMaxima) {
-                DestruirGancho();
-            }
-        } else if (ganchado != null) {
-            float distancia = Vector3.Distance(ganchoSpawn.position, ganchado.meio);
-            UpdateCorda(ganchado.meio, distancia);
-
-            if (distancia > distanciaMaxima) {
-                ganchado.HandleDesganchado();
-                ganchado = null;
-                UpdateCorda(null);
-            }
-        }
-    }
-
     /// <summary>
     /// Atira o gancho na direção que o jogador está olhando
     /// </summary>
@@ -79,11 +58,16 @@ public class Gancho : MonoBehaviour, Ferramenta {
     }
 
     /// <summary>
-    /// Destroi o gancho
+    /// Destroi o gancho (as vezes chamado pelo próprio projetil de gancho)
     /// </summary>
     public void DestruirGancho() {
         Destroy(gancho);
-        UpdateCorda(null);
+        lineRenderer.enabled = false;
+
+        if (ganchado != null) {
+            ganchado.HandleDesganchado();
+            ganchado = null;
+        }
     }
 
     /// <summary>
@@ -92,85 +76,30 @@ public class Gancho : MonoBehaviour, Ferramenta {
     /// <param name="ganchavel">Objeto ganchavel</param>
     public void SetarGanchado(Ganchavel ganchavel) {
         ganchado = ganchavel;
-        UpdateCorda(ganchavel.meio);
+        gancho.transform.SetParent(ganchavel.transform);
     }
 
     /// <summary>
     /// Puxa o gancho
     /// </summary>
     public void PuxarGancho() {
-        if (ganchado == null) return;
+        if (ganchado != null) {
 
-        ganchado.HandlePuxado();
-        UpdateCorda(null);
+            ganchado.HandlePuxado();
 
-        Rigidbody rb = ganchado.GetComponent<Rigidbody>();
+            Rigidbody rb = ganchado.GetComponent<Rigidbody>();
 
-        if (rb != null) {
-            float distancia = Vector3.Distance(ganchoSpawn.position, ganchado.meio);
+            if (rb != null) {
+                float distancia = Vector3.Distance(ganchoSpawn.position, ganchado.meio);
 
-            Vector3 direcao = (ganchoSpawn.position - ganchado.meio).normalized;
-            Vector3 arremeco = Vector3.up * alturaDePuxada;
+                Vector3 direcao = (ganchoSpawn.position - ganchado.meio).normalized;
+                Vector3 arremeco = Vector3.up * alturaDePuxada;
 
-            rb.AddForce((direcao * distancia * forcaDePuxada) + arremeco, ForceMode.Impulse);
+                rb.AddForce((direcao * distancia * forcaDePuxada) + arremeco, ForceMode.Impulse);
+            }
         }
         
-        ganchado = null;
-    }
-
-    /// <summary>
-    /// Retorna verdadeiro caso a corda tenha colidido com algum objeto cortante
-    /// </summary>
-    public bool PassouPorCortantes() {
-        Transform target = null;
-        if (ganchado != null) target = ganchado.transform;
-        else if (gancho != null) target = gancho.transform;
-        else return false;
-
-        RaycastHit hit;
-        if (Physics.Raycast(ganchoSpawn.position, target.position - ganchoSpawn.position, out hit, distanciaMaxima, layerCortante)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Atualiza o visual da corda e verifica se passou por objetos cortantes
-    /// </summary>
-    /// <param name="posicaoTarget">Posição do gancho ou objeto ganchado (ou null se não houver) </param>
-    /// <param name="distancia">Distância entre a origem do gancho e a posição final</param>
-    public void UpdateCorda(Vector3? posicaoTarget, float distancia = -1) {
-        if (posicaoTarget == null) {
-            lineRenderer.enabled = false;
-            return;
-        }
-
-        if (PassouPorCortantes()) {
-            if (gancho != null) DestruirGancho();
-            else if (ganchado != null) {
-                ganchado.HandleDesganchado();
-                ganchado = null;
-            }
-            
-            lineRenderer.enabled = false;
-            return;
-        }
-
-        lineRenderer.enabled = true;
-        lineRenderer.SetPosition(0, ganchoSpawn.position);
-        lineRenderer.SetPosition(1, (Vector3) posicaoTarget);
-
-        if (distancia >= 0) {
-            float porcentagem = distancia / distanciaMaxima;
-            Color cor = gradienteCorda.Evaluate(porcentagem);
-
-            lineRenderer.startColor = cor;
-            lineRenderer.endColor = cor;
-        } else {
-            lineRenderer.startColor = corPadrao;
-            lineRenderer.endColor = corPadrao;
-        }
+        if (gancho != null) DestruirGancho();
     }
 
 }

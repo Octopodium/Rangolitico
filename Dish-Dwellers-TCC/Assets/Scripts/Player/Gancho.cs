@@ -6,7 +6,7 @@ public class Gancho : MonoBehaviour, Ferramenta {
     public GameObject ganchoPrefab;
 
     [Header("Configurações do Gancho")]
-    public LayerMask layerGanchavel, layerCortante;
+    public LayerMask layerCortante;
     public float distanciaMaxima = 10f;
     public float velocidadeGancho = 20f;
     

@@ -105,7 +105,6 @@ public class Player : MonoBehaviour {
     /// Chamado quando o botão de "ataque" é pressionado
     /// </summary>
     void AcionarFerramenta() {
-        Debug.Log("Acionar ferramenta");
         if (!carregador.estaCarregando && ferramenta != null) ferramenta.Acionar();
     }
 
@@ -113,7 +112,6 @@ public class Player : MonoBehaviour {
     /// Chamado quando o botão de "ataque" é solto
     /// </summary>
     void SoltarFerramenta() {
-        Debug.Log("Soltar ferramenta");
         if (!carregador.estaCarregando && ferramenta != null) ferramenta.Soltar();
     }
 

@@ -18,14 +18,15 @@ public class Projectile : MonoBehaviour
 
     void OnTriggerEnter(Collider other) {
         if(other.CompareTag("Refletivel")) {
-            Vector3 normal = other.transform.forward;
-            Vector3 novaDir = Vector3.Reflect(direcao, normal);
+            Vector3 pontoDeColisao = other.ClosestPoint(transform.position);
+            Vector3 normal = (transform.position - pontoDeColisao).normalized;
+            Vector3 novaDir = -Vector3.Reflect(direcao, normal);
             direcao = novaDir;
         } else if(other.CompareTag("Player")) {
             Player player = other.GetComponent<Player>(); 
             player.playerVidas -= 1;
             Destroy(gameObject);
             Debug.Log("Player levou dano");
-        } 
+        }
     }
 }

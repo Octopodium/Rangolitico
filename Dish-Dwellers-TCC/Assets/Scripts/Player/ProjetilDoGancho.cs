@@ -18,12 +18,6 @@ public class ProjetilDoGancho : MonoBehaviour {
         this.lineRenderer = gancho.lineRenderer;
         this.baseGancho = gancho.ganchoSpawn;
 
-/*
-        Collider collider = GetComponent<Collider>();
-        collider.includeLayers = gancho.layerGanchavel;
-        collider.excludeLayers = ~(gancho.layerGanchavel);
-*/
-
         ganchoHolder.forward = direcao;
 
         PintarCorda(0);
@@ -43,9 +37,6 @@ public class ProjetilDoGancho : MonoBehaviour {
 
         if (distancia > gancho.distanciaMaxima || PassouPorCortantes()){
             gancho.DestruirGancho();
-
-            Debug.Log(distancia);
-            Debug.Log(PassouPorCortantes());
         }
     }
 
@@ -60,10 +51,11 @@ public class ProjetilDoGancho : MonoBehaviour {
     /// <summary>
     /// Retorna verdadeiro caso a corda tenha colidido com algum objeto cortante
     /// </summary>
-    public bool PassouPorCortantes() {
+    public bool PassouPorCortantes(float distancia = -1f) {
+        if (distancia == -1f) distancia = Vector3.Distance(baseGancho.position, conexaoGancho.position);
+
         RaycastHit hit;
-        if (Physics.Raycast(baseGancho.position, conexaoGancho.position - baseGancho.position, out hit, gancho.distanciaMaxima, gancho.layerCortante)) {
-            Debug.Log(hit.collider.name);
+        if (Physics.Raycast(baseGancho.position, conexaoGancho.position - baseGancho.position, out hit, distancia, gancho.layerCortante)) {
             return true;
         }
 
@@ -75,6 +67,8 @@ public class ProjetilDoGancho : MonoBehaviour {
         if (ganchavel != null && ganchavel.PodeSerGanchado()) {
             movendo = false;
             gancho.SetarGanchado(ganchavel);
+        } else {
+            gancho.DestruirGancho();
         }
     }
 

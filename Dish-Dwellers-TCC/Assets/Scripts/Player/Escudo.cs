@@ -3,7 +3,6 @@ using UnityEngine;
 public class Escudo : MonoBehaviour, Ferramenta {
     public GameObject protecao;
     
-    float dirHorizontal = 1, dirVertical = -1;
     Vector3 direcaoProtecao = Vector3.zero;
 
     Player jogador;
@@ -14,18 +13,19 @@ public class Escudo : MonoBehaviour, Ferramenta {
 
     public void Acionar() {
         protecao.SetActive(true);
+        this.jogador.MostrarDirecional(true);
     }
 
     public void Soltar() {
         protecao.SetActive(false);
+        this.jogador.MostrarDirecional(false);
     }
     
     void FixedUpdate() {
-        if (jogador.direcao.x != 0) dirHorizontal = Mathf.Sign(jogador.direcao.x);
-        if (jogador.direcao.z != 0) dirVertical = Mathf.Sign(jogador.direcao.z);
+        direcaoProtecao.x = jogador.direcao.x;
+        direcaoProtecao.z = jogador.direcao.z;
 
-        direcaoProtecao.x = dirHorizontal;
-        direcaoProtecao.z = dirVertical;
-        protecao.transform.forward = direcaoProtecao;
+        if (direcaoProtecao.magnitude > 0)
+            protecao.transform.forward = direcaoProtecao;
     }
 }

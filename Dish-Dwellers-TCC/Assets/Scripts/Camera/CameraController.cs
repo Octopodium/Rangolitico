@@ -4,14 +4,6 @@ using UnityEngine;
 [RequireComponent(typeof(CinemachineCamera))]
 public class CameraController : MonoBehaviour{
 
-    [Header("<color=green>Configurações da Câmera : ")]
-
-    [Tooltip("Distancia máxima entre os alvos, onde o FOV está em seu valor mais alto")]
-    [SerializeField] private float maxFovDist; 
-    [Tooltip("Limite de distancia entre alvos antes de necessitar alteração de FOV")]
-    [SerializeField] private float minFovDist; // Eu sei que a nomenclatura ta confusa, mas eu não sei como melhorar :P
-    [Range(0.0f, 180.0f)][SerializeField] private float minFov, maxFov;
-
     // Informações da câmera : 
     private enum ModoDeCamera {SINGLEPLAYER, MULTIPLAYER, INATIVO};
     private ModoDeCamera modo;
@@ -24,7 +16,6 @@ public class CameraController : MonoBehaviour{
 
     private void Awake(){
         cinemachine = GetComponent<CinemachineCamera>();
-        minFov = Camera.main.fieldOfView;
     }
 
     private void Start(){
@@ -37,8 +28,6 @@ public class CameraController : MonoBehaviour{
         }
     }
 
-    #region Controle de FOV
-
     private Vector3 PosicaoMediaDosJogadores(){
         Vector3 medPos = new Vector3();
 
@@ -50,21 +39,6 @@ public class CameraController : MonoBehaviour{
 
         return medPos;
     }
-
-    private void AjustaFovPorDistancia(){
-        float distancia = Vector3.Distance(jogadores[0].transform.position, jogadores[1].transform.position);
-
-        if(distancia > minFovDist){
-            float interpolador = (distancia - minFovDist) / (maxFovDist - minFovDist);
-            float fov = Mathf.Lerp(minFov, maxFov, interpolador);
-            Camera.main.fieldOfView = fov;
-        }
-        else{
-            Camera.main.fieldOfView = minFov;
-        }
-    }
-
-    #endregion
 
     #region Configuração inicial
 

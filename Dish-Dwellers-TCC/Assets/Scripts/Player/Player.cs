@@ -8,12 +8,11 @@ public enum QualPlayer { Player1, Player2 }
 public class Player : MonoBehaviour {
 
     public QualPlayer qualPlayer = QualPlayer.Player1;
-    InputActionMap inputActionMap;
-
+    public InputActionMap inputActionMap {get; protected set;}
 
     [Header("Atributos do Player")]
     public float velocidade = 6f;
-    public Vector3 direcao, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
+    public Vector3 direcao, mira, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
     private int _playerVidas = 3;
     public int playerVidas {
         get { return _playerVidas; }
@@ -128,9 +127,12 @@ public class Player : MonoBehaviour {
         movimentacao = (transform.right * x + transform.forward * z).normalized;
 
         if (movimentacao.magnitude > 0) {
-            direcao = movimentacao;
+            mira = movimentacao;
+            
+            if (podeMovimentar)
+                direcao = movimentacao;
 
-            visualizarDirecao.transform.forward = direcao;
+            visualizarDirecao.transform.forward = mira;
         }
 
         if (!podeMovimentar) return;

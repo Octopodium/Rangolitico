@@ -16,12 +16,20 @@ public class Projectile : MonoBehaviour
         transform.Translate(direcao * projectileSpeed * Time.fixedDeltaTime);
     }
 
+    public void MudarDirecao(Vector2 direcao) {
+        MudarDirecao(new Vector3(direcao.x, 0, direcao.y));
+    }
+
+    public void MudarDirecao(Vector3 direcao) {
+        this.direcao = direcao;
+    }
+
     void OnTriggerEnter(Collider other) {
         if(other.CompareTag("Refletivel")) {
             Vector3 pontoDeColisao = other.ClosestPoint(transform.position);
             Vector3 normal = (transform.position - pontoDeColisao).normalized;
             Vector3 novaDir = -Vector3.Reflect(direcao, normal);
-            direcao = novaDir;
+            MudarDirecao(novaDir);
         } else if(other.CompareTag("Player")) {
             Player player = other.GetComponent<Player>(); 
             player.playerVidas -= 1;

@@ -1,7 +1,8 @@
 using UnityEngine;
+using Unity.Jobs;
 
 [RequireComponent(typeof(Animator))]
-public class AnimadorPLayer : MonoBehaviour
+public class AnimadorPlayer : MonoBehaviour
 {
     private Animator animator;
 
@@ -12,6 +13,9 @@ public class AnimadorPLayer : MonoBehaviour
     public static readonly int Arremesso = Animator.StringToHash(nameof(Arremesso));
     public static readonly int Morre = Animator.StringToHash(nameof(Morre));
     public static readonly int Dano = Animator.StringToHash(nameof(Dano));
+    private Quaternion deFrente = Quaternion.Euler(0, 180, 0), deCostas = Quaternion.Euler(0, 0, 0);
+    private float orientacao = 1;
+
     #endregion
 
 
@@ -27,22 +31,28 @@ public class AnimadorPLayer : MonoBehaviour
     /// <param name="velocidade"></param>
     public void Mover(Vector3 velocidade){
         Vector3 escala = transform.localScale;
-
-        if(velocidade.x > 0){ // Vira para a esquerda
-            escala.x = 1;
-        }
-        else if(velocidade.x < 0){// Vira para a direita
-            escala.x = -1;
-        }
+        if(velocidade.x != 0) orientacao = velocidade.x;
+        
         if(velocidade.z > 0){// Vira de costas
-
+            transform.localRotation = deCostas;
         }
         else if(velocidade.z < 0){ // Vira para a frente
-            
+            transform.localRotation = deFrente;
         }
 
-        animator.SetBool(Anda, (velocidade.magnitude > 0));
+        // Quando o jogador vira de costas, como a rotação ta em 180, é preciso inverter pra qual direção ele vira.
+        int rotacao = transform.localRotation == deFrente ? 1 : -1;
+
+        if(orientacao > 0){ // Vira para a esquerda
+            escala.x = rotacao;
+        }
+        else if(orientacao < 0){// Vira para a direita
+            escala.x = -rotacao;
+        }
+
         transform.localScale = escala;
+        
+        animator.SetBool(Anda, velocidade.sqrMagnitude > 0);
     }
 
     /// <summary>
@@ -82,4 +92,5 @@ public class AnimadorPLayer : MonoBehaviour
     }
 
     #endregion
+
 }

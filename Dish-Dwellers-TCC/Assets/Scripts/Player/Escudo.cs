@@ -1,16 +1,31 @@
 using UnityEngine;
 
-public class Escudo : MonoBehaviour
-{
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
+public class Escudo : MonoBehaviour, Ferramenta {
+    public GameObject protecao;
+    
+    Vector3 direcaoProtecao = Vector3.zero;
+
+    Player jogador;
+
+    public void Inicializar(Player jogador) {
+        this.jogador = jogador;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void Acionar() {
+        protecao.SetActive(true);
+        this.jogador.MostrarDirecional(true);
+    }
+
+    public void Soltar() {
+        protecao.SetActive(false);
+        this.jogador.MostrarDirecional(false);
+    }
+    
+    void FixedUpdate() {
+        direcaoProtecao.x = jogador.direcao.x;
+        direcaoProtecao.z = jogador.direcao.z;
+
+        if (direcaoProtecao.magnitude > 0)
+            protecao.transform.forward = direcaoProtecao;
     }
 }

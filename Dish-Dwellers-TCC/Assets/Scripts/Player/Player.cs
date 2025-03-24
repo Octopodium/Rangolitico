@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public enum QualPlayer { Player1, Player2 }
 
@@ -13,7 +14,16 @@ public class Player : MonoBehaviour {
     [Header("Atributos do Player")]
     public float velocidade = 6f;
     public Vector3 direcao, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
-    public int playerVidas = 3;
+    private int _playerVidas = 3;
+    public int playerVidas {
+        get { return _playerVidas; }
+        set {
+            _playerVidas = Mathf.Clamp(value, 0, 3);
+            OnVidaMudada?.Invoke(this, _playerVidas);
+        }
+    }
+
+    public event UnityAction<Player, int> OnVidaMudada;
 
     [Header("Configuração de Interação")]
     public int maxInteragiveisEmRaio = 8;
@@ -22,6 +32,10 @@ public class Player : MonoBehaviour {
     Interagivel ultimoInteragivel;
     Collider[] collidersInteragiveis;
 
+    [Header("Referências")]
+    public GameObject visualizarDirecao;
+    bool podeMovimentar = true; // Solução TEMPORARIA enquanto não há estados implementados
+
 
     // Referências internas
     public Ferramenta ferramenta;
@@ -29,7 +43,7 @@ public class Player : MonoBehaviour {
     public Carregavel carregando => carregador.carregado; // O que o jogador está carregando
     Carregavel carregavel; // O que permite o jogador a ser carregado
     Rigidbody playerRigidbody;
-    AnimadorPLayer animacaoJogador;
+    AnimadorPlayer animacaoJogador;
     
 
     
@@ -44,7 +58,10 @@ public class Player : MonoBehaviour {
         ferramenta = GetComponentInChildren<Ferramenta>();
         ferramenta.Inicializar(this);
 
-        animacaoJogador = GetComponentInChildren<AnimadorPLayer>();
+        animacaoJogador = GetComponentInChildren<AnimadorPlayer>();
+
+        OnVidaMudada += NotificarUI;
+
     }
 
     // Start: trata de referências/configurações externas
@@ -52,17 +69,57 @@ public class Player : MonoBehaviour {
         inputActionMap = qualPlayer == QualPlayer.Player1 ? GameManager.instance.input.Player.Get() : GameManager.instance.input.Player2.Get();
         inputActionMap["Interact"].performed += ctx => Interagir();
         inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
+        inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
     }
 
+    //OnDestroy apenas desinscreve para nao quebrar tudo
+    void OnDestroy(){
+        OnVidaMudada -= NotificarUI;
+    }
+
+    void FixedUpdate() {
+        ChecarInteragiveis();
+        if (!carregavel.sendoCarregado) Movimentacao();
+    }
+
+    //Mesmo que "Tomar dano" e "Ganhar vida"
+    void MudarVida(int valor){
+        //Se o valor for -1, ele tira vida
+        //se for 1 ele ganha vida
+        if(playerVidas + valor <= 3 && playerVidas > 0){
+            playerVidas += valor;
+        }else{
+            //Morrer
+        }
+    }
+
+    //Notificador para a UI
+    private void NotificarUI(Player player, int valor){
+        //paramentro eh o proprio player e o valor atual de vida
+        UIManager.instance.AtualizarDisplayVida(this, valor);
+    }
+
+    #region Ferramenta
+
+    /// <summary>
+    /// Chamado quando o botão de "ataque" é pressionado
+    /// </summary>
     void AcionarFerramenta() {
         if (!carregador.estaCarregando && ferramenta != null) ferramenta.Acionar();
     }
 
-    void FixedUpdate() {
-        if (!carregavel.sendoCarregado) Movimentacao();
-        ChecarInteragiveis();
+    /// <summary>
+    /// Chamado quando o botão de "ataque" é solto
+    /// </summary>
+    void SoltarFerramenta() {
+        if (!carregador.estaCarregando && ferramenta != null) ferramenta.Soltar();
     }
 
+    #endregion
+
+    /// <summary>
+    /// Trata da movimentação do jogador
+    /// </summary>
     void Movimentacao() {
         Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
         float x = input.x;
@@ -72,8 +129,12 @@ public class Player : MonoBehaviour {
 
         if (movimentacao.magnitude > 0) {
             direcao = movimentacao;
+
+            visualizarDirecao.transform.forward = direcao;
         }
 
+        if (!podeMovimentar) return;
+        
         playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
         animacaoJogador.Mover(movimentacao);
     }
@@ -82,7 +143,13 @@ public class Player : MonoBehaviour {
         get { return Physics.Raycast(transform.position, Vector3.down, 1.1f); }
     }
 
-    bool ChecarInteragiveis() {
+    #region Interacao
+
+    /// <summary>
+    /// Checa por objetos interagíveis no raio de interação e define o interagível mais próximo em "ultimoInteragivel"
+    /// </summary>
+    /// <returns>Retorna verdadeiro caso tenha um interagivel próximo ao jogador</returns>
+    public bool ChecarInteragiveis() {
         // Checa por objetos interagíveis no raio de interação
         int quant = Physics.OverlapSphereNonAlloc(transform.position, raioInteracao, collidersInteragiveis, layerInteragivel);
 
@@ -122,9 +189,20 @@ public class Player : MonoBehaviour {
         return true;
     }
 
+    /// <summary>
+    /// Interage com o objeto mais próximo (definido em "ultimoInteragivel")
+    /// </summary>
     void Interagir() {
+        // Prioriza interações ao invés de soltar o que carrega (caso a interação necessite de um objeto carregado)
         if (ultimoInteragivel != null) ultimoInteragivel.Interagir(this);
         else if (carregador.estaCarregando) carregador.Soltar(direcao, velocidade, movimentacao.magnitude > 0);
+    }
+
+    #endregion
+
+    public void MostrarDirecional(bool mostrar) {
+        visualizarDirecao.SetActive(mostrar);
+        podeMovimentar = !mostrar;
     }
 
     void OnDrawGizmos() {

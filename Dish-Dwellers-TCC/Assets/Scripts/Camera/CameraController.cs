@@ -9,6 +9,7 @@ public class CameraController : MonoBehaviour{
     private ModoDeCamera modo;
     private GameObject[] jogadores;
     private Transform alvo;
+    const float distance = 16, height = 40, FOV = 75;
 
     // Componentes :
     private CinemachineCamera cinemachine;
@@ -16,6 +17,7 @@ public class CameraController : MonoBehaviour{
 
     private void Awake(){
         cinemachine = GetComponent<CinemachineCamera>();
+
     }
 
     private void Start(){

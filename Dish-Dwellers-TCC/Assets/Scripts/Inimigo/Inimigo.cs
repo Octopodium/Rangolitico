@@ -73,5 +73,4 @@ public abstract class Inimigo : MonoBehaviour
     {
         Destroy(gameObject);
     }
-
 }

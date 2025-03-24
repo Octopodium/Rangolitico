@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d21770a2ad3cae4791e7ff17575500a, type: 3}
+  m_Name: AttackWithProjectile
+  m_EditorClassIdentifier: 
+  projectile: {fileID: 6074946886906531717, guid: 960d00d43c63a0b458ccbe65d722d353, type: 3}
+  projectileSpeed: 5
+  fireRate: 0.5
+  nextFire: 0
+  fireAction: {fileID: 0}

@@ -11,8 +11,8 @@ Shader "Hidden/SombraCircular"
         Cull Back
         ZWrite On
         Tags{
-            "RenderType" = "Transparent"
-            "Queue" = "transparent"
+            "RenderType" = "Overlay"
+            "Queue" = "Overlay"
             "IgnoreProjector" = "True"
             "PreviewType" = "Plane"
         }

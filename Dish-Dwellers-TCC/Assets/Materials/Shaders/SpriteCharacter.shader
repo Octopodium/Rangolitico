@@ -22,7 +22,7 @@ Shader "Custom/SpriteCharacter"
 
         CGPROGRAM
         #pragma surface surf Standard fullforwardshadows alphatest:_Cutoff addshadow
-        #pragma dynamic_branch SPRITE_CHANNEL1 SPRITE_CHANNEL2 SPRITE_CHANNEL3
+        //#pragma dynamic_branch SPRITE_CHANNEL1 SPRITE_CHANNEL2 SPRITE_CHANNEL3
 
         sampler2D _MainTex;
         int _Sprite;

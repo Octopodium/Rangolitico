@@ -1,5 +1,4 @@
 using UnityEngine;
-using Unity.Jobs;
 
 [RequireComponent(typeof(Animator))]
 public class AnimadorPlayer : MonoBehaviour

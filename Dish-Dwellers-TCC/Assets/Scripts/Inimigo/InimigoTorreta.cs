@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 //Tenho que passar esse código para português depois... :p
@@ -17,6 +15,10 @@ public class InimigoTorreta : Inimigo
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float fireRate;
     [SerializeField] private float nextFire;
+    [SerializeField] Vector3 direction;
+
+    //Lima:
+    [SerializeField] private AnimatorTorreta animator;
 
     #endregion
 
@@ -24,6 +26,7 @@ public class InimigoTorreta : Inimigo
     {
         target = GameObject.FindWithTag("Player").transform;
         cc = GetComponent<CharacterController>();
+        animator = GetComponentInChildren<AnimatorTorreta>();
     }
 
     void FixedUpdate()
@@ -38,14 +41,9 @@ public class InimigoTorreta : Inimigo
     {        
         if(_playerNoCampoDeVisao)
         {
-            Vector3 direction = target.position - transform.position;
+            direction = target.position - transform.position;
+            animator.Olhar(direction);
             direction.y = 0;
-
-            if (direction != Vector3.zero) // Garante que o inimigo rotacione o apenas no eixo Y
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * velocidade);
-            }
         }
     }
 
@@ -54,7 +52,9 @@ public class InimigoTorreta : Inimigo
         if(_playerNaZonaDeAtaque && Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
-            Instantiate(projectile, fireAction.transform.position, transform.rotation); 
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+            Instantiate(projectile, fireAction.transform.position, targetRotation); 
             base.Atacar();
         }
     }

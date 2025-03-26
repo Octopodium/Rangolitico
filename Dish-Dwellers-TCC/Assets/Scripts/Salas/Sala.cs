@@ -4,14 +4,14 @@ using UnityEngine.SceneManagement;
 public class sala : MonoBehaviour
 {
     GameObject[] spawns = new GameObject[2];
-    public int nSala, nFase;
+    [HideInInspector] public int nSala, nFase;
     GameObject salaObj;
-    public bool setupPronto;
 
 
     private void Start(){
         salaObj = transform.GetChild(0).gameObject;
         GetNomeDaSala();
+        if(nSala != 1)salaObj.SetActive(false);
         GameManager.instance.SetProximaSala(this);
     }
 
@@ -53,7 +53,7 @@ public class sala : MonoBehaviour
 
         // Tenta colocar cada jogador encontrado em um spawn diferente da sala.
         for( int i = 0; i < players.Length; i++){
-            //players[i].transform.position = spawns[i].transform.position;
+            players[i].transform.position = spawns[i].transform.position;
         }
     }
 }

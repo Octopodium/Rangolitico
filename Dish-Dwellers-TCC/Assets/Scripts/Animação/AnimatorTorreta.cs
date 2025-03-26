@@ -28,13 +28,20 @@ public class AnimatorTorreta : MonoBehaviour
 
     public void Morre(){
         animator.SetTrigger(morre);
+        animator.SetBool(atordoado, false);
+        animator.SetBool(agarrado, false);
     }
 
     public void Atordoado(bool val){
         animator.SetBool(atordoado, val);
     }
 
+    /// <summary>
+    /// Inicia a animação de agarrar e encerra o estado de atordoado.
+    /// </summary>
+    /// <param name="val"></param>
     public void Agarrado(bool val){
+        animator.SetBool(atordoado, false);
         animator.SetBool(agarrado, val);
     }
     

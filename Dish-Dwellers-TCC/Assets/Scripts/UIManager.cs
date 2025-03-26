@@ -17,6 +17,11 @@ public class UIManager : MonoBehaviour
             return;
         }
         DontDestroyOnLoad(gameObject);
+        Player.OnVidaMudada += HandleDisplayVida;
+    }
+
+    private void OnDestroy(){
+        Player.OnVidaMudada -= HandleDisplayVida;
     }
 
     /// <summary>
@@ -27,7 +32,7 @@ public class UIManager : MonoBehaviour
         objeto.SetActive(!objeto.activeInHierarchy);
     }
 
-    public void AtualizarDisplayVida(Player player, int valor){
+    public void HandleDisplayVida(Player player, int valor){
         GameObject[] coracoes = player.qualPlayer == QualPlayer.Player1 ? coracoesEsquerda : coracoesDireita;
 
         for (int i = 0; i < coracoesEsquerda.Length; i++){ 

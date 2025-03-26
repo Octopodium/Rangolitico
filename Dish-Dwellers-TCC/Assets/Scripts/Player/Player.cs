@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
+using System.Collections;
+
 
 public enum QualPlayer { Player1, Player2 }
 
@@ -22,7 +24,7 @@ public class Player : MonoBehaviour {
         }
     }
 
-    public event UnityAction<Player, int> OnVidaMudada;
+    public static event UnityAction<Player, int> OnVidaMudada; //Evento global para dano ou ganhar vida
 
     [Header("Configuração de Interação")]
     public int maxInteragiveisEmRaio = 8;
@@ -43,9 +45,7 @@ public class Player : MonoBehaviour {
     Carregavel carregavel; // O que permite o jogador a ser carregado
     Rigidbody playerRigidbody;
     AnimadorPlayer animacaoJogador;
-    
 
-    
 
     // Awake: trata de referências/configurações internas
     void Awake() {
@@ -58,9 +58,6 @@ public class Player : MonoBehaviour {
         ferramenta.Inicializar(this);
 
         animacaoJogador = GetComponentInChildren<AnimadorPlayer>();
-
-        OnVidaMudada += NotificarUI;
-
     }
 
     // Start: trata de referências/configurações externas
@@ -69,11 +66,6 @@ public class Player : MonoBehaviour {
         inputActionMap["Interact"].performed += ctx => Interagir();
         inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
         inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
-    }
-
-    //OnDestroy apenas desinscreve para nao quebrar tudo
-    void OnDestroy(){
-        OnVidaMudada -= NotificarUI;
     }
 
     void FixedUpdate() {
@@ -90,12 +82,6 @@ public class Player : MonoBehaviour {
         }else{
             //Morrer
         }
-    }
-
-    //Notificador para a UI
-    private void NotificarUI(Player player, int valor){
-        //paramentro eh o proprio player e o valor atual de vida
-        UIManager.instance.AtualizarDisplayVida(this, valor);
     }
 
     #region Ferramenta

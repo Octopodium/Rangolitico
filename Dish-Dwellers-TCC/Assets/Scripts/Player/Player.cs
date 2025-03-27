@@ -63,9 +63,15 @@ public class Player : MonoBehaviour {
     // Start: trata de referências/configurações externas
     void Start() {
         inputActionMap = qualPlayer == QualPlayer.Player1 ? GameManager.instance.input.Player.Get() : GameManager.instance.input.Player2.Get();
-        inputActionMap["Interact"].performed += ctx => Interagir();
+        inputActionMap["Interact"].performed += Interagir;
         inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
         inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
+    }
+
+    void OnDisable(){
+        inputActionMap["Interact"].performed -= Interagir;
+        //inputActionMap["Attack"].performed -= AcionarFerramenta();
+        //inputActionMap["Attack"].canceled -= SoltarFerramenta();
     }
 
     void FixedUpdate() {
@@ -189,6 +195,10 @@ public class Player : MonoBehaviour {
         // Prioriza interações ao invés de soltar o que carrega (caso a interação necessite de um objeto carregado)
         if (ultimoInteragivel != null) ultimoInteragivel.Interagir(this);
         else if (carregador.estaCarregando) carregador.Soltar(direcao, velocidade, movimentacao.magnitude > 0);
+    }
+
+    void Interagir(InputAction.CallbackContext ctx){
+        Interagir();
     }
 
     #endregion

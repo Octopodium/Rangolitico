@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3417532849604593669
+--- !u!1 &3394121107670345367
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,46 +8,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1231344083435128281}
-  - component: {fileID: 4819120282060289316}
-  - component: {fileID: 4305797252706781605}
+  - component: {fileID: 8518922765568348268}
+  - component: {fileID: 4858860180062095731}
+  - component: {fileID: 1853679203760756673}
   m_Layer: 0
-  m_Name: Garden_Vase_01
+  m_Name: FlaskThin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!4 &1231344083435128281
+--- !u!4 &8518922765568348268
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3417532849604593669}
+  m_GameObject: {fileID: 3394121107670345367}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6375853201858362955}
+  m_Father: {fileID: 5125249914059459188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &4819120282060289316
+--- !u!33 &4858860180062095731
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3417532849604593669}
-  m_Mesh: {fileID: 5586261530403720456, guid: ff5166b1786235a4fa87d22a6e6bcacb, type: 3}
---- !u!23 &4305797252706781605
+  m_GameObject: {fileID: 3394121107670345367}
+  m_Mesh: {fileID: -6088178744116515632, guid: 55d94a089b16a194bb3b4c95e3e129be, type: 3}
+--- !u!23 &1853679203760756673
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3417532849604593669}
+  m_GameObject: {fileID: 3394121107670345367}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -64,8 +64,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5219364446846075073, guid: ff5166b1786235a4fa87d22a6e6bcacb, type: 3}
-  - {fileID: -1081298952145524837, guid: ff5166b1786235a4fa87d22a6e6bcacb, type: 3}
+  - {fileID: 8556262120643298411, guid: 55d94a089b16a194bb3b4c95e3e129be, type: 3}
+  - {fileID: -1444460858095362738, guid: 55d94a089b16a194bb3b4c95e3e129be, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -87,7 +87,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &3486412901399911937
+--- !u!1 &8881212298464760702
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,38 +95,38 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6375853201858362955}
-  - component: {fileID: 8493248623280618483}
+  - component: {fileID: 5125249914059459188}
+  - component: {fileID: 1772630169927060657}
   m_Layer: 0
-  m_Name: Garden_Vase_01
+  m_Name: FlaskThin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!4 &6375853201858362955
+--- !u!4 &5125249914059459188
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3486412901399911937}
+  m_GameObject: {fileID: 8881212298464760702}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1231344083435128281}
+  - {fileID: 8518922765568348268}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &8493248623280618483
+--- !u!65 &1772630169927060657
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3486412901399911937}
+  m_GameObject: {fileID: 8881212298464760702}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -139,5 +139,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.23502287, y: 0.17301026, z: 0.24485084}
-  m_Center: {x: 0.001146093, y: 0.08446552, z: 0.0003941171}
+  m_Size: {x: 0.077946275, y: 0.25122392, z: 0.075611465}
+  m_Center: {x: 0.000027088448, y: -0.007118523, z: -0.00072011724}

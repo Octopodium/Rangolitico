@@ -2,19 +2,19 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using System.Collections;
-
+using Mirror;
 
 public enum QualPlayer { Player1, Player2 }
 
 [RequireComponent(typeof(Carregador)), RequireComponent(typeof(Carregavel))]
-public class Player : MonoBehaviour {
+public class Player : NetworkBehaviour {
 
     public QualPlayer qualPlayer = QualPlayer.Player1;
     public InputActionMap inputActionMap {get; protected set;}
 
     [Header("Atributos do Player")]
     public float velocidade = 6f;
-    public Vector3 direcao, mira, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
+    [HideInInspector] public Vector3 direcao, mira, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
     private int _playerVidas = 3;
     public int playerVidas {
         get { return _playerVidas; }
@@ -63,12 +63,17 @@ public class Player : MonoBehaviour {
     // Start: trata de referências/configurações externas
     void Start() {
         inputActionMap = qualPlayer == QualPlayer.Player1 ? GameManager.instance.input.Player.Get() : GameManager.instance.input.Player2.Get();
-        inputActionMap["Interact"].performed += ctx => Interagir();
-        inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
-        inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
+
+        if (isLocalPlayer) {
+            inputActionMap["Interact"].performed += ctx => Interagir();
+            inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
+            inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
+        }
     }
 
     void FixedUpdate() {
+        if (!isLocalPlayer) return;
+
         ChecarInteragiveis();
         if (!carregavel.sendoCarregado) Movimentacao();
     }

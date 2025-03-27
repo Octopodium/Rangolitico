@@ -104,6 +104,7 @@ MonoBehaviour:
   qualPlayer: 0
   velocidade: 10
   direcao: {x: 0, y: 0, z: 0}
+  mira: {x: 0, y: 0, z: 0}
   movimentacao: {x: 0, y: 0, z: 0}
   maxInteragiveisEmRaio: 8
   raioInteracao: 1
@@ -662,6 +663,22 @@ PrefabInstance:
     - target: {fileID: 470330877087957616, guid: b38442fb5522a0d44a28400c8e9d7cee, type: 3}
       propertyPath: opacidade
       value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 470330877087957616, guid: b38442fb5522a0d44a28400c8e9d7cee, type: 3}
+      propertyPath: corJogador1.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 470330877087957616, guid: b38442fb5522a0d44a28400c8e9d7cee, type: 3}
+      propertyPath: corJogador1.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 470330877087957616, guid: b38442fb5522a0d44a28400c8e9d7cee, type: 3}
+      propertyPath: corJogador1.g
+      value: 0.4050064
+      objectReference: {fileID: 0}
+    - target: {fileID: 470330877087957616, guid: b38442fb5522a0d44a28400c8e9d7cee, type: 3}
+      propertyPath: corJogador2.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 470330877087957616, guid: b38442fb5522a0d44a28400c8e9d7cee, type: 3}
       propertyPath: transparencia

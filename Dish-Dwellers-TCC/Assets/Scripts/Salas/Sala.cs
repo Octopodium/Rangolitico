@@ -1,15 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class sala : MonoBehaviour
-{
-    [Space(10)][Header("<color=yellow>Referências manuais: </color>")]
+public class sala : MonoBehaviour{
+    
+    [Space(10)][Header("<color=yellow>Referências manuais: </color>")][Space(10)]
     public Transform[] spawnPoints = new Transform[2];
     public GameObject[] players = new GameObject[2];
 
-    [Space(10)][Header("Só informação:")]
-    public int nSala;
-    public int nFase;
+    [HideInInspector]public int nSala, nFase;
 
 
     private void Start(){

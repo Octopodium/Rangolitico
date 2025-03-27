@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1856331368520704299}
   - component: {fileID: 8979141556671584572}
   - component: {fileID: 1730823473954958037}
-  - component: {fileID: 7201543840353149644}
   m_Layer: 0
   m_Name: Camera_Cinemachine
   m_TagString: Untagged
@@ -47,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Priority:
-    Enabled: 0
+    Enabled: 1
     m_Value: 0
   OutputChannel: 1
   StandbyUpdate: 2
@@ -108,15 +107,3 @@ MonoBehaviour:
     Time: 0
     Smoothing: 0
     IgnoreY: 0
---- !u!114 &7201543840353149644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9186123157991146998}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d655c16b90bf377419b6b0ffd6f7ec6c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

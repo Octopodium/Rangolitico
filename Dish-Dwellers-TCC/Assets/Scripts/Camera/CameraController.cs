@@ -1,87 +1,58 @@
 using Unity.Cinemachine;
 using UnityEngine;
-
-[RequireComponent(typeof(CinemachineCamera))]
 public class CameraController : MonoBehaviour{
 
     // Informações da câmera : 
-    private enum ModoDeCamera {SINGLEPLAYER, MULTIPLAYER, INATIVO};
-    private ModoDeCamera modo;
-    private GameObject[] jogadores;
-    private Transform alvo;
+    public ModoDeCamera modo;
+    public enum ModoDeCamera {SINGLEPLAYER, MULTIPLAYER_LOCAL, MULTIPLAYER_ONLINE, INATIVO};
+    [SerializeField] private Player[] players = new Player[2];
+    [SerializeField] private CinemachineCamera[] cameras = new CinemachineCamera[2];
+    [SerializeField] private GameObject cinemachineVCPrefab;
+
     const float distance = 10, height = 40, FOV = 75;
 
-    // Componentes :
-    private CinemachineCamera cinemachine;
-
-
     private void Awake(){
-        cinemachine = GetComponent<CinemachineCamera>();
-
-    }
-
-    private void Start(){
-        DeterminaModoDeCamera();
-    }
-
-    private void LateUpdate(){
-        if(modo == ModoDeCamera.MULTIPLAYER){
-            alvo.position = PosicaoMediaDosJogadores();       
-        }
-    }
-
-    private Vector3 PosicaoMediaDosJogadores(){
-        Vector3 medPos = new Vector3();
-
-        foreach(var jogador in jogadores){
-            medPos += jogador.transform.position;
-        }
-
-        medPos /= jogadores.Length;
-
-        return medPos;
+        ConfigurarCameras();
     }
 
     #region Configuração inicial
 
+    private void ConfigurarCameras(){
+
+        for (int i = 0; i < players.Length; i++){
+            cameras[i] = Instantiate(cinemachineVCPrefab).GetComponent<CinemachineCamera>();
+            cameras[i].Follow = players[i].transform;
+        }
+
+    }
+
+    public void TrocarCamera(){
+        
+    }
+
+
     // Baseado no numero de jogadores determina qual o comportamento da câmera e o seu objeto alvo.
     private void DeterminaModoDeCamera(){
 
-        int nJogadores = NumeroDeJogadores();
+        switch(modo){
 
-        switch(nJogadores){
-
-            case 0:
-                modo = ModoDeCamera.INATIVO;
-            throw new System.Exception("Nenhum Jogador foi encontrado pela câmera. Verifique a existencia dos jogadores na cena e se as tags estão corretas.");
-
-            case 1:
-                Debug.Log("Câmera no modo Singleplayer");
-                modo = ModoDeCamera.SINGLEPLAYER;
-                alvo = jogadores[0].transform;
+            case ModoDeCamera.INATIVO:                
             break;
 
-            case 2:
+            case ModoDeCamera.SINGLEPLAYER:
+                Debug.Log("Câmera no modo Singleplayer");
+            break;
+
+            case ModoDeCamera.MULTIPLAYER_LOCAL:
                 Debug.Log("Câmera no modo Multiplayer");
-                modo = ModoDeCamera.MULTIPLAYER;
-                alvo = new GameObject("Alvo_CameraMultiplayer").transform;
             break;
 
             default:
-                Debug.Log("Câmera no modo Multiplayer, <color=red>mas tem mais do que dois players na cena</color>");
-                modo = ModoDeCamera.MULTIPLAYER;
-                alvo = new GameObject("Alvo_CameraMultiplayer").transform;
+                modo = ModoDeCamera.SINGLEPLAYER;
             break;
 
         }
-        Debug.Log($"Modo de camera : {modo}");
 
-        cinemachine.Follow = alvo;
-    }
-
-    private int NumeroDeJogadores(){
-        jogadores = GameObject.FindGameObjectsWithTag("Player");
-        return jogadores.Length;
     }
 
     #endregion

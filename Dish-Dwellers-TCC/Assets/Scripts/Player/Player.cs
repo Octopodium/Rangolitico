@@ -171,7 +171,12 @@ public class Player : MonoBehaviour {
 
         // Trata do novo interagivel mais proximo
         Interagivel interagivel = interagivelMaisProximo.GetComponent<Interagivel>();
-        interagivel.MostarIndicador(true);
+
+        // GAMBIARRA DO LIMA:
+        try{interagivel.MostarIndicador(true);}
+        catch{}
+
+
         ultimoInteragivel = interagivel;
 
         return true;

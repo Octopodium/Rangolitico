@@ -1,5 +1,6 @@
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 public class CameraController : MonoBehaviour{
 
     // Informações da câmera : 
@@ -13,21 +14,52 @@ public class CameraController : MonoBehaviour{
 
     private void Awake(){
         ConfigurarCameras();
+        DeterminaModoDeCamera();
+    }
+
+    private void Start(){
+        SetMudançaDeCam();
+    }
+
+    private void SetMudançaDeCam(){
+        InputActionMap inputActionMap =  GameManager.instance.input.Player.Get();
+        inputActionMap["Move"].performed += ctx => TrocarCamera(0);
+
+        inputActionMap =  GameManager.instance.input.Player2.Get();
+        inputActionMap["Move"].performed += ctx => TrocarCamera(1);
+    }
+
+    private void OnValidate(){
+        ConfigurarCameras();
     }
 
     #region Configuração inicial
 
     private void ConfigurarCameras(){
-
         for (int i = 0; i < players.Length; i++){
-            cameras[i] = Instantiate(cinemachineVCPrefab).GetComponent<CinemachineCamera>();
-            cameras[i].Follow = players[i].transform;
-        }
 
+            if(cameras[i].Follow == null){
+                cameras[i].Follow = players[i].transform;
+            }
+            
+        }
     }
 
-    public void TrocarCamera(){
-        
+    // Alterna entre cameras.
+    public void TrocarCamera(int camera){
+        if(cameras[camera].Priority == 1) return;
+
+        Debug.Log("Mudando para camera " + camera);
+
+        for( int i = 0; i < cameras.Length; i++){
+
+            if(i == camera){
+                cameras[i].Priority = 1;
+                continue;
+            }
+
+            cameras[i].Priority = 0;
+        }
     }
 
 
@@ -41,6 +73,7 @@ public class CameraController : MonoBehaviour{
 
             case ModoDeCamera.SINGLEPLAYER:
                 Debug.Log("Câmera no modo Singleplayer");
+                cameras[0].Priority = 1;
             break;
 
             case ModoDeCamera.MULTIPLAYER_LOCAL:

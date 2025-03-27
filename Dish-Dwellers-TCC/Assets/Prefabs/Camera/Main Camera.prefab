@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3759060315945281775}
   - component: {fileID: 8217679413045621603}
   - component: {fileID: 8519805395039738661}
+  - component: {fileID: 4231836246867407140}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -58,7 +59,7 @@ MonoBehaviour:
     DefaultMode: 2
   DefaultBlend:
     Style: 1
-    Time: 2
+    Time: 0.5
     CustomCurve:
       serializedVersion: 2
       m_Curve: []
@@ -125,3 +126,23 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7413648218806374333}
   m_Enabled: 1
+--- !u!114 &4231836246867407140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7413648218806374333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d655c16b90bf377419b6b0ffd6f7ec6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modo: 0
+  players:
+  - {fileID: 0}
+  - {fileID: 0}
+  cameras:
+  - {fileID: 0}
+  - {fileID: 0}
+  cinemachineVCPrefab: {fileID: 9186123157991146998, guid: d199eff58372c244ea8b244dd8dea6fd, type: 3}

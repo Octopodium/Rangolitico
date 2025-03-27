@@ -3,35 +3,23 @@ using UnityEngine.SceneManagement;
 
 public class sala : MonoBehaviour
 {
-    GameObject[] spawns = new GameObject[2];
-    [HideInInspector] public int nSala, nFase;
-    GameObject salaObj;
+    [Space(10)][Header("<color=yellow>Referências manuais: </color>")]
+    public Transform[] spawnPoints = new Transform[2];
+    public GameObject[] players = new GameObject[2];
+
+    [Space(10)][Header("Só informação:")]
+    public int nSala;
+    public int nFase;
 
 
     private void Start(){
-        salaObj = transform.GetChild(0).gameObject;
         GetNomeDaSala();
-        if(nSala != 1)salaObj.SetActive(false);
-        GameManager.instance.SetProximaSala(this);
-    }
-
-    public void Ativar(){
-        if(salaObj.activeInHierarchy){ 
-            Debug.Log("<color=red> Sala já está ativada! </color>");
-        }
-        else{
-            salaObj.SetActive(true);
-            PosicionarJogador();
-        }
-    }
-
-
-    public void Desativar(){
-
+        PosicionarJogador();
+        GameManager.instance.SetSala(this);
     }
 
     private void GetNomeDaSala(){
-        // Separa o nome da cena em (idealmente) 3 partes,separadas por '-', seguindo o modelo "sala-fase-nome".
+        // Separa o nome da cena em partes separadas por '-', seguindo o modelo "sala-fase".
         string[] nome = gameObject.scene.name.Split('-');
 
         if(int.TryParse(nome[0], out nSala) && int.TryParse(nome[1], out nFase)){
@@ -44,16 +32,27 @@ public class sala : MonoBehaviour
         }
     }
 
-    private void PosicionarJogador(){
-        if(spawns.Length < 2){
-            spawns = GameObject.FindGameObjectsWithTag("Spawn");
+    public string NomeProximaSala(){
+        string nome = $"{nSala + 1}-{nFase}";
+        if(SceneUtility.GetBuildIndexByScenePath("Scenes/" + nome) < 0){
+
+            nome = $"1-{nFase + 1}";
+
+            if(SceneUtility.GetBuildIndexByScenePath("Scene/" + nome) < 0){
+                Debug.Log("<color=yellow>Proxima sala não foi encontrada, não será possivel prosseguir.");
+                return string.Empty;
+            }
+
         }
 
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        return nome;
 
+    }
+
+    private void PosicionarJogador(){
         // Tenta colocar cada jogador encontrado em um spawn diferente da sala.
         for( int i = 0; i < players.Length; i++){
-            players[i].transform.position = spawns[i].transform.position;
+            players[i].transform.position = spawnPoints[i].position;
         }
     }
 }

@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
@@ -21,7 +20,7 @@ public class GameManager : MonoBehaviour {
         input = new Actions();
         input.Enable();
 
-        StartCoroutine(OnEntraPrimeiraSala());
+        cenaAtual = SceneManager.GetActiveScene();
     }
 
 
@@ -30,91 +29,49 @@ public class GameManager : MonoBehaviour {
     
     [SerializeField] private bool descarregando;
     [SerializeField] private bool carregando;
-    private sala salaProx, salaAnt;
+    private bool passarDeSala = false;
+    private Scene cenaAtual, cenaAnt;
+    private AsyncOperation cenaProx;
+    private sala sala;
 
     
     // Chamado toda vez que o jogador passa de Sala.
     public void PassaDeSala(){
-        StartCoroutine(PassarDeSala());
+        cenaProx.allowSceneActivation = true;
     }
 
-    // Utilizado para permitir que as prorprias salas se estabeleçam como a proxima sala.
-    public void SetProximaSala(sala sala){
-        salaProx = sala;
-    }
-
-    #region Coroutinas de carregamento
-
-    // Rotina chamada somente ao iniciar o jogo
-    IEnumerator OnEntraPrimeiraSala(){
-
-        float timer = 0;
-
-        // Aguarda que algum MonoBehaviour Sala chame o SetProximaSala(), caso demore mais de 3 segundos, o processo é encerrado.
-        while(salaProx == null){
-
-            timer += Time.deltaTime;
-
-            if(timer >= 3){
-                Debug.Log("<color=yellow>Sala não foi encontrada. O jogo continuará normalmente, porem, o sistema de salas pode não funcionar como esperado.</color>");
-                yield break;
-            }
-
-            yield return null;
+    public void SetSala(sala sala){
+        if (this.sala != null){
+            StartCoroutine(UnloadSala(this.sala.gameObject.scene));
         }
 
+        this.sala = sala;
+        string proximaSala = sala.NomeProximaSala();
+        if(proximaSala == string.Empty) return;
         
-        salaAnt = salaProx;
-        Debug.Log($"<color=green> Sala econtrada com Sucesso!</color>\n<color=yellow> Numero da sala : {salaProx.nSala}\t Numero da fase : {salaProx.nFase} ");
-
-        StartCoroutine(PreloadProximaSala());
+        StartCoroutine(PreloadProximaSala(proximaSala));
     }
 
-    // Realiza todo o processo de desativar e descarregar a sala anterior, e ativar a proxima sala.
-    IEnumerator PassarDeSala(){
+    #region Corotinas de carregamento
 
-        // Caso descarregamnento ou carregamento das salas esteja sendo realizado, aguarda pela finalização do processo.
-        if(descarregando || carregando){
-            
+    IEnumerator PreloadProximaSala(string salaPCarregar){
+
+        if(SceneUtility.GetBuildIndexByScenePath($"Scenes/{salaPCarregar}") == 0){
+            Debug.Log("Proxima cena não está contida na build ou, não está com o nome correto.");
+            yield break;
         }
-        yield return new WaitUntil(() => descarregando == false && carregando == false);
 
-        salaAnt.Desativar();
-        salaProx.Ativar();
-        StartCoroutine(UnloadSala());
-        StartCoroutine(PreloadProximaSala());
+        cenaProx = SceneManager.LoadSceneAsync(salaPCarregar, LoadSceneMode.Additive);
+        cenaProx.allowSceneActivation = false;
     }
 
-    IEnumerator PreloadProximaSala(){
-        AsyncOperation op;
-        string salaPCarregar;
-
-        yield return new WaitWhile(() => descarregando);
-        carregando = true;
-
-        salaPCarregar = $"{salaAnt.nSala + 1}-{salaAnt.nFase}";
-        op = SceneManager.LoadSceneAsync(salaPCarregar, LoadSceneMode.Additive);
-
-
-        yield return new WaitUntil (() => {
-            if(op != null) return op.isDone;
-            else return true;
-        });
-
-        carregando = false;
-    }
-
-    IEnumerator UnloadSala(){
-        descarregando = true;
-        
-        AsyncOperation op = SceneManager.UnloadSceneAsync(salaAnt.gameObject.scene);
+    IEnumerator UnloadSala(Scene scene){
+        AsyncOperation op = SceneManager.UnloadSceneAsync(scene);
         
         yield return new WaitUntil(() => op.isDone);
-
-        salaAnt = salaProx;
-
-        descarregando = false;
+        Debug.Log("Terminou de descarregar : " + scene.name);
     }
+
     #endregion
 
     #endregion

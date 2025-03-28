@@ -12,13 +12,19 @@ Shader "Custom/SpriteCharacter"
     SubShader
     {
         Tags {
-            "Queue"="Transparent"
+            "Queue"="Geometry"
             "IgnoreProjector"="True"
-            "RenderType"="Transparent"
+            "RenderType"="Opaque"
             "PreviewType"="Plane"
         }
         Cull Back
-        Blend One OneMinusSrcAlpha
+
+        Stencil{
+            Ref 0
+            Comp equal
+            Pass keep
+            ZFail IncrWrap
+        }
 
         CGPROGRAM
         #pragma surface surf Standard fullforwardshadows alphatest:_Cutoff addshadow
@@ -75,6 +81,15 @@ Shader "Custom/SpriteCharacter"
             o.Alpha = c.a;
         }
         ENDCG
+
+        Pass{
+            ZTest Greater
+            Stencil{
+                Ref 1
+                Comp equal
+                Pass keep
+            }
+        }
     }
     FallBack "Diffuse"
 }

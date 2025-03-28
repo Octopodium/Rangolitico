@@ -10,7 +10,7 @@ public class Portal : MonoBehaviour{
             other.gameObject.SetActive(false);
 
             // Caso os dois players tenham entrado na porta, passa de sala.
-            if(++playersNoPortal > 0){
+            if(++playersNoPortal > 1){
                 GameManager.instance.PassaDeSala();
             }
             Debug.Log("Players no portal : " + playersNoPortal);

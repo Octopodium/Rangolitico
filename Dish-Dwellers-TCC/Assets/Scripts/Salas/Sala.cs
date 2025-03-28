@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -5,7 +6,6 @@ public class sala : MonoBehaviour{
     
     [Space(10)][Header("<color=yellow>Referências manuais: </color>")][Space(10)]
     public Transform[] spawnPoints = new Transform[2];
-    public GameObject[] players = new GameObject[2];
 
     [HideInInspector]public int nSala, nFase;
 
@@ -49,8 +49,11 @@ public class sala : MonoBehaviour{
 
     private void PosicionarJogador(){
         // Tenta colocar cada jogador encontrado em um spawn diferente da sala.
-        for( int i = 0; i < players.Length; i++){
+        List<Player> players = GameManager.instance.jogadores;
+
+        for( int i = 0; i < players.Count; i++){
             players[i].transform.position = spawnPoints[i].position;
+            players[i].gameObject.SetActive(true);
         }
     }
 }

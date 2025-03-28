@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,9 +7,7 @@ public class CameraController : MonoBehaviour{
     // Informações da câmera : 
     public ModoDeCamera modo;
     public enum ModoDeCamera {SINGLEPLAYER, MULTIPLAYER_LOCAL, MULTIPLAYER_ONLINE, INATIVO};
-    [SerializeField] private Player[] players = new Player[2];
     [SerializeField] private CinemachineCamera[] cameras = new CinemachineCamera[2];
-    [SerializeField] private GameObject cinemachineVCPrefab;
     InputActionMap inputActionMap;
 
     const float distance = 10, height = 40, FOV = 75;
@@ -30,10 +29,6 @@ public class CameraController : MonoBehaviour{
         inputActionMap["Move"].performed += TrocarCamera2;
     }
 
-    private void OnValidate(){
-        ConfigurarCameras();
-    }
-
     void OnDisable(){
         inputActionMap["Move"].performed -= TrocarCamera1;
         inputActionMap["Move"].performed -= TrocarCamera2;
@@ -42,19 +37,15 @@ public class CameraController : MonoBehaviour{
     #region Configuração inicial
 
     private void ConfigurarCameras(){
-        for (int i = 0; i < players.Length; i++){
+        List<Player> players = GameManager.instance.jogadores;
 
-            if(cameras[i].Follow == null){
-                cameras[i].Follow = players[i].transform;
-            }
-            
+        for (int i = 0; i < players.Count; i++){
+            cameras[i].Follow = players[i].transform;
         }
     }
 
     // Alterna entre cameras.
     public void TrocarCamera1(){
-        Debug.Log("Mudando para camera " + 1);
-
         cameras[0].Priority = 1;
         cameras[1].Priority = 0;
     }
@@ -68,8 +59,6 @@ public class CameraController : MonoBehaviour{
     }
     
     public void TrocarCamera2(){
-        Debug.Log("Mudando para camera " + 2);
-
         cameras[1].Priority = 1;
         cameras[0].Priority = 0;
     }

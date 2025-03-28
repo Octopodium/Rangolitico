@@ -17,7 +17,7 @@ public class Porta : MonoBehaviour, Interacao{
         if(jogador.carregando != null && jogador.carregando.CompareTag("Chave")){
             Destrancar();
             // Retira a chave do jogador.
-            jogador.carregador.gameObject.SetActive(false);
+            Destroy(jogador.carregando.gameObject);
         }
     }
 

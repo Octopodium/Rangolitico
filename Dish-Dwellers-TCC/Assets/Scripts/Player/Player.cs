@@ -69,7 +69,7 @@ public class Player : MonoBehaviour {
     }
 
     void OnDisable(){
-        inputActionMap["Interact"].performed -= Interagir;
+        //inputActionMap["Interact"].performed -= Interagir;
         //inputActionMap["Attack"].performed -= AcionarFerramenta();
         //inputActionMap["Attack"].canceled -= SoltarFerramenta();
     }

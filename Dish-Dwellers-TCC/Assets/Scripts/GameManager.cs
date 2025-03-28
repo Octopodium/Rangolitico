@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
@@ -19,16 +20,25 @@ public class GameManager : MonoBehaviour {
 
         input = new Actions();
         input.Enable();
+        
+        GetPlayers();
     }
 
 
     #region Sistema de salas
+    public List<Player> jogadores = new List<Player>();
     private AsyncOperation cenaProx;
     private sala sala;
 
     
     public void PassaDeSala(){
         cenaProx.allowSceneActivation = true;
+    }
+
+    private void GetPlayers(){
+        foreach( var data in GameObject.FindGameObjectsWithTag("Player")){
+            jogadores.Add(data.GetComponent<Player>());
+        }
     }
 
     /// <summary>

@@ -26,7 +26,6 @@ public class Projectile : MonoBehaviour
             direction = reflectDirection;
             isReflected = true;
             
-            // Reorienta o projétil para mirar no inimigo
             transform.rotation = Quaternion.LookRotation(reflectDirection);
         }
         //Se colidir com o inimigo após ser refletido

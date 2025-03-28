@@ -289,6 +289,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player_Escudo
       objectReference: {fileID: 0}
+    - target: {fileID: 900331536356913881, guid: 643007ccf803bc243aed1896f9e8c6b2, type: 3}
+      propertyPath: m_TagString
+      value: Escudo
+      objectReference: {fileID: 0}
     - target: {fileID: 2414328040528346660, guid: 643007ccf803bc243aed1896f9e8c6b2, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.3067267
@@ -328,6 +332,14 @@ PrefabInstance:
     - target: {fileID: 2414328040528346660, guid: 643007ccf803bc243aed1896f9e8c6b2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6029386811319232399, guid: 643007ccf803bc243aed1896f9e8c6b2, type: 3}
+      propertyPath: _escudo
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6610878326472485762, guid: 643007ccf803bc243aed1896f9e8c6b2, type: 3}
+      propertyPath: m_TagString
+      value: Escudo
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -564,6 +576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef710d55c18ac6d4b868f64214a167a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jogadores: []
 --- !u!4 &1889368499
 Transform:
   m_ObjectHideFlags: 0

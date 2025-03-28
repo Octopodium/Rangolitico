@@ -36,7 +36,11 @@ public class Player : MonoBehaviour {
     [Header("Referências")]
     public GameObject visualizarDirecao;
     bool podeMovimentar = true; // Solução TEMPORARIA enquanto não há estados implementados
-
+    
+    // Titizim:
+    [Header("Config do Escudo")]
+    public bool escudoAtivo {get; set;}
+    public float velocidadeComEscudo = 4f;
 
     // Referências internas
     public Ferramenta ferramenta;
@@ -111,26 +115,40 @@ public class Player : MonoBehaviour {
     /// <summary>
     /// Trata da movimentação do jogador
     /// </summary>
-    void Movimentacao() {
-        Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
-        float x = input.x;
-        float z = input.y;
+    
+    //Titi: Fiz algumas alterações aqui na movimentação pro escudo ok :3
+   void Movimentacao() {
+    Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
+    float x = input.x;
+    float z = input.y;
 
-        movimentacao = (transform.right * x + transform.forward * z).normalized;
+    movimentacao = (transform.right * x + transform.forward * z).normalized;
 
-        if (movimentacao.magnitude > 0) {
-            mira = movimentacao;
+    if (escudoAtivo) 
+    {
+        if (movimentacao.magnitude > 0) 
+        {
+            direcao = movimentacao;
+            visualizarDirecao.transform.forward = direcao;
             
-            if (podeMovimentar)
-                direcao = movimentacao;
-
-            visualizarDirecao.transform.forward = mira;
+            playerRigidbody.MovePosition(transform.position + movimentacao * (velocidade * 0.3f) * Time.fixedDeltaTime);
         }
+        animacaoJogador.Mover(movimentacao * 0.3f);
+    }
+        else 
+        {
+            if (movimentacao.magnitude > 0) 
+            {
+                direcao = movimentacao;
+                visualizarDirecao.transform.forward = direcao;
+            }
 
-        if (!podeMovimentar) return;
-        
-        playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
-        animacaoJogador.Mover(movimentacao);
+            if (podeMovimentar) 
+            {
+                playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
+                animacaoJogador.Mover(movimentacao);
+            }
+        }
     }
 
     public bool estaNoChao {

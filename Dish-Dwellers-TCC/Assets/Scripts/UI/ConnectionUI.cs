@@ -6,6 +6,8 @@ public class ConnectionUI : MonoBehaviour {
     public static ConnectionUI instance;
 
     public DishNetworkManager networkManager;
+    [HideInInspector] public LobbyPlayer p1, p2;
+
 
     [Header("UI")]
     public Button prontoButton;
@@ -19,7 +21,6 @@ public class ConnectionUI : MonoBehaviour {
 
     void Start() {
         networkManager = (DishNetworkManager)NetworkManager.singleton;
-        networkManager.OnTrocarPersonagens += UpdateNominhos;
 
         /*
         networkManager.OnClientConnect += OnClientConnect;
@@ -27,29 +28,51 @@ public class ConnectionUI : MonoBehaviour {
         networkManager.OnClientReady += OnClientReady;
         */
 
-        UpdateNominhos(true);
+        UpdateNominhos();
     }
 
     void OnDisable() {
-        networkManager.OnTrocarPersonagens -= UpdateNominhos;
+        /*
+        networkManager.OnClientConnect -= OnClientConnect;
+        networkManager.OnClientDisconnect -= OnClientDisconnect;
+        networkManager.OnClientReady -= OnClientReady;
+        */
     }
 
     // Pede pro servidor trocar os personagens
     public void TrocarPersonagens() {
-        networkManager.TrocarPersonagens();
         UpdateP1ProntoUI(false);
         UpdateP2ProntoUI(false);
+
+        if (p1.isLocalPlayer) p1.TrocarPersonagens();
+        else p2.TrocarPersonagens();
+    }
+
+    public void UpdateNominhos(LobbyPlayer lobbyPlayer) {
+        UpdateNominhos();
     }
 
     // Quando o servidor trocou os personagens
-    void UpdateNominhos(bool isPlayerOneHeater) {
+    public void UpdateNominhos() {
         if (networkManager.lobbyPlayers == null) return;
 
-        string p1 = networkManager.lobbyPlayers[0] == null ? "???" : networkManager.lobbyPlayers[0].nome;
-        string p2 = networkManager.lobbyPlayers[1] == null ? "???" : networkManager.lobbyPlayers[1].nome;
+        string p1Nome = "???";
+        string p2Nome = "???";
 
-        anglerText.text = isPlayerOneHeater ? p2 : p1;
-        heaterText.text = isPlayerOneHeater ? p1 : p2;
+
+        if (p1 != null)
+            p1Nome = p1.nome;
+        
+        if (p2 != null)
+            p2Nome = p2.nome;
+
+        if ((p1 != null && p1.personagem == DishNetworkManager.Personagem.Angler) || (p2 != null && p2.personagem == DishNetworkManager.Personagem.Heater)) {
+            anglerText.text = p1Nome;
+            heaterText.text = p2Nome;
+        } else {
+            anglerText.text = p2Nome;
+            heaterText.text = p1Nome;
+        }
     }
 
     public void SetPronto() {
@@ -58,12 +81,20 @@ public class ConnectionUI : MonoBehaviour {
     }
 
     public void UpdateP1ProntoUI(bool val) {
-        if (networkManager.isPlayerOneHeater) heaterReady.SetActive(val);
+        if (p1 == null) return;
+
+        if (p1.personagem == DishNetworkManager.Personagem.Heater) heaterReady.SetActive(val);
         else anglerReady.SetActive(val);
     }
 
     public void UpdateP2ProntoUI(bool val) {
-        if (networkManager.isPlayerOneHeater) anglerReady.SetActive(val);
+        if (p2 == null) return;
+
+        if (p2.personagem == DishNetworkManager.Personagem.Angler) anglerReady.SetActive(val);
         else heaterReady.SetActive(val);
+    }
+
+    public void UpdateAguardandoJogadorUI() {
+        esperandoJogador.SetActive(p1 == null || p2 == null);
     }
 }

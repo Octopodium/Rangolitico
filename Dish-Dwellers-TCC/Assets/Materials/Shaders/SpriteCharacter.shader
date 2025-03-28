@@ -19,12 +19,14 @@ Shader "Custom/SpriteCharacter"
         }
         Cull Back
 
+        
         Stencil{
             Ref 0
             Comp equal
-            Pass keep
+            Pass Replace
             ZFail IncrWrap
         }
+        
 
         CGPROGRAM
         #pragma surface surf Standard fullforwardshadows alphatest:_Cutoff addshadow
@@ -83,12 +85,22 @@ Shader "Custom/SpriteCharacter"
         ENDCG
 
         Pass{
+            Tags {
+                "Queue"="Geometry"
+                "IgnoreProjector"="True"
+                "RenderType"="Opaque"
+            }
             ZTest Greater
+            Cull Back
+            
+    
+            
             Stencil{
                 Ref 1
                 Comp equal
-                Pass keep
+                Pass Keep
             }
+            
         }
     }
     FallBack "Diffuse"

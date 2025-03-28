@@ -52,9 +52,10 @@ public class InimigoTorreta : Inimigo
         if(_playerNaZonaDeAtaque && Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
+            
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-
-            Instantiate(projectile, fireAction.transform.position, targetRotation); 
+            GameObject newProjectile = Instantiate(projectile, fireAction.transform.position, target.rotation);
+            newProjectile.GetComponent<Projectile>().owner = this.gameObject; // Atribui o inimigo como "dono" do projétil
             base.Atacar();
         }
     }

@@ -3,38 +3,46 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed = 7f;
-    Player player;
-    Vector3 direcao = new Vector3(0,0,1);
+    public GameObject owner; 
+    private Vector3 direction;
+    private bool isReflected = false;
 
     void Start()
     {
-        Destroy(gameObject, 2.0f);
+        direction = transform.forward; //Usa a direção inicial do disparo
+        Destroy(gameObject, 4f);
     }
 
     void FixedUpdate()
     {
-        transform.Translate(direcao * projectileSpeed * Time.fixedDeltaTime);
+        transform.Translate(direction * projectileSpeed * Time.deltaTime, Space.World);
     }
 
-    public void MudarDirecao(Vector2 direcao) {
-        MudarDirecao(new Vector3(direcao.x, 0, direcao.y));
-    }
-
-    public void MudarDirecao(Vector3 direcao) {
-        this.direcao = direcao;
-    }
-
-    void OnTriggerEnter(Collider other) {
-        if(other.CompareTag("Refletivel")) {
-            Vector3 pontoDeColisao = other.ClosestPoint(transform.position);
-            Vector3 normal = (transform.position - pontoDeColisao).normalized;
-            Vector3 novaDir = -Vector3.Reflect(direcao, normal);
-            MudarDirecao(novaDir);
-        } else if(other.CompareTag("Player")) {
-            Player player = other.GetComponent<Player>(); 
-            player.playerVidas -= 1;
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Escudo") && !isReflected)
+        {
+            Vector3 reflectDirection = (owner.transform.position - transform.position).normalized;
+            direction = reflectDirection;
+            isReflected = true;
+            
+            // Reorienta o projétil para mirar no inimigo
+            transform.rotation = Quaternion.LookRotation(reflectDirection);
+        }
+        //Se colidir com o inimigo após ser refletido
+        else if (isReflected && other.gameObject == owner)
+        {
+            Destroy(other.gameObject); // Destrói o inimigo (ou aplica dano)
             Destroy(gameObject);
-            Debug.Log("Player levou dano");
+        }
+        else if (other.gameObject.CompareTag("Player") && !isReflected)
+        {
+            Destroy(gameObject);
+        }
+        //previsão pra caso houver colisão com outros obstáculos
+        else if (other.gameObject.CompareTag("Parede"))
+        {
+            Destroy(gameObject);
         }
     }
 }

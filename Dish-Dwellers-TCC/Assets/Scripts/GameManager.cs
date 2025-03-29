@@ -31,10 +31,21 @@ public class GameManager : MonoBehaviour {
     private sala sala;
 
     
+    /// <summary>
+    /// Descarrega a sala atual, finaliza o carregamento da proxima e posiciona o jogador no porximo ponto de spawn.
+    /// </summary>
     public void PassaDeSala(){
         cenaProx.allowSceneActivation = true;
     }
 
+    /// <summary>
+    /// Reinicia a sala para as condições iniciais.
+    /// </summary>
+    public void ResetSala(){
+        sala.PosicionarJogador();
+    }
+
+    // Metodo lento para encontrar os jogadores
     private void GetPlayers(){
         foreach( var data in GameObject.FindGameObjectsWithTag("Player")){
             jogadores.Add(data.GetComponent<Player>());

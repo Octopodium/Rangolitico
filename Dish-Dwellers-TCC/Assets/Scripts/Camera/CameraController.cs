@@ -13,11 +13,12 @@ public class CameraController : MonoBehaviour{
     const float distance = 10, height = 40, FOV = 75;
 
     private void Awake(){
-        ConfigurarCameras();
         DeterminaModoDeCamera();
     }
 
     private void Start(){
+        ConfigurarCameras();
+        
         inputActionMap =  GameManager.instance.input.Player.Get();
         SetMudançaDeCam();
     }

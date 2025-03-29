@@ -16,6 +16,7 @@ public class sala : MonoBehaviour{
         GameManager.instance.SetSala(this);
     }
 
+    // Separa o nome da cena para encontrar o numero da fase e da sala.
     private void GetNomeDaSala(){
         // Separa o nome da cena em partes separadas por '-', seguindo o modelo "sala-fase".
         string[] nome = gameObject.scene.name.Split('-');
@@ -30,6 +31,7 @@ public class sala : MonoBehaviour{
         }
     }
 
+    // Utiliza o numero da sala/fase atual para descobrir o nome da proxima cena a ser carregada.
     public string NomeProximaSala(){
         string nome = $"{nSala + 1}-{nFase}";
         if(SceneUtility.GetBuildIndexByScenePath("Scenes/" + nome) < 0){
@@ -47,7 +49,10 @@ public class sala : MonoBehaviour{
 
     }
 
-    private void PosicionarJogador(){
+    /// <summary>
+    /// Posiciona os jogadores nos spawnPoints da sala.
+    /// </summary>
+    public void PosicionarJogador(){
         // Tenta colocar cada jogador encontrado em um spawn diferente da sala.
         List<Player> players = GameManager.instance.jogadores;
 

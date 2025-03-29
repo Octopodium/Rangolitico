@@ -36,7 +36,11 @@ public class Player : NetworkBehaviour {
     [Header("Referências")]
     public GameObject visualizarDirecao;
     bool podeMovimentar = true; // Solução TEMPORARIA enquanto não há estados implementados
-
+    
+    // Titizim:
+    [Header("Config do Escudo")]
+    public bool escudoAtivo {get; set;}
+    public float velocidadeComEscudo = 4f;
 
     // Referências internas
     public Ferramenta ferramenta;
@@ -65,10 +69,16 @@ public class Player : NetworkBehaviour {
         inputActionMap = qualPlayer == QualPlayer.Player1 ? GameManager.instance.input.Player.Get() : GameManager.instance.input.Player2.Get();
 
         if (isLocalPlayer) {
-            inputActionMap["Interact"].performed += ctx => Interagir();
-            inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
-            inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
+        inputActionMap["Interact"].performed += Interagir;
+        inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
+        inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
         }
+    }
+
+    void OnDisable(){
+        //inputActionMap["Interact"].performed -= Interagir;
+        //inputActionMap["Attack"].performed -= AcionarFerramenta();
+        //inputActionMap["Attack"].canceled -= SoltarFerramenta();
     }
 
     void FixedUpdate() {
@@ -110,26 +120,40 @@ public class Player : NetworkBehaviour {
     /// <summary>
     /// Trata da movimentação do jogador
     /// </summary>
-    void Movimentacao() {
-        Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
-        float x = input.x;
-        float z = input.y;
+    
+    //Titi: Fiz algumas alterações aqui na movimentação pro escudo ok :3
+   void Movimentacao() {
+    Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
+    float x = input.x;
+    float z = input.y;
 
-        movimentacao = (transform.right * x + transform.forward * z).normalized;
+    movimentacao = (transform.right * x + transform.forward * z).normalized;
 
-        if (movimentacao.magnitude > 0) {
-            mira = movimentacao;
+    if (escudoAtivo) 
+    {
+        if (movimentacao.magnitude > 0) 
+        {
+            direcao = movimentacao;
+            visualizarDirecao.transform.forward = direcao;
             
-            if (podeMovimentar)
-                direcao = movimentacao;
-
-            visualizarDirecao.transform.forward = mira;
+            playerRigidbody.MovePosition(transform.position + movimentacao * (velocidade * 0.3f) * Time.fixedDeltaTime);
         }
+        animacaoJogador.Mover(movimentacao * 0.3f);
+    }
+        else 
+        {
+            if (movimentacao.magnitude > 0) 
+            {
+                direcao = movimentacao;
+                visualizarDirecao.transform.forward = direcao;
+            }
 
-        if (!podeMovimentar) return;
-        
-        playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
-        animacaoJogador.Mover(movimentacao);
+            if (podeMovimentar) 
+            {
+                playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
+                animacaoJogador.Mover(movimentacao);
+            }
+        }
     }
 
     public bool estaNoChao {
@@ -176,7 +200,12 @@ public class Player : NetworkBehaviour {
 
         // Trata do novo interagivel mais proximo
         Interagivel interagivel = interagivelMaisProximo.GetComponent<Interagivel>();
-        interagivel.MostarIndicador(true);
+
+        // GAMBIARRA DO LIMA:
+        try{interagivel.MostarIndicador(true);}
+        catch{}
+
+
         ultimoInteragivel = interagivel;
 
         return true;
@@ -189,6 +218,10 @@ public class Player : NetworkBehaviour {
         // Prioriza interações ao invés de soltar o que carrega (caso a interação necessite de um objeto carregado)
         if (ultimoInteragivel != null) ultimoInteragivel.Interagir(this);
         else if (carregador.estaCarregando) carregador.Soltar(direcao, velocidade, movimentacao.magnitude > 0);
+    }
+
+    void Interagir(InputAction.CallbackContext ctx){
+        Interagir();
     }
 
     #endregion

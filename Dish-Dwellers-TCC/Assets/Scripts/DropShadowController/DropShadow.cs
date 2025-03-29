@@ -4,7 +4,7 @@ public class DropShadow : MonoBehaviour{
 
     [Space(10)][Header("<color=green>Configurações : </color>")]
     [Range(0.0f, 1.0f)] public float opacidade;
-    public Color cor;
+    public Color corJogador1, corJogador2;
     public float tamanho = 1.0f;
     public bool compartilhado;
     
@@ -15,7 +15,14 @@ public class DropShadow : MonoBehaviour{
 
     private void OnValidate(){
         AtualizarTamanho();
-        AtualizarCor();
+
+        int jogador = GetQualJogador();
+        if(jogador == 1){
+            AtualizarCor(corJogador1);
+        }
+        else if(jogador == 2){
+            AtualizarCor(corJogador2);
+        }
     }
 
     private void AtualizarTamanho(){
@@ -26,7 +33,16 @@ public class DropShadow : MonoBehaviour{
 
     }
 
-    private void AtualizarCor(){
+    private int GetQualJogador(){
+        Player player;
+        if(player = GetComponentInParent<Player>()){
+            if(player.qualPlayer == QualPlayer.Player1) return 1;
+            else return 2;
+        }
+        else return 0;
+    }
+
+    private void AtualizarCor(Color cor){
 
         MeshRenderer renderer = GetComponent<MeshRenderer>();
 

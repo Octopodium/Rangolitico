@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
@@ -19,37 +20,61 @@ public class GameManager : MonoBehaviour {
 
         input = new Actions();
         input.Enable();
-
-        cenaAtual = SceneManager.GetActiveScene();
+        
+        GetPlayers();
     }
 
 
-    #region Sistema de salas do Lima
-    [Space(10)][Header("<color=green>Informações da sala :</color>")]
-    
-    [SerializeField] private bool descarregando;
-    [SerializeField] private bool carregando;
-    private bool passarDeSala = false;
-    private Scene cenaAtual, cenaAnt;
+    #region Sistema de salas
+    public List<Player> jogadores = new List<Player>();
     private AsyncOperation cenaProx;
     private sala sala;
 
     
-    // Chamado toda vez que o jogador passa de Sala.
+    /// <summary>
+    /// Descarrega a sala atual, finaliza o carregamento da proxima e posiciona o jogador no porximo ponto de spawn.
+    /// </summary>
     public void PassaDeSala(){
         cenaProx.allowSceneActivation = true;
     }
 
+    /// <summary>
+    /// Reinicia a sala para as condições iniciais.
+    /// </summary>
+    public void ResetSala(){
+        sala.PosicionarJogador();
+    }
+
+    // Metodo lento para encontrar os jogadores
+    private void GetPlayers(){
+        foreach( var data in GameObject.FindGameObjectsWithTag("Player")){
+            jogadores.Add(data.GetComponent<Player>());
+        }
+    }
+
+    /// <summary>
+    /// Caso exista uma sala prévia, inicia o descarregamento da mesma.
+    /// Determina a sala informada como a sala atual do jogo.
+    /// Inicia o pré-carregamento da cena seguinte.
+    /// </summary>
+    /// <param name="sala"></param>
     public void SetSala(sala sala){
+
+        // Descarrega a sala anterior :
         if (this.sala != null){
             StartCoroutine(UnloadSala(this.sala.gameObject.scene));
         }
 
+        // Determina a sala informada como a sala atual :
         this.sala = sala;
+
+        // Inicia o precarregamento da próxima sala :
         string proximaSala = sala.NomeProximaSala();
-        if(proximaSala == string.Empty) return;
-        
+        if(proximaSala == string.Empty){
+            return;
+        }
         StartCoroutine(PreloadProximaSala(proximaSala));
+
     }
 
     #region Corotinas de carregamento

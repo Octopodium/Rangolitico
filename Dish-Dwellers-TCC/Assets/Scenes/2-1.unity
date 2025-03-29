@@ -1037,7 +1037,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &226067387
 Transform:
   m_ObjectHideFlags: 0
@@ -3765,6 +3765,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5778468210452699232, guid: 0270a929f4c62214bb14f9764be354e1, type: 3}
   m_PrefabInstance: {fileID: 914828530}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &934894176 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1498104645397530060, guid: a2689bb49a0fe1d44a7b7cf9037f762c, type: 3}
+  m_PrefabInstance: {fileID: 407487873426418086}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &945381479
 PrefabInstance:
@@ -8308,7 +8313,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1951302092
 Transform:
   m_ObjectHideFlags: 0
@@ -8723,7 +8728,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &2028272206
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9438,13 +9443,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bridge
       objectReference: {fileID: 0}
+    - target: {fileID: 1498104645397530060, guid: a2689bb49a0fe1d44a7b7cf9037f762c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7014269707930592759, guid: a2689bb49a0fe1d44a7b7cf9037f762c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.8
       objectReference: {fileID: 0}
     - target: {fileID: 7014269707930592759, guid: a2689bb49a0fe1d44a7b7cf9037f762c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.54
+      value: 25.41
       objectReference: {fileID: 0}
     - target: {fileID: 7014269707930592759, guid: a2689bb49a0fe1d44a7b7cf9037f762c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9481,13 +9490,30 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1498104645397530060, guid: a2689bb49a0fe1d44a7b7cf9037f762c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 407487873426418089}
   m_SourcePrefab: {fileID: 100100000, guid: a2689bb49a0fe1d44a7b7cf9037f762c, type: 3}
 --- !u!4 &407487873426418087 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7014269707930592759, guid: a2689bb49a0fe1d44a7b7cf9037f762c, type: 3}
   m_PrefabInstance: {fileID: 407487873426418086}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &407487873426418089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934894176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a411c08322251474f82160636bd03f8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 254204209}
+  speed: 4
 --- !u!1001 &2501009440187513201
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9548,9 +9574,61 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 849749753699340757, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: onPuxado.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 849749753699340757, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: onPuxado.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 849749753699340757, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: onPuxado.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 407487873426418089}
+    - target: {fileID: 849749753699340757, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: onPuxado.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 849749753699340757, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: onPuxado.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StartMoving
+      objectReference: {fileID: 0}
+    - target: {fileID: 849749753699340757, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: onPuxado.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MoveObject, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 849749753699340757, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: onPuxado.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4498718035900568529, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: m_Constraints
+      value: 126
+      objectReference: {fileID: 0}
     - target: {fileID: 7408664954858905976, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
       propertyPath: m_Name
       value: Lever
+      objectReference: {fileID: 0}
+    - target: {fileID: 7770725691428146747, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: m_Size.x
+      value: 2.0256388
+      objectReference: {fileID: 0}
+    - target: {fileID: 7770725691428146747, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: m_Size.y
+      value: 2.989391
+      objectReference: {fileID: 0}
+    - target: {fileID: 7770725691428146747, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: m_Center.x
+      value: -0.043957528
+      objectReference: {fileID: 0}
+    - target: {fileID: 7770725691428146747, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: m_Center.y
+      value: 1.4962224
+      objectReference: {fileID: 0}
+    - target: {fileID: 7770725691428146747, guid: 64bab5af4380c51438a175dc2677e01e, type: 3}
+      propertyPath: m_Center.z
+      value: 0.033436727
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -112,6 +112,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   visualizarDirecao: {fileID: 5890127384661449939}
+  velocidadeComEscudo: 4
   carregador: {fileID: 0}
 --- !u!54 &4090979343585388715
 Rigidbody:
@@ -139,7 +140,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 3
+  m_CollisionDetection: 2
 --- !u!65 &8569191798028142197
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -19,14 +19,14 @@ public static class HierarchyItemColor
         {
             //Descomente se precisar de cores especificas para itens especificos
 
-            /*string nameText = gameobject.name.Substring(1);
-            if(nameText == "Player"){
-                EditorGUI.DrawRect(selectRect, new Color(0.2f, 0.3f, 0f, 1f));
-            }else if(nameText == "Camera"){
-                EditorGUI.DrawRect(selectRect, new Color(0f, 0.3f, 0.2f, 1f));
-            }else{*/
+            string nameText = gameobject.name.Substring(1);
+            if(nameText == "heatwave"){
+                EditorGUI.DrawRect(selectRect, new Color(0.5f, 0f, 0f, 1f));
+            }else if(nameText == "hookline"){
+                EditorGUI.DrawRect(selectRect, new Color(0f, 0f, 0.5f, 1f));
+            }else{
                 EditorGUI.DrawRect(selectRect, Color.black); //cor default
-            //}
+            }
             EditorGUI.DropShadowLabel(selectRect, gameobject.name.Replace("#", "").ToUpperInvariant());
         }
     }

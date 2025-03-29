@@ -46,13 +46,13 @@ public class AnimatorTorreta : MonoBehaviour
     }
     
     /// <summary>
-    /// 
+    /// Determina se a torreta deve estar virada para a direita ou esquerda baseado na direção do alvo
     /// </summary>
-    /// <param name="dir"></param>
-    public void Olhar(Vector3 dir){
+    /// <param name="dirAlvo"></param>
+    public void Olhar(Vector3 dirAlvo){
         Vector3 escala = transform.localScale;
 
-        if(dir.x != 0) orientacao = dir.x > 0 ? -1 : 1;
+        if(dirAlvo.x != 0) orientacao = dirAlvo.x > 0 ? -1 : 1;
         escala.x = orientacao;
 
         transform.localScale = escala;

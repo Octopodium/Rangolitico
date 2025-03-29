@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        DontDestroyOnLoad(gameObject);
+        // DontDestroyOnLoad(gameObject);
         Player.OnVidaMudada += HandleDisplayVida;
     }
 

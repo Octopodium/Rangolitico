@@ -4,11 +4,12 @@ using UnityEngine.Events;
 using System.Collections;
 using Mirror;
 
-public enum QualPlayer { Player1, Player2 }
+public enum QualPlayer { Player1, Player2, Desativado }
+public enum QualPersonagem { Heater, Angler }
 
 [RequireComponent(typeof(Carregador)), RequireComponent(typeof(Carregavel))]
 public class Player : NetworkBehaviour {
-
+    public QualPersonagem personagem = QualPersonagem.Heater;
     public QualPlayer qualPlayer = QualPlayer.Player1;
     public InputActionMap inputActionMap {get; protected set;}
 
@@ -66,12 +67,16 @@ public class Player : NetworkBehaviour {
 
     // Start: trata de referências/configurações externas
     void Start() {
+        if (GameManager.instance.isOnline) {
+            qualPlayer = isLocalPlayer ? QualPlayer.Player1 : QualPlayer.Desativado;
+        }
+        
         inputActionMap = qualPlayer == QualPlayer.Player1 ? GameManager.instance.input.Player.Get() : GameManager.instance.input.Player2.Get();
 
-        if (isLocalPlayer) {
-        inputActionMap["Interact"].performed += Interagir;
-        inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
-        inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
+        if (!GameManager.instance.isOnline || isLocalPlayer) {
+            inputActionMap["Interact"].performed += Interagir;
+            inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
+            inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
         }
     }
 
@@ -81,8 +86,23 @@ public class Player : NetworkBehaviour {
         //inputActionMap["Attack"].canceled -= SoltarFerramenta();
     }
 
+    #region Online
+    [HideInInspector, SyncVar(hook=nameof(AtualizarStatusConectado))] public bool conectado = false;
+
+    void AtualizarStatusConectado(bool oldValue, bool newValue) {
+        if (isLocalPlayer) {
+            if (!oldValue && newValue) {
+                GameManager.instance.ComecarOnline();
+            } else {
+                GameManager.instance.VoltarParaMenu();
+            }
+        }
+    }
+
+    #endregion
+
     void FixedUpdate() {
-        if (!isLocalPlayer) return;
+        if (GameManager.instance.isOnline && !isLocalPlayer) return;
 
         ChecarInteragiveis();
         if (!carregavel.sendoCarregado) Movimentacao();

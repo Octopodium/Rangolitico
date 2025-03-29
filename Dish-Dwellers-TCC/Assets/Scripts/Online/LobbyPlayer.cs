@@ -48,6 +48,18 @@ public class LobbyPlayer : NetworkBehaviour {
         manager.TrocarPersonagens();
     }
 
+    public void TentarComecar() {
+        if (isLocalPlayer) {
+            CmdTentarComecar();
+        }
+    }
+
+    [Command]
+    void CmdTentarComecar() {
+        DishNetworkManager manager = (DishNetworkManager)NetworkManager.singleton;
+        manager.IniciarJogo();
+    }
+
     void UpdatePersonagemUI(DishNetworkManager.Personagem oldValue, DishNetworkManager.Personagem newValue) {
         ConnectionUI.instance.UpdateNominhos();
     }
@@ -57,8 +69,13 @@ public class LobbyPlayer : NetworkBehaviour {
     }
 
     public void FoiDesconectado() {
-        if (isPlayerOne) ConnectionUI.instance.p1 = null;
-        else ConnectionUI.instance.p2 = null;
+        if (isPlayerOne) {
+            ConnectionUI.instance.p1 = null;
+            ConnectionUI.instance.UpdateP1ProntoUI(false);
+        } else {
+            ConnectionUI.instance.p2 = null;
+            ConnectionUI.instance.UpdateP2ProntoUI(false);
+        }
 
         ConnectionUI.instance.UpdateNominhos();
         ConnectionUI.instance.UpdateAguardandoJogadorUI();

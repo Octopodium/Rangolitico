@@ -2,10 +2,21 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public Actions input;
+
+
+    public bool isOnline = false; // Se o jogo está rodando online ou offline
+    
+    public string primeiraFaseSceneName = "1-1";
+    public string menuPrincipalSceneName = "MainMenu"; // Cena do menu do jogo
+
+    [Header("Opção Offline")]
+    public GameObject offlineAnglerPrefab;
+    public GameObject offlineHeaterPrefab;
 
 
     void Awake() {
@@ -21,7 +32,9 @@ public class GameManager : MonoBehaviour {
         input = new Actions();
         input.Enable();
         
-        GetPlayers();
+        if (!isOnline) {
+            GerarPlayersOfline();
+        }
     }
 
 
@@ -50,6 +63,26 @@ public class GameManager : MonoBehaviour {
         foreach( var data in GameObject.FindGameObjectsWithTag("Player")){
             jogadores.Add(data.GetComponent<Player>());
         }
+    }
+
+    // Gera players caso o jogo seja rodado direto da cena, ao invés de um servidor
+    private void GerarPlayersOfline() {
+        if (isOnline) return;
+
+        foreach (GameObject data in GameObject.FindGameObjectsWithTag("Player")) {
+            Destroy(data);
+        }
+
+        jogadores.Clear();
+
+        GameObject angler = Instantiate(offlineAnglerPrefab, Vector3.zero, Quaternion.identity);
+        GameObject heater = Instantiate(offlineHeaterPrefab, Vector3.zero, Quaternion.identity);
+
+        jogadores.Add(angler.GetComponent<Player>());
+        jogadores.Add(heater.GetComponent<Player>());
+
+        angler.name = "Angler";
+        heater.name = "Heater";
     }
 
     /// <summary>
@@ -98,6 +131,61 @@ public class GameManager : MonoBehaviour {
     }
 
     #endregion
+
+    #endregion
+
+    #region Online
+    // Referente ao Online
+    public void ComecarOnline() {
+        if (!isOnline) return;
+
+        // Se o jogo estiver online, inicia a cena online
+        StartCoroutine(ComecarOnlineAsync());
+    }
+
+    public IEnumerator ComecarOnlineAsync() {
+        if (!isOnline) yield break;
+
+        foreach (Transform child in transform) {
+            if (child.GetComponent<Player>() == null) continue;
+            Destroy(child.gameObject);
+        }
+        jogadores.Clear();
+
+        GetPlayers();
+
+        foreach (Player player in jogadores) {
+            if (player == null) continue;
+            if (player.transform.parent != transform)
+                player.transform.SetParent(transform, false);
+        }
+
+        AsyncOperation op = SceneManager.LoadSceneAsync(primeiraFaseSceneName, LoadSceneMode.Single);
+        op.allowSceneActivation = true;
+
+        yield return new WaitUntil(() => op.isDone);
+
+        sala sala = GameObject.FindFirstObjectByType<sala>();
+        sala.PosicionarJogador();
+    }
+
+    public void VoltarParaMenu() {
+        if (isOnline) {
+            NetworkManager networkManager = NetworkManager.singleton;
+            if (networkManager != null) {
+                networkManager.StopHost();
+                networkManager.StopClient();
+                networkManager.StopServer();
+
+                Destroy(networkManager.gameObject);
+            }
+        }
+        
+        Destroy(gameObject);
+        instance = null;
+
+        SceneManager.LoadScene(menuPrincipalSceneName, LoadSceneMode.Single);
+    }
 
     #endregion
 }

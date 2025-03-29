@@ -4,10 +4,12 @@ using Mirror;
 
 public class DishNetworkManager : NetworkManager {
     [Header("Dish Network Manager")]
+
     public GameObject heaterPrefab;
     public GameObject anglerPrefab;
 
     public LobbyPlayer[] lobbyPlayers;
+    public Player[] players; // Players instanciados na cena (são criados a partir de um LobbyPlayer)
 
     public enum Personagem { Heater, Angler }
 
@@ -27,7 +29,7 @@ public class DishNetworkManager : NetworkManager {
         else lobbyPlayers[1] = lobbyPlayer;
 
         lobbyPlayer.personagem = GetPersonagemNaoUsado();
-        lobbyPlayer.nome = (lobbyPlayer.isPlayerOne) ? "Juanzinho" : "GameMaster 3000";
+        lobbyPlayer.nome = (lobbyPlayer.isPlayerOne) ? "Player 1" : "Player 2";
 
         player.name = $"[connId={conn.connectionId}]";
         NetworkServer.AddPlayerForConnection(conn, player);
@@ -48,6 +50,11 @@ public class DishNetworkManager : NetworkManager {
         else if (lobbyPlayers[1] != null && lobbyPlayers[1].connectionToClient == conn) {
             lobbyPlayers[1].FoiDesconectado();
             lobbyPlayers[1] = null;
+        }
+
+        if (players != null && players.Length > 0) {
+            if (players[0] != null) players[0].conectado = false;
+            if (players.Length > 1 && players[1] != null) players[1].conectado = false;
         }
 
         base.OnServerDisconnect(conn);
@@ -85,5 +92,30 @@ public class DishNetworkManager : NetworkManager {
         }
 
         lobbyPlayer.pronto = pronto;
+    }
+
+    public void IniciarJogo() {
+        if (lobbyPlayers[0] == null || lobbyPlayers[1] == null) return;
+        if (!lobbyPlayers[0].pronto || !lobbyPlayers[1].pronto) return;
+
+        players = new Player[lobbyPlayers.Length];
+
+        for (int i = 0; i < lobbyPlayers.Length; i++) {
+            LobbyPlayer lobbyPlayer = lobbyPlayers[i];
+            if (lobbyPlayer == null) continue;
+
+            GameObject playerPrefab = (lobbyPlayer.personagem == Personagem.Heater) ? heaterPrefab : anglerPrefab;
+
+            GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            player.name = $"{lobbyPlayer.nome} [connId={lobbyPlayer.connectionToClient.connectionId}]";
+            NetworkServer.ReplacePlayerForConnection(lobbyPlayer.connectionToClient, player, true);
+
+            players[i] = player.GetComponent<Player>();
+            Destroy(lobbyPlayer.gameObject);
+        }
+
+        foreach (Player player in players) {
+            player.conectado = true;
+        }
     }
 }

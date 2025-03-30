@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using System.Collections;
+using System.Collections.Generic;
 
 
 public enum QualPlayer { Player1, Player2 }
@@ -32,6 +33,8 @@ public class Player : MonoBehaviour {
     public LayerMask layerInteragivel;
     Interagivel ultimoInteragivel;
     Collider[] collidersInteragiveis;
+    public List<Collider> collidersIgnoraveis = new List<Collider>(); // Lista de colisores que o jogador não pode interagir
+
 
     [Header("Referências")]
     public GameObject visualizarDirecao;
@@ -47,6 +50,8 @@ public class Player : MonoBehaviour {
     [HideInInspector] public Carregador carregador; // O que permite o jogador carregar coisas
     public Carregavel carregando => carregador.carregado; // O que o jogador está carregando
     Carregavel carregavel; // O que permite o jogador a ser carregado
+    public bool sendoCarregado => carregavel.sendoCarregado; // Se o jogador está sendo carregado
+
     Rigidbody playerRigidbody;
     AnimadorPlayer animacaoJogador;
 
@@ -62,25 +67,38 @@ public class Player : MonoBehaviour {
         ferramenta.Inicializar(this);
 
         animacaoJogador = GetComponentInChildren<AnimadorPlayer>();
+
+        collidersIgnoraveis.Add(GetComponent<Collider>());
+
+        // Se está carregando algo, ignora a interação com esta coisa
+        carregador.OnCarregar += (carregavel) => { if (carregavel != null)  collidersIgnoraveis.Add(carregavel.GetComponent<Collider>()); };
+        carregador.OnSoltar += (carregavel) => { if (carregavel != null)  collidersIgnoraveis.Remove(carregavel.GetComponent<Collider>()); };
+
+        // Se o jogador está sendo carregado, ignora a interação com o carregador
+        carregavel.OnCarregado += (carregador) => { if (carregador != null)  collidersIgnoraveis.Add(carregador.GetComponent<Collider>()); };
+        carregavel.OnSolto += (carregador) => {  if (carregador != null)  collidersIgnoraveis.Remove(carregador.GetComponent<Collider>()); };
     }
 
     // Start: trata de referências/configurações externas
     void Start() {
-        inputActionMap = qualPlayer == QualPlayer.Player1 ? GameManager.instance.input.Player.Get() : GameManager.instance.input.Player2.Get();
+        inputActionMap = GameManager.instance.GetPlayerInput(qualPlayer);
+
         inputActionMap["Interact"].performed += Interagir;
-        inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
-        inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
+        inputActionMap["Attack"].performed += AcionarFerramenta;
+        inputActionMap["Attack"].canceled += SoltarFerramenta;
     }
 
     void OnDisable(){
-        //inputActionMap["Interact"].performed -= Interagir;
-        //inputActionMap["Attack"].performed -= AcionarFerramenta();
-        //inputActionMap["Attack"].canceled -= SoltarFerramenta();
+        if (inputActionMap != null) {
+            inputActionMap["Interact"].performed -= Interagir;
+            inputActionMap["Attack"].performed -= AcionarFerramenta;
+            inputActionMap["Attack"].canceled -= SoltarFerramenta;
+        }
     }
 
     void FixedUpdate() {
         ChecarInteragiveis();
-        if (!carregavel.sendoCarregado) Movimentacao();
+        if (!sendoCarregado) Movimentacao();
     }
 
     //Mesmo que "Tomar dano" e "Ganhar vida"
@@ -103,11 +121,19 @@ public class Player : MonoBehaviour {
         if (!carregador.estaCarregando && ferramenta != null) ferramenta.Acionar();
     }
 
+    void AcionarFerramenta(InputAction.CallbackContext ctx) {
+        AcionarFerramenta();
+    }
+
     /// <summary>
     /// Chamado quando o botão de "ataque" é solto
     /// </summary>
     void SoltarFerramenta() {
         if (!carregador.estaCarregando && ferramenta != null) ferramenta.Soltar();
+    }
+
+    void SoltarFerramenta(InputAction.CallbackContext ctx) {
+        SoltarFerramenta();
     }
 
     #endregion
@@ -158,50 +184,130 @@ public class Player : MonoBehaviour {
     #region Interacao
 
     /// <summary>
+    /// Remove colisores que não podem ser interagidos (ex: o próprio jogador) da lista de colisores interagíveis
+    /// No lugar do colisor, coloca null
+    /// </summary>
+    /// <param name="colliders"></param>
+    /// <returns>Retorna a quantidade de itens que não foram removidos</returns>
+    int RemoveColisoresIgnoraveis(Collider[] colliders) {
+        int quant = 0;
+
+        for (int i = 0; i < colliders.Length; i++) {
+            if (collidersIgnoraveis.Contains(colliders[i])) {
+                colliders[i] = null;
+            } else {
+                quant++;
+            }
+        }
+
+        return quant;
+    }
+
+    [System.Serializable]
+    public class CacheColliderInteragivel {
+        public Interagivel interagivel;
+        public bool checado = false;
+
+        public CacheColliderInteragivel(Interagivel interagivel = null, bool checado = false) {
+            this.interagivel = interagivel;
+            this.checado = checado;
+        }
+    }
+
+    Dictionary<Collider, CacheColliderInteragivel> cache_interagiveisProximos = new Dictionary<Collider, CacheColliderInteragivel>();
+    public List<CacheColliderInteragivel> debug_Cache = new List<CacheColliderInteragivel>(); // Para debug, não deve ser usado em produção
+    List<Collider> removerDoCacheDeInteragiveis = new List<Collider>(); // Lista de colisores que não estão mais na área de interação (para remover do cache)
+
+    /// <summary>
     /// Checa por objetos interagíveis no raio de interação e define o interagível mais próximo em "ultimoInteragivel"
     /// </summary>
     /// <returns>Retorna verdadeiro caso tenha um interagivel próximo ao jogador</returns>
     public bool ChecarInteragiveis() {
         // Checa por objetos interagíveis no raio de interação
         int quant = Physics.OverlapSphereNonAlloc(transform.position, raioInteracao, collidersInteragiveis, layerInteragivel);
+        int quantFiltrada = RemoveColisoresIgnoraveis(collidersInteragiveis);
 
-        // Na maioria das vezes, não haverá interagíveis (se houver apenas 1 e este for o próprio player, também considera que não há)
-        if (quant == 0 || (quant == 1 && collidersInteragiveis[0].gameObject == gameObject)) { 
+        // Na maioria das vezes, não haverá interagíveis
+        if (quantFiltrada == 0) { 
+            if (ultimoInteragivel != null) ultimoInteragivel.MostarIndicador(false);
+            ultimoInteragivel = null;
+            cache_interagiveisProximos.Clear();
+            return false;
+        }
+
+        foreach (var cache in cache_interagiveisProximos) {
+            cache.Value.checado = false;
+        }
+
+        debug_Cache.Clear(); // Limpa a lista de debug (para verificação de performance)
+
+        // Procura o interagível mais próximo (não podemos confiar na ordem padrão dos colliders)
+        float menorDistancia = Mathf.Infinity;
+        Interagivel interagivelMaisProximo = null;
+        for (int i = 0; i < quant; i++) { // Na maioria das vezes, só haverá um interagível, e se houver mais, não será muitos (menos de 8)
+            Collider collider = collidersInteragiveis[i];
+            if (collider == null) continue; // Ignora objetos removidos
+
+
+            // Salva o colisor em um cache referenciado-o ao seu Interagivel (evitar GetComponent toda vez)
+            CacheColliderInteragivel cache;
+            if(!cache_interagiveisProximos.ContainsKey(collider)){ // Se não está no cache, cria um cache
+                Interagivel interagivel = collider.GetComponent<Interagivel>();
+                if (interagivel == null) continue; // Ignora objetos sem o componente Interagivel
+
+                cache = new CacheColliderInteragivel(interagivel);
+                cache_interagiveisProximos.Add(collider, cache);
+            } else { // Se já está no cache, pega o cache
+                cache = cache_interagiveisProximos[collider];
+            }
+
+            cache.checado = true; // Marca o colisor como checado, ou seja, ela ainda se encontra na area
+            debug_Cache.Add(cache); // Adiciona o cache na lista de debug (para verificação de performance)
+            Interagivel interagivelAtual = cache.interagivel; // Pega o interagível do cache
+
+            if (interagivelAtual == null) continue; // Ignora objetos removidos ou sem o componente Interagivel
+
+            float distancia = Vector3.Distance(transform.position, collider.transform.position);
+            if (distancia < menorDistancia) {
+                menorDistancia = distancia;
+                interagivelMaisProximo = interagivelAtual;
+            }
+        }
+
+        // Remove os colisores que não estão mais na área de interação do cache
+        foreach (var cache in cache_interagiveisProximos) {
+            if (!cache.Value.checado) { // Se o colisor não foi checado, significa que ele não está mais na área de interação
+                removerDoCacheDeInteragiveis.Add(cache.Key);
+            }
+        }
+
+        // Remove os colisores que não estão mais na área de interação do cache
+        foreach (var colisor in removerDoCacheDeInteragiveis) {
+            cache_interagiveisProximos.Remove(colisor);
+        }
+
+        removerDoCacheDeInteragiveis.Clear(); // Limpa a lista de colisores que não estão mais na área de interação
+
+
+        if (interagivelMaisProximo == null) {
             if (ultimoInteragivel != null) ultimoInteragivel.MostarIndicador(false);
             ultimoInteragivel = null;
             return false;
         }
 
-        // Procura o interagível mais próximo (não podemos confiar na ordem padrão dos colliders)
-        float menorDistancia = Mathf.Infinity;
-        Collider interagivelMaisProximo = null;
-        for (int i = 0; i < quant; i++) { // Na maioria das vezes, só haverá um interagível, e se houver mais, não será muitos (menos de 8)
-            Collider collider = collidersInteragiveis[i];
-            if (collider == null || collider.gameObject == gameObject) continue; // Ignora o próprio jogador
-
-            float distancia = Vector3.Distance(transform.position, collider.transform.position);
-            if (distancia < menorDistancia) {
-                menorDistancia = distancia;
-                interagivelMaisProximo = collider;
-            }
-        }
-        
-
         // Trata do ultimo interagivel
         if (ultimoInteragivel != null) {
-            if (ultimoInteragivel.gameObject == interagivelMaisProximo.gameObject) return true; // Se o interagível mais próximo for o mesmo que o último interagível, não faz nada
+            if (ultimoInteragivel == interagivelMaisProximo) return true; // Se o interagível mais próximo for o mesmo que o último interagível, não faz nada
             ultimoInteragivel.MostarIndicador(false);
         }
 
-        // Trata do novo interagivel mais proximo
-        Interagivel interagivel = interagivelMaisProximo.GetComponent<Interagivel>();
 
         // GAMBIARRA DO LIMA:
-        try{interagivel.MostarIndicador(true);}
+        try{interagivelMaisProximo.MostarIndicador(true);}
         catch{}
 
 
-        ultimoInteragivel = interagivel;
+        ultimoInteragivel = interagivelMaisProximo;
 
         return true;
     }

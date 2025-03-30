@@ -5,35 +5,56 @@ using UnityEngine.InputSystem;
 public class CameraController : MonoBehaviour{
 
     // Informações da câmera : 
-    public ModoDeCamera modo;
-    public enum ModoDeCamera {SINGLEPLAYER, MULTIPLAYER_LOCAL, MULTIPLAYER_ONLINE, INATIVO};
+    ModoDeJogo modoDeJogoConfigurado = ModoDeJogo.INDEFINIDO;
+    public bool ativo = true; // Substitui o modo "INATIVO" previamente implementado.
     [SerializeField] private CinemachineCamera[] cameras = new CinemachineCamera[2];
-    InputActionMap inputActionMap;
 
     const float distance = 10, height = 40, FOV = 75;
 
     private void Awake(){
-        DeterminaModoDeCamera();
     }
 
     private void Start(){
+        DeterminaModoDeCamera();
         ConfigurarCameras();
-        
-        inputActionMap =  GameManager.instance.input.Player.Get();
-        SetMudançaDeCam();
     }
 
-    private void SetMudançaDeCam(){
-        inputActionMap["Move"].performed += TrocarCamera1;
+    private void DeterminaModoDeCamera(){
+        if (!ativo) return;
 
-        inputActionMap =  GameManager.instance.input.Player2.Get();
-        inputActionMap["Move"].performed += TrocarCamera2;
+        modoDeJogoConfigurado = GameManager.instance.modoDeJogo;
+
+        switch(modoDeJogoConfigurado) {
+            case ModoDeJogo.SINGLEPLAYER:
+                GameManager.instance.OnTrocarControleSingleplayer += TrocarCamera;
+                break;
+
+            case ModoDeJogo.MULTIPLAYER_LOCAL:
+                GameManager.instance.GetPlayerInput(QualPlayer.Player1)["Move"].performed += TrocarCamera1;
+                GameManager.instance.GetPlayerInput(QualPlayer.Player2)["Move"].performed += TrocarCamera2;
+                break;
+
+            case ModoDeJogo.MULTIPLAYER_ONLINE:
+                cameras[0].Priority = 1;
+                cameras[1].Priority = 0;
+                break;
+        }
+
     }
 
     void OnDisable(){
-        inputActionMap["Move"].performed -= TrocarCamera1;
-        inputActionMap["Move"].performed -= TrocarCamera2;
+        switch(modoDeJogoConfigurado) {
+            case ModoDeJogo.SINGLEPLAYER:
+                GameManager.instance.OnTrocarControleSingleplayer -= TrocarCamera;
+                break;
+
+            case ModoDeJogo.MULTIPLAYER_LOCAL:
+                GameManager.instance.GetPlayerInput(QualPlayer.Player1)["Move"].performed -= TrocarCamera1;
+                GameManager.instance.GetPlayerInput(QualPlayer.Player2)["Move"].performed -= TrocarCamera2;
+                break;
+        }
     }
+
 
     #region Configuração inicial
 
@@ -46,6 +67,11 @@ public class CameraController : MonoBehaviour{
     }
 
     // Alterna entre cameras.
+    public void TrocarCamera(QualPlayer player){
+        if (player == QualPlayer.Player1) TrocarCamera1();
+        else TrocarCamera2();
+    }
+
     public void TrocarCamera1(){
         cameras[0].Priority = 1;
         cameras[1].Priority = 0;
@@ -55,40 +81,13 @@ public class CameraController : MonoBehaviour{
         TrocarCamera1();
     }
 
-    void TrocarCamera2(InputAction.CallbackContext ctx){
-        TrocarCamera2();
-    }
-    
     public void TrocarCamera2(){
         cameras[1].Priority = 1;
         cameras[0].Priority = 0;
     }
 
-
-
-    // Baseado no numero de jogadores determina qual o comportamento da câmera e o seu objeto alvo.
-    private void DeterminaModoDeCamera(){
-
-        switch(modo){
-
-            case ModoDeCamera.INATIVO:                
-            break;
-
-            case ModoDeCamera.SINGLEPLAYER:
-                Debug.Log("Câmera no modo Singleplayer");
-                cameras[0].Priority = 1;
-            break;
-
-            case ModoDeCamera.MULTIPLAYER_LOCAL:
-                Debug.Log("Câmera no modo Multiplayer");
-            break;
-
-            default:
-                modo = ModoDeCamera.SINGLEPLAYER;
-            break;
-
-        }
-
+    void TrocarCamera2(InputAction.CallbackContext ctx){
+        TrocarCamera2();
     }
 
     #endregion

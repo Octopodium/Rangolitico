@@ -1270,6 +1270,45 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Geral",
+            "id": "0a1e95e8-de13-43c3-bcae-3cdd93c750ca",
+            "actions": [
+                {
+                    "name": "TrocarPersonagens",
+                    "type": "Button",
+                    "id": "af6c0877-8a56-48d9-bbc9-5e68e2959e16",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "8e942585-268d-4cc0-aaf4-42154a39faf0",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TrocarPersonagens",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a750f30c-b28b-4be6-b76f-a13ff54d0559",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TrocarPersonagens",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

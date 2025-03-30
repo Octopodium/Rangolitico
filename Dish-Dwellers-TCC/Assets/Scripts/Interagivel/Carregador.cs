@@ -8,6 +8,7 @@ public class Carregador: MonoBehaviour {
     [Header("Pegar automaticamente")]
     public bool carregarSeCairNaArea = false;
     Collider[] collidersNaArea = new Collider[10];
+
     [Tooltip("Necessário apenas para pegar automaticamente")]
     public LayerMask layerCarregavel;
 
@@ -17,6 +18,8 @@ public class Carregador: MonoBehaviour {
     float timerLimparUltimoCarregado = 0;
 
     public bool estaCarregando => carregado != null;
+
+    public System.Action<Carregavel> OnCarregar, OnSoltar; // Chamado quando o carregador carrega ou solta um objeto
 
     void FixedUpdate() {
         if (timerLimparUltimoCarregado > 0) {
@@ -61,7 +64,7 @@ public class Carregador: MonoBehaviour {
     }
 
     public void Carregar(Carregavel carregavel) {
-        if (carregado != null || carregavel == ultimoCarregado) return;
+        if (carregado != null || carregavel == null || carregavel == ultimoCarregado) return;
         
         carregado = carregavel;
         ultimoCarregado = carregavel;
@@ -73,9 +76,13 @@ public class Carregador: MonoBehaviour {
         if (cargaRigidbody != null) {
             carregavel.HandleSendoCarregado();
         }
+
+        OnCarregar?.Invoke(carregado);
     }
 
     public void Soltar(Vector3 direcao, float velocidade, bool movendo = false) {
+        OnSoltar?.Invoke(carregado);
+
         carregado.transform.SetParent(null);
 
         Rigidbody cargaRigidbody = carregado.GetComponent<Rigidbody>();

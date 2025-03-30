@@ -88,11 +88,13 @@ public class Player : MonoBehaviour {
     }
 
     void OnDisable(){
+        /*
         if (inputActionMap != null) {
             inputActionMap["Interact"].performed -= Interagir;
             inputActionMap["Attack"].performed -= AcionarFerramenta;
             inputActionMap["Attack"].canceled -= SoltarFerramenta;
         }
+        */
     }
 
     void FixedUpdate() {

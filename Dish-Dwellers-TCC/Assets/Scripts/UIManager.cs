@@ -5,23 +5,18 @@ using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager instance;
     [SerializeField] GameObject[] coracoesEsquerda;
     [SerializeField] GameObject[] coracoesDireita;
+    public GameObject telaPause;
 
     void Awake(){
-        if (instance == null) {
-            instance = this;
-        } else {
-            Destroy(gameObject);
-            return;
-        }
-        DontDestroyOnLoad(gameObject);
         Player.OnVidaMudada += HandleDisplayVida;
+        GameManager.OnPause += HandlePausa;
     }
 
     private void OnDestroy(){
         Player.OnVidaMudada -= HandleDisplayVida;
+        GameManager.OnPause -= HandlePausa;
     }
 
     /// <summary>
@@ -39,6 +34,16 @@ public class UIManager : MonoBehaviour
             //percorre pela array de coracoes e ativa caso ele for menor que as vidas, ele ativa
             //como temos 3 de vida e a array tem 0,1,2 ele trata por i e nao pelo numero de vida
             coracoesEsquerda[i].SetActive(i < player.playerVidas);
+        }
+    }
+
+    public void HandlePausa(bool estado){
+        AtivarEDesativarObjeto(telaPause);
+    }
+
+    public void DespauseNoResume(){
+        if(GameManager.instance != null){
+            GameManager.instance.Pause();
         }
     }
 

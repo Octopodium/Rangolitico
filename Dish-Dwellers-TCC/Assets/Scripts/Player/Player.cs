@@ -83,6 +83,13 @@ public class Player : MonoBehaviour {
         if (!carregavel.sendoCarregado) Movimentacao();
     }
 
+    public void PausaJogo(){
+        if(Time.timeScale == 1){
+            Debug.Log("pausa");
+            Time.timeScale = 0;
+        }
+    }
+
     //Mesmo que "Tomar dano" e "Ganhar vida"
     void MudarVida(int valor){
         //Se o valor for -1, ele tira vida

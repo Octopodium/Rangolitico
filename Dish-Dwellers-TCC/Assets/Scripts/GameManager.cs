@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,6 +8,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public Actions input;
 
+    public static event UnityAction<bool> OnPause;
 
     void Awake() {
         if (instance == null) {
@@ -20,11 +22,22 @@ public class GameManager : MonoBehaviour {
 
         input = new Actions();
         input.Enable();
+
+        input.UI.Pause.started += ctx => Pause();
         
         GetPlayers();
     }
 
-
+    public void Pause(){
+        if(Time.timeScale == 1){
+            OnPause?.Invoke(true);
+            Time.timeScale = 0;
+        }else{
+            OnPause?.Invoke(false);
+            Time.timeScale = 1;
+        }
+    }
+    
     #region Sistema de salas
     public List<Player> jogadores = new List<Player>();
     private AsyncOperation cenaProx;

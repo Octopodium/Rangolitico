@@ -99,7 +99,7 @@ public class Player : MonoBehaviour {
 
     void FixedUpdate() {
         ChecarInteragiveis();
-        if (!sendoCarregado) Movimentacao();
+        Movimentacao();
     }
 
     public void PausaJogo(){
@@ -151,37 +151,34 @@ public class Player : MonoBehaviour {
     /// </summary>
     
     //Titi: Fiz algumas alterações aqui na movimentação pro escudo ok :3
-   void Movimentacao() {
-    Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
-    float x = input.x;
-    float z = input.y;
+    void Movimentacao() {
+        Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
+        float x = input.x;
+        float z = input.y;
 
-    movimentacao = (transform.right * x + transform.forward * z).normalized;
+        movimentacao = (transform.right * x + transform.forward * z).normalized;
+        CalculaDirecao(movimentacao);
 
-    if (escudoAtivo) 
-    {
-        if (movimentacao.magnitude > 0) 
-        {
-            direcao = movimentacao;
-            visualizarDirecao.transform.forward = direcao;
-            
-            playerRigidbody.MovePosition(transform.position + movimentacao * (velocidade * 0.3f) * Time.fixedDeltaTime);
-        }
-        animacaoJogador.Mover(movimentacao * 0.3f);
-    }
-        else 
+        if(sendoCarregado) return;
+        if (escudoAtivo) 
         {
             if (movimentacao.magnitude > 0) 
-            {
-                direcao = movimentacao;
-                visualizarDirecao.transform.forward = direcao;
+            {   
+                playerRigidbody.MovePosition(transform.position + movimentacao * (velocidade * 0.3f) * Time.fixedDeltaTime);
             }
+            animacaoJogador.Mover(movimentacao * 0.3f);
+        }
+        else if (podeMovimentar)  
+        {
+            playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
+            animacaoJogador.Mover(movimentacao);            
+        }
+    }
 
-            if (podeMovimentar) 
-            {
-                playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
-                animacaoJogador.Mover(movimentacao);
-            }
+    private void CalculaDirecao(Vector3 movimentacao){
+        if (movimentacao.magnitude > 0) {
+            direcao = movimentacao;
+            visualizarDirecao.transform.forward = direcao;
         }
     }
 

@@ -41,7 +41,10 @@ public class UIManager : MonoBehaviour
         AtivarEDesativarObjeto(telaPause);
     }
 
-    public void DespauseNoResume(){
+    public void DespauseNoResume(){ 
+    //Juan eu preciso que o botao Resumo funcione de algum jeito
+    //colocando o GM no OnClick ou fazendo uma
+    //funcao, escolhi a funcao pois posso comentar
         if(GameManager.instance != null){
             GameManager.instance.Pause();
         }

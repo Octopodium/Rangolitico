@@ -7,6 +7,9 @@ public class Projectile : MonoBehaviour
     private Vector3 direction;
     private bool isReflected = false;
 
+    [Header("<color=green> Lima coisas :")]
+    [SerializeField]private bool refletirNormal;
+
     void Start()
     {
         direction = transform.forward; //Usa a direção inicial do disparo
@@ -22,7 +25,13 @@ public class Projectile : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Escudo") && !isReflected)
         {
-            Vector3 reflectDirection = (owner.transform.position - transform.position).normalized;
+            Vector3 reflectDirection;
+
+            if(refletirNormal) 
+                reflectDirection = other.transform.forward;
+            else
+                reflectDirection = (owner.transform.position - transform.position).normalized;
+
             reflectDirection.y = 0;
             direction = reflectDirection;
             isReflected = true;

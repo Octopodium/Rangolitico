@@ -19,15 +19,6 @@ Shader "Custom/SpriteCharacter"
         }
         Cull Back
 
-        
-        Stencil{
-            Ref 0
-            Comp equal
-            Pass Replace
-            ZFail IncrWrap
-        }
-        
-
         CGPROGRAM
         #pragma surface surf Standard fullforwardshadows alphatest:_Cutoff addshadow
         //#pragma dynamic_branch SPRITE_CHANNEL1 SPRITE_CHANNEL2 SPRITE_CHANNEL3

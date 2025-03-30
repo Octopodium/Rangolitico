@@ -22,11 +22,13 @@ public class InimigoTorreta : Inimigo
 
     #endregion
 
-    void Awake()
-    {
-        target = GameObject.FindWithTag("Player").transform;
+    private void Awake(){
         cc = GetComponent<CharacterController>();
         animator = GetComponentInChildren<AnimatorTorreta>();
+    }
+
+    void Start(){
+        target = GameManager.instance.jogadores[1].transform;
     }
 
     void FixedUpdate()

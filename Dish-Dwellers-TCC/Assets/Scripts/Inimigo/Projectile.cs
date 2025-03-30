@@ -18,11 +18,12 @@ public class Projectile : MonoBehaviour
         transform.Translate(direction * projectileSpeed * Time.deltaTime, Space.World);
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Escudo") && !isReflected)
         {
             Vector3 reflectDirection = (owner.transform.position - transform.position).normalized;
+            reflectDirection.y = 0;
             direction = reflectDirection;
             isReflected = true;
             
@@ -39,7 +40,7 @@ public class Projectile : MonoBehaviour
             Destroy(gameObject);
         }
         //previsão pra caso houver colisão com outros obstáculos
-        else if (other.gameObject.CompareTag("Parede"))
+        else
         {
             Destroy(gameObject);
         }

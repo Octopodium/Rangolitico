@@ -99,6 +99,16 @@ public class Player : MonoBehaviour {
     }
 
     void FixedUpdate() {
+        // No modo singleplayer, caso este jogador não seja o atual, não faz nada
+        if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && !inputActionMap.enabled) {
+            if (ultimoInteragivel != null) {
+                ultimoInteragivel.MostarIndicador(false);
+                ultimoInteragivel = null;
+            }
+
+            return;
+        }
+
         ChecarInteragiveis();
         Movimentacao();
     }

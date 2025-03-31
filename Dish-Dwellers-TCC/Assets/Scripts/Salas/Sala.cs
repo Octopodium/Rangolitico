@@ -19,7 +19,7 @@ public class sala : MonoBehaviour{
     public void ResetSala(){
         PosicionarJogador();
         foreach( var player in GameManager.instance.jogadores){
-            player.MudarVida(+3);
+            player.MudarVida(3);
         }
     }
 

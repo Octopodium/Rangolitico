@@ -124,7 +124,7 @@ public class Player : MonoBehaviour {
     public void MudarVida(int valor){
         //Se o valor for -1, ele tira vida
         //se for 1 ele ganha vida
-        if(playerVidas + valor <= 3 && playerVidas > 0){
+        if(playerVidas + valor <= 3 && playerVidas >= 0){ //>= para poder resetar a sala e as vidas
             playerVidas += valor;
             if(playerVidas <= 0){
                 //SceneManager.LoadScene.GameManager.instance.sala.scene.name;

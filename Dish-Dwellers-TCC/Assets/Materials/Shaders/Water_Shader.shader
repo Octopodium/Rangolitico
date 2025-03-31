@@ -18,8 +18,12 @@ Shader "Custom/Water_Shader"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
-        LOD 300
+        Tags{
+            "RenderType" = "Transparent"
+            "Queue" = "Transparent"
+            "PreviewType" = "Plane"
+        }
+        Blend SrcAlpha OneMinusSrcAlpha
 
         CGPROGRAM
         #pragma surface surf Standard fullforwardshadows alpha vertex:vert

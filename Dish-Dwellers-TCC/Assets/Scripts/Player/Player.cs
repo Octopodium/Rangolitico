@@ -128,7 +128,7 @@ public class Player : MonoBehaviour {
             playerVidas += valor;
             if(playerVidas <= 0){
                 //SceneManager.LoadScene.GameManager.instance.sala.scene.name;
-                Destroy(gameObject);
+                GameManager.instance.ResetSala();
                 Debug.Log("morreu");
             }
         }

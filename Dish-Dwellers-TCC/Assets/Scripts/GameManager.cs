@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour {
     /// Reinicia a sala para as condições iniciais.
     /// </summary>
     public void ResetSala(){
-        sala.PosicionarJogador();
+        sala.ResetSala();
     }
 
     // Metodo lento para encontrar os jogadores

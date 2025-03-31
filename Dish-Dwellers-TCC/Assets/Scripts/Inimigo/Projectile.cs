@@ -3,13 +3,19 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed = 7f;
-    public GameObject owner; 
+    public GameObject owner;
+    public Player player; 
     private Vector3 direction;
     private bool isReflected = false;
 
     [Header("<color=green> Lima coisas :")]
     [SerializeField]private bool refletirNormal;
 
+    void Awake()
+    {
+        player = GameObject.FindObjectOfType<Player>();
+    }
+    
     void Start()
     {
         direction = transform.forward; //Usa a direção inicial do disparo
@@ -46,7 +52,8 @@ public class Projectile : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Player") && !isReflected)
         {
-            Destroy(gameObject);
+            player.MudarVida(-1);
+            Debug.Log("deu dano");
         }
         //previsão pra caso houver colisão com outros obstáculos
         else

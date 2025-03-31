@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement; // Titi: Adição temporaria pra reset de sala
 using System.Collections.Generic;
 
 
@@ -110,13 +111,15 @@ public class Player : MonoBehaviour {
     }
 
     //Mesmo que "Tomar dano" e "Ganhar vida"
-    void MudarVida(int valor){
+    public void MudarVida(int valor){
         //Se o valor for -1, ele tira vida
         //se for 1 ele ganha vida
         if(playerVidas + valor <= 3 && playerVidas > 0){
             playerVidas += valor;
         }else{
-            //Morrer
+            //SceneManager.LoadScene.GameManager.instance.sala.scene.name;
+            Destroy(gameObject);
+            Debug.Log("morreu");
         }
     }
 

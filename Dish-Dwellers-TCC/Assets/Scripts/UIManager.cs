@@ -30,10 +30,10 @@ public class UIManager : MonoBehaviour
     public void HandleDisplayVida(Player player, int valor){
         GameObject[] coracoes = player.qualPlayer == QualPlayer.Player1 ? coracoesEsquerda : coracoesDireita;
 
-        for (int i = 0; i < coracoesEsquerda.Length; i++){ 
+        for (int i = 0; i < coracoes.Length; i++){ 
             //percorre pela array de coracoes e ativa caso ele for menor que as vidas, ele ativa
             //como temos 3 de vida e a array tem 0,1,2 ele trata por i e nao pelo numero de vida
-            coracoesEsquerda[i].SetActive(i < player.playerVidas);
+            coracoes[i].SetActive(i < player.playerVidas);
         }
     }
 

@@ -16,6 +16,13 @@ public class sala : MonoBehaviour{
         GameManager.instance.SetSala(this);
     }
 
+    public void ResetSala(){
+        PosicionarJogador();
+        foreach( var player in GameManager.instance.jogadores){
+            player.MudarVida(3);
+        }
+    }
+
     // Separa o nome da cena para encontrar o numero da fase e da sala.
     private void GetNomeDaSala(){
         // Separa o nome da cena em partes separadas por '-', seguindo o modelo "sala-fase".
@@ -61,4 +68,5 @@ public class sala : MonoBehaviour{
             players[i].gameObject.SetActive(true);
         }
     }
+
 }

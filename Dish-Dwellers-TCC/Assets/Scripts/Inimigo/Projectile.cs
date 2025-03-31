@@ -3,10 +3,19 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed = 7f;
-    public GameObject owner; 
+    public GameObject owner;
+    public Player player; 
     private Vector3 direction;
     private bool isReflected = false;
 
+    [Header("<color=green> Lima coisas :")]
+    [SerializeField]private bool refletirNormal;
+
+    void Awake()
+    {
+        player = GameObject.FindObjectOfType<Player>();
+    }
+    
     void Start()
     {
         direction = transform.forward; //Usa a direção inicial do disparo
@@ -18,15 +27,25 @@ public class Projectile : MonoBehaviour
         transform.Translate(direction * projectileSpeed * Time.deltaTime, Space.World);
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Escudo") && !isReflected)
         {
-            Vector3 reflectDirection = (owner.transform.position - transform.position).normalized;
+            Vector3 reflectDirection;
+
+            if(refletirNormal) 
+                reflectDirection = other.transform.forward;
+            else
+                reflectDirection = (owner.transform.position - transform.position).normalized;
+
+            reflectDirection.y = 0;
             direction = reflectDirection;
             isReflected = true;
             
             transform.rotation = Quaternion.LookRotation(reflectDirection);
+        }
+        else if(other.CompareTag("Queimavel")){
+            other.GetComponent<ParedeDeVinhas>().ReduzirIntegridade();
         }
         //Se colidir com o inimigo após ser refletido
         else if (isReflected && other.gameObject == owner)
@@ -36,10 +55,11 @@ public class Projectile : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("Player") && !isReflected)
         {
-            Destroy(gameObject);
+            player.MudarVida(-1);
+            Debug.Log("deu dano");
         }
         //previsão pra caso houver colisão com outros obstáculos
-        else if (other.gameObject.CompareTag("Parede"))
+        else
         {
             Destroy(gameObject);
         }

@@ -88,6 +88,14 @@ public class Player : MonoBehaviour {
         inputActionMap["Attack"].canceled += SoltarFerramenta;
     }
 
+    void OnEnable() {
+        if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap.enabled) {
+            GameManager.instance.TrocarControleSingleplayer(qualPlayer);
+        }
+
+        if (inputActionMap != null) inputActionMap.Enable();
+    }
+
     void OnDisable(){
         /*
         if (inputActionMap != null) {
@@ -96,6 +104,15 @@ public class Player : MonoBehaviour {
             inputActionMap["Attack"].canceled -= SoltarFerramenta;
         }
         */
+
+        if (ultimoInteragivel != null) {
+            ultimoInteragivel.MostarIndicador(false);
+            ultimoInteragivel = null;
+        }
+
+        if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap.enabled) {
+            GameManager.instance.TrocarControleSingleplayer();
+        }
     }
 
     void FixedUpdate() {

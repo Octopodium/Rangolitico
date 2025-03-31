@@ -99,10 +99,26 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    void TrocarControleSingleplayer(){
+    public void TrocarControleSingleplayer(){
         if (modoDeJogo != ModoDeJogo.SINGLEPLAYER) return;
 
         if (playerAtual == QualPlayer.Player1) {
+            playerAtual = QualPlayer.Player2;
+            input.Player.Disable();
+            input2_singleplayer.Player.Enable();
+        } else {
+            playerAtual = QualPlayer.Player1;
+            input2_singleplayer.Player.Disable();
+            input.Player.Enable();
+        }
+
+        OnTrocarControleSingleplayer?.Invoke(playerAtual);
+    }
+
+    public void TrocarControleSingleplayer(QualPlayer player){
+        if (modoDeJogo != ModoDeJogo.SINGLEPLAYER) return;
+
+        if (player == QualPlayer.Player2) {
             playerAtual = QualPlayer.Player2;
             input.Player.Disable();
             input2_singleplayer.Player.Enable();

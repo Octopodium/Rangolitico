@@ -164,6 +164,9 @@ public class Player : MonoBehaviour {
         CalculaDirecao(movimentacao);
 
         if(sendoCarregado) return;
+
+        // Descomente esse trecho para o player se mover enquanto levanta o escudo.
+        /*
         if (escudoAtivo) 
         {
             if (movimentacao.magnitude > 0) 
@@ -172,6 +175,7 @@ public class Player : MonoBehaviour {
             }
             animacaoJogador.Mover(movimentacao * 0.3f);
         }
+        */
         else if (podeMovimentar)  
         {
             playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);

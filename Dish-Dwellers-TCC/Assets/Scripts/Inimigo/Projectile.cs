@@ -44,6 +44,9 @@ public class Projectile : MonoBehaviour
             
             transform.rotation = Quaternion.LookRotation(reflectDirection);
         }
+        else if(other.CompareTag("Queimavel")){
+            other.GetComponent<ParedeDeVinhas>().ReduzirIntegridade();
+        }
         //Se colidir com o inimigo após ser refletido
         else if (isReflected && other.gameObject == owner)
         {

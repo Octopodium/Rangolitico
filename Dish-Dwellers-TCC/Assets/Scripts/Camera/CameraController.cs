@@ -26,7 +26,7 @@ public class CameraController : MonoBehaviour{
 
         switch(modoDeJogoConfigurado) {
             case ModoDeJogo.SINGLEPLAYER:
-                GameManager.instance.OnTrocarControleSingleplayer += TrocarCamera;
+                GameManager.instance.OnTrocarControle += TrocarCamera;
                 break;
 
             case ModoDeJogo.MULTIPLAYER_LOCAL:
@@ -35,8 +35,8 @@ public class CameraController : MonoBehaviour{
                 break;
 
             case ModoDeJogo.MULTIPLAYER_ONLINE:
-                cameras[0].Priority = 1;
-                cameras[1].Priority = 0;
+                GameManager.instance.OnTrocarControle += TrocarCamera;
+                TrocarCamera(GameManager.instance.playerOnlineAtual);
                 break;
         }
 
@@ -45,12 +45,16 @@ public class CameraController : MonoBehaviour{
     void OnDisable(){
         switch(modoDeJogoConfigurado) {
             case ModoDeJogo.SINGLEPLAYER:
-                GameManager.instance.OnTrocarControleSingleplayer -= TrocarCamera;
+                GameManager.instance.OnTrocarControle -= TrocarCamera;
                 break;
 
             case ModoDeJogo.MULTIPLAYER_LOCAL:
                 GameManager.instance.GetPlayerInput(QualPlayer.Player1)["Move"].performed -= TrocarCamera1;
                 GameManager.instance.GetPlayerInput(QualPlayer.Player2)["Move"].performed -= TrocarCamera2;
+                break;
+            
+            case ModoDeJogo.MULTIPLAYER_ONLINE:
+                GameManager.instance.OnTrocarControle -= TrocarCamera;
                 break;
         }
     }
@@ -68,6 +72,7 @@ public class CameraController : MonoBehaviour{
 
     // Alterna entre cameras.
     public void TrocarCamera(QualPlayer player){
+        Debug.Log("Pedido de trocar camera para " + player.ToString());
         if (player == QualPlayer.Player1) TrocarCamera1();
         else TrocarCamera2();
     }

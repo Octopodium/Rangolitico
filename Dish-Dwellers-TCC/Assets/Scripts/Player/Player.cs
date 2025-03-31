@@ -83,6 +83,10 @@ public class Player : NetworkBehaviour {
     // Start: trata de referências/configurações externas
     void Start() {
         if (GameManager.instance.isOnline) {
+            if (isLocalPlayer){
+                GameManager.instance.SetarPlayerAtualOnline(qualPlayer);
+            }
+
             qualPlayer = isLocalPlayer ? QualPlayer.Player1 : QualPlayer.Desativado;
         }
         
@@ -96,7 +100,7 @@ public class Player : NetworkBehaviour {
     }
 
     void OnEnable() {
-        if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap.enabled) {
+        if (GameManager.instance != null && GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap != null && inputActionMap.enabled) {
             GameManager.instance.TrocarControleSingleplayer(qualPlayer);
         }
 
@@ -279,7 +283,6 @@ public class Player : NetworkBehaviour {
     }
 
     Dictionary<Collider, CacheColliderInteragivel> cache_interagiveisProximos = new Dictionary<Collider, CacheColliderInteragivel>();
-    public List<CacheColliderInteragivel> debug_Cache = new List<CacheColliderInteragivel>(); // Para debug, não deve ser usado em produção
     List<Collider> removerDoCacheDeInteragiveis = new List<Collider>(); // Lista de colisores que não estão mais na área de interação (para remover do cache)
 
     /// <summary>
@@ -303,8 +306,6 @@ public class Player : NetworkBehaviour {
             cache.Value.checado = false;
         }
 
-        debug_Cache.Clear(); // Limpa a lista de debug (para verificação de performance)
-
         // Procura o interagível mais próximo (não podemos confiar na ordem padrão dos colliders)
         float menorDistancia = Mathf.Infinity;
         Interagivel interagivelMaisProximo = null;
@@ -326,7 +327,6 @@ public class Player : NetworkBehaviour {
             }
 
             cache.checado = true; // Marca o colisor como checado, ou seja, ela ainda se encontra na area
-            debug_Cache.Add(cache); // Adiciona o cache na lista de debug (para verificação de performance)
             Interagivel interagivelAtual = cache.interagivel; // Pega o interagível do cache
 
             if (interagivelAtual == null) continue; // Ignora objetos removidos ou sem o componente Interagivel

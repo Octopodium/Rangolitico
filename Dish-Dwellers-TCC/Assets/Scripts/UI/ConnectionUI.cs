@@ -30,7 +30,7 @@ public class ConnectionUI : MonoBehaviour {
         networkManager = (DishNetworkManager)NetworkManager.singleton;
         UpdateNominhos();
 
-        if (LobbyInfo.instance != null && LobbyInfo.instance.modo == LobbyInfo.Modo.Entrar) {
+        if (PartidaInfo.instance != null && PartidaInfo.instance.modo == PartidaInfo.Modo.Entrar) {
             PrepararPraEntrarLobby();
         } else {
             ComecarHostear();

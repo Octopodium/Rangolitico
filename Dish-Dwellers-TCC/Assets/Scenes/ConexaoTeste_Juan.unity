@@ -960,7 +960,7 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs:
   - {fileID: 7728834421771641443, guid: 6f570145d6f6fd44db7158e33f70a8ce, type: 3}
-  - {fileID: 3842892903763273549, guid: 1794b625793d21c42a9fc2fedb96a597, type: 3}
+  - {fileID: 597836957717888915, guid: 643007ccf803bc243aed1896f9e8c6b2, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -976,7 +976,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
-  heaterPrefab: {fileID: 3842892903763273549, guid: 1794b625793d21c42a9fc2fedb96a597, type: 3}
+  heaterPrefab: {fileID: 597836957717888915, guid: 643007ccf803bc243aed1896f9e8c6b2, type: 3}
   anglerPrefab: {fileID: 7728834421771641443, guid: 6f570145d6f6fd44db7158e33f70a8ce, type: 3}
   lobbyPlayers: []
   players: []
@@ -2404,6 +2404,10 @@ PrefabInstance:
     - target: {fileID: 6266173109802037185, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: isOnline
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6266173109802037185, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: modoDeJogo
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6380670098185983228, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: sceneId

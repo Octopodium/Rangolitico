@@ -2,10 +2,21 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class LobbyInfo {
-    public static LobbyInfo instance;
-    public enum Modo { Host, Entrar };
+public class PartidaInfo {
+    public static PartidaInfo instance;
+    public enum Modo { Singleplayer, Local, Host, Entrar };
     public Modo modo = Modo.Host;
+
+    public ModoDeJogo modoDeJogo { 
+        get {
+            if (modo == Modo.Singleplayer) return ModoDeJogo.SINGLEPLAYER;
+            if (modo == Modo.Local) return ModoDeJogo.MULTIPLAYER_LOCAL;
+            if (modo == Modo.Host) return ModoDeJogo.MULTIPLAYER_ONLINE;
+            if (modo == Modo.Entrar) return ModoDeJogo.MULTIPLAYER_ONLINE;
+            return ModoDeJogo.INDEFINIDO;
+        }
+    }
+
 }
 
 public class EscolherEntrarLobbyUI : MonoBehaviour {
@@ -26,19 +37,32 @@ public class EscolherEntrarLobbyUI : MonoBehaviour {
     public void JogarOffline() {
         if (GameManager.instance != null)
             GameManager.instance.isOnline = false;
+        
+        PartidaInfo.instance = new PartidaInfo();
+        PartidaInfo.instance.modo = PartidaInfo.Modo.Singleplayer;
+
+        SceneManager.LoadScene(cenaPrimeiraFase, LoadSceneMode.Single);
+    }
+
+    public void JogarLocal() {
+        if (GameManager.instance != null)
+            GameManager.instance.isOnline = false;
+        
+        PartidaInfo.instance = new PartidaInfo();
+        PartidaInfo.instance.modo = PartidaInfo.Modo.Local;
 
         SceneManager.LoadScene(cenaPrimeiraFase, LoadSceneMode.Single);
     }
 
     public void Hostear() {
-        LobbyInfo.instance = new LobbyInfo();
-        LobbyInfo.instance.modo = LobbyInfo.Modo.Host;
+        PartidaInfo.instance = new PartidaInfo();
+        PartidaInfo.instance.modo = PartidaInfo.Modo.Host;
         SceneManager.LoadScene(cenaLobby, LoadSceneMode.Single);
     }
 
     public void Entrar() {
-        LobbyInfo.instance = new LobbyInfo();
-        LobbyInfo.instance.modo = LobbyInfo.Modo.Entrar;
+        PartidaInfo.instance = new PartidaInfo();
+        PartidaInfo.instance.modo = PartidaInfo.Modo.Entrar;
         SceneManager.LoadScene(cenaLobby, LoadSceneMode.Single);
     }
 

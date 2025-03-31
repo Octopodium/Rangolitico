@@ -14,11 +14,20 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public Actions input;
     
-    public System.Action<QualPlayer> OnTrocarControleSingleplayer; // Chamado só no singleplayer, quando o jogador troca de controle.
+    public System.Action<QualPlayer> OnTrocarControle; // Chamado no singleplayer, quando o jogador troca de controle, e no online para definir o jogador que está jogando
 
     public static event UnityAction<bool> OnPause;
 
-    public bool isOnline = false; // Se o jogo está rodando online ou offline
+    public bool isOnline {
+        get { return modoDeJogo == ModoDeJogo.MULTIPLAYER_ONLINE; }
+        set {
+            if (value) {
+                modoDeJogo = ModoDeJogo.MULTIPLAYER_ONLINE;
+            } else {
+                modoDeJogo = ModoDeJogo.SINGLEPLAYER;
+            }
+        }
+    }
     
     public string primeiraFaseSceneName = "1-1";
     public string menuPrincipalSceneName = "MainMenu"; // Cena do menu do jogo
@@ -34,6 +43,11 @@ public class GameManager : MonoBehaviour {
         } else {
             Destroy(gameObject);
             return;
+        }
+
+
+        if (PartidaInfo.instance != null) {
+            modoDeJogo = PartidaInfo.instance.modoDeJogo;
         }
         
         DontDestroyOnLoad(gameObject);
@@ -125,7 +139,7 @@ public class GameManager : MonoBehaviour {
             input.Player.Enable();
         }
 
-        OnTrocarControleSingleplayer?.Invoke(playerAtual);
+        OnTrocarControle?.Invoke(playerAtual);
     }
 
     public void TrocarControleSingleplayer(QualPlayer player){
@@ -141,7 +155,7 @@ public class GameManager : MonoBehaviour {
             input.Player.Enable();
         }
 
-        OnTrocarControleSingleplayer?.Invoke(playerAtual);
+        OnTrocarControle?.Invoke(playerAtual);
     }
 
     #endregion
@@ -186,6 +200,9 @@ public class GameManager : MonoBehaviour {
 
         GameObject angler = Instantiate(offlineAnglerPrefab, Vector3.zero, Quaternion.identity);
         GameObject heater = Instantiate(offlineHeaterPrefab, Vector3.zero, Quaternion.identity);
+
+        angler.transform.SetParent(transform, false);
+        heater.transform.SetParent(transform, false);
 
         jogadores.Add(angler.GetComponent<Player>());
         jogadores.Add(heater.GetComponent<Player>());
@@ -245,6 +262,15 @@ public class GameManager : MonoBehaviour {
 
     #region Online
     // Referente ao Online
+
+    [HideInInspector] public QualPlayer playerOnlineAtual = QualPlayer.Player1; // O jogador que está jogando atualmente, no online
+    public void SetarPlayerAtualOnline(QualPlayer player) {
+        if (isOnline) {
+            playerOnlineAtual = player;
+            OnTrocarControle?.Invoke(player);
+        }
+    }
+
     public void ComecarOnline() {
         if (!isOnline) return;
 

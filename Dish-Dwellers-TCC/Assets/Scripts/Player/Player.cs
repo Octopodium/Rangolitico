@@ -3,19 +3,20 @@ using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement; // Titi: Adição temporaria pra reset de sala
 using System.Collections.Generic;
+using Mirror;
 
-
-public enum QualPlayer { Player1, Player2 }
+public enum QualPlayer { Player1, Player2, Desativado }
+public enum QualPersonagem { Heater, Angler }
 
 [RequireComponent(typeof(Carregador)), RequireComponent(typeof(Carregavel))]
-public class Player : MonoBehaviour {
-
+public class Player : NetworkBehaviour {
+    public QualPersonagem personagem = QualPersonagem.Heater;
     public QualPlayer qualPlayer = QualPlayer.Player1;
     public InputActionMap inputActionMap {get; protected set;}
 
     [Header("Atributos do Player")]
     public float velocidade = 6f;
-    public Vector3 direcao, mira, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
+    [HideInInspector] public Vector3 direcao, mira, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
     private int _playerVidas = 3;
     public int playerVidas {
         get { return _playerVidas; }
@@ -81,15 +82,25 @@ public class Player : MonoBehaviour {
 
     // Start: trata de referências/configurações externas
     void Start() {
+        if (GameManager.instance.isOnline) {
+            if (isLocalPlayer){
+                GameManager.instance.SetarPlayerAtualOnline(qualPlayer);
+            }
+
+            qualPlayer = isLocalPlayer ? QualPlayer.Player1 : QualPlayer.Desativado;
+        }
+        
         inputActionMap = GameManager.instance.GetPlayerInput(qualPlayer);
 
-        inputActionMap["Interact"].performed += Interagir;
-        inputActionMap["Attack"].performed += AcionarFerramenta;
-        inputActionMap["Attack"].canceled += SoltarFerramenta;
+        if (!GameManager.instance.isOnline || isLocalPlayer) {
+            inputActionMap["Interact"].performed += Interagir;
+            inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
+            inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
+        }
     }
 
     void OnEnable() {
-        if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap.enabled) {
+        if (GameManager.instance != null && GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap != null && inputActionMap.enabled) {
             GameManager.instance.TrocarControleSingleplayer(qualPlayer);
         }
 
@@ -115,7 +126,24 @@ public class Player : MonoBehaviour {
         }
     }
 
+    #region Online
+    [HideInInspector, SyncVar(hook=nameof(AtualizarStatusConectado))] public bool conectado = false;
+
+    void AtualizarStatusConectado(bool oldValue, bool newValue) {
+        if (isLocalPlayer) {
+            if (!oldValue && newValue) {
+                GameManager.instance.ComecarOnline();
+            } else {
+                GameManager.instance.VoltarParaMenu();
+            }
+        }
+    }
+
+    #endregion
+
     void FixedUpdate() {
+        if (GameManager.instance.isOnline && !isLocalPlayer) return;
+
         // No modo singleplayer, caso este jogador não seja o atual, não faz nada
         if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && !inputActionMap.enabled) {
             if (ultimoInteragivel != null) {
@@ -255,7 +283,6 @@ public class Player : MonoBehaviour {
     }
 
     Dictionary<Collider, CacheColliderInteragivel> cache_interagiveisProximos = new Dictionary<Collider, CacheColliderInteragivel>();
-    public List<CacheColliderInteragivel> debug_Cache = new List<CacheColliderInteragivel>(); // Para debug, não deve ser usado em produção
     List<Collider> removerDoCacheDeInteragiveis = new List<Collider>(); // Lista de colisores que não estão mais na área de interação (para remover do cache)
 
     /// <summary>
@@ -279,8 +306,6 @@ public class Player : MonoBehaviour {
             cache.Value.checado = false;
         }
 
-        debug_Cache.Clear(); // Limpa a lista de debug (para verificação de performance)
-
         // Procura o interagível mais próximo (não podemos confiar na ordem padrão dos colliders)
         float menorDistancia = Mathf.Infinity;
         Interagivel interagivelMaisProximo = null;
@@ -302,7 +327,6 @@ public class Player : MonoBehaviour {
             }
 
             cache.checado = true; // Marca o colisor como checado, ou seja, ela ainda se encontra na area
-            debug_Cache.Add(cache); // Adiciona o cache na lista de debug (para verificação de performance)
             Interagivel interagivelAtual = cache.interagivel; // Pega o interagível do cache
 
             if (interagivelAtual == null) continue; // Ignora objetos removidos ou sem o componente Interagivel

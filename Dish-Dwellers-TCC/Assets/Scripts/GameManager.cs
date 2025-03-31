@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 
 public enum ModoDeJogo {SINGLEPLAYER, MULTIPLAYER_LOCAL, MULTIPLAYER_ONLINE, INDEFINIDO}; // Indefinido: substituto para NULL (de quando não foi definido ainda)
 
@@ -13,9 +14,28 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public Actions input;
     
-    public System.Action<QualPlayer> OnTrocarControleSingleplayer; // Chamado só no singleplayer, quando o jogador troca de controle.
+    public System.Action<QualPlayer> OnTrocarControle; // Chamado no singleplayer, quando o jogador troca de controle, e no online para definir o jogador que está jogando
 
     public static event UnityAction<bool> OnPause;
+
+    public bool isOnline {
+        get { return modoDeJogo == ModoDeJogo.MULTIPLAYER_ONLINE; }
+        set {
+            if (value) {
+                modoDeJogo = ModoDeJogo.MULTIPLAYER_ONLINE;
+            } else {
+                modoDeJogo = ModoDeJogo.SINGLEPLAYER;
+            }
+        }
+    }
+    
+    public string primeiraFaseSceneName = "1-1";
+    public string menuPrincipalSceneName = "MainMenu"; // Cena do menu do jogo
+
+    [Header("Opção Offline")]
+    public GameObject offlineAnglerPrefab;
+    public GameObject offlineHeaterPrefab;
+
 
     void Awake() {
         if (instance == null) {
@@ -23,6 +43,11 @@ public class GameManager : MonoBehaviour {
         } else {
             Destroy(gameObject);
             return;
+        }
+
+
+        if (PartidaInfo.instance != null) {
+            modoDeJogo = PartidaInfo.instance.modoDeJogo;
         }
         
         DontDestroyOnLoad(gameObject);
@@ -34,7 +59,9 @@ public class GameManager : MonoBehaviour {
         input.Geral.TrocarPersonagens.performed += ctx => TrocarControleSingleplayer();
         
         SetarInputs();
-        GetPlayers();
+        if (!isOnline) {
+            GerarPlayersOfline();
+        }
     }
 
     public void Pause(){
@@ -112,7 +139,7 @@ public class GameManager : MonoBehaviour {
             input.Player.Enable();
         }
 
-        OnTrocarControleSingleplayer?.Invoke(playerAtual);
+        OnTrocarControle?.Invoke(playerAtual);
     }
 
     public void TrocarControleSingleplayer(QualPlayer player){
@@ -128,7 +155,7 @@ public class GameManager : MonoBehaviour {
             input.Player.Enable();
         }
 
-        OnTrocarControleSingleplayer?.Invoke(playerAtual);
+        OnTrocarControle?.Invoke(playerAtual);
     }
 
     #endregion
@@ -159,6 +186,29 @@ public class GameManager : MonoBehaviour {
         foreach( var data in GameObject.FindGameObjectsWithTag("Player")){
             jogadores.Add(data.GetComponent<Player>());
         }
+    }
+
+    // Gera players caso o jogo seja rodado direto da cena, ao invés de um servidor
+    private void GerarPlayersOfline() {
+        if (isOnline) return;
+
+        foreach (GameObject data in GameObject.FindGameObjectsWithTag("Player")) {
+            Destroy(data);
+        }
+
+        jogadores.Clear();
+
+        GameObject angler = Instantiate(offlineAnglerPrefab, Vector3.zero, Quaternion.identity);
+        GameObject heater = Instantiate(offlineHeaterPrefab, Vector3.zero, Quaternion.identity);
+
+        angler.transform.SetParent(transform, false);
+        heater.transform.SetParent(transform, false);
+
+        jogadores.Add(angler.GetComponent<Player>());
+        jogadores.Add(heater.GetComponent<Player>());
+
+        angler.name = "Angler";
+        heater.name = "Heater";
     }
 
     /// <summary>
@@ -207,6 +257,70 @@ public class GameManager : MonoBehaviour {
     }
 
     #endregion
+
+    #endregion
+
+    #region Online
+    // Referente ao Online
+
+    [HideInInspector] public QualPlayer playerOnlineAtual = QualPlayer.Player1; // O jogador que está jogando atualmente, no online
+    public void SetarPlayerAtualOnline(QualPlayer player) {
+        if (isOnline) {
+            playerOnlineAtual = player;
+            OnTrocarControle?.Invoke(player);
+        }
+    }
+
+    public void ComecarOnline() {
+        if (!isOnline) return;
+
+        // Se o jogo estiver online, inicia a cena online
+        StartCoroutine(ComecarOnlineAsync());
+    }
+
+    public IEnumerator ComecarOnlineAsync() {
+        if (!isOnline) yield break;
+
+        foreach (Transform child in transform) {
+            if (child.GetComponent<Player>() == null) continue;
+            Destroy(child.gameObject);
+        }
+        jogadores.Clear();
+
+        GetPlayers();
+
+        foreach (Player player in jogadores) {
+            if (player == null) continue;
+            if (player.transform.parent != transform)
+                player.transform.SetParent(transform, false);
+        }
+
+        AsyncOperation op = SceneManager.LoadSceneAsync(primeiraFaseSceneName, LoadSceneMode.Single);
+        op.allowSceneActivation = true;
+
+        yield return new WaitUntil(() => op.isDone);
+
+        sala sala = GameObject.FindFirstObjectByType<sala>();
+        sala.PosicionarJogador();
+    }
+
+    public void VoltarParaMenu() {
+        if (isOnline) {
+            NetworkManager networkManager = NetworkManager.singleton;
+            if (networkManager != null) {
+                networkManager.StopHost();
+                networkManager.StopClient();
+                networkManager.StopServer();
+
+                Destroy(networkManager.gameObject);
+            }
+        }
+        
+        Destroy(gameObject);
+        instance = null;
+
+        SceneManager.LoadScene(menuPrincipalSceneName, LoadSceneMode.Single);
+    }
 
     #endregion
 }

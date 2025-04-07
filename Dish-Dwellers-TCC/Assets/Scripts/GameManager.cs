@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour {
     public string primeiraFaseSceneName = "1-1";
     public string menuPrincipalSceneName = "MainMenu"; // Cena do menu do jogo
 
+
     [Header("Opção Offline")]
     public GameObject offlineAnglerPrefab;
     public GameObject offlineHeaterPrefab;
@@ -302,6 +303,11 @@ public class GameManager : MonoBehaviour {
 
         sala sala = GameObject.FindFirstObjectByType<sala>();
         sala.PosicionarJogador();
+
+        UIManager uiManager = GetComponentInChildren<UIManager>(true);
+        if (uiManager != null) {
+            uiManager.gameObject.SetActive(true);
+        }
     }
 
     public void VoltarParaMenu() {

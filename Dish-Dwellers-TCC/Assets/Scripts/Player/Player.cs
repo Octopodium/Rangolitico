@@ -14,6 +14,8 @@ public class Player : NetworkBehaviour {
     public QualPlayer qualPlayer = QualPlayer.Player1;
     public InputActionMap inputActionMap {get; protected set;}
 
+
+
     [Header("Atributos do Player")]
     public float velocidade = 6f;
     [HideInInspector] public Vector3 direcao, mira, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
@@ -23,10 +25,17 @@ public class Player : NetworkBehaviour {
         set {
             _playerVidas = Mathf.Clamp(value, 0, 3);
             OnVidaMudada?.Invoke(this, _playerVidas);
+
+            if (_playerVidas == 0){
+                //SceneManager.LoadScene.GameManager.instance.sala.scene.name;
+                GameManager.instance.ResetSala();
+                Debug.Log("morreu");
+            }
         }
     }
-
     public static event UnityAction<Player, int> OnVidaMudada; //Evento global para dano ou ganhar vida
+
+
 
     [Header("Configuração de Interação")]
     public int maxInteragiveisEmRaio = 8;
@@ -37,14 +46,19 @@ public class Player : NetworkBehaviour {
     public List<Collider> collidersIgnoraveis = new List<Collider>(); // Lista de colisores que o jogador não pode interagir
 
 
+
     [Header("Referências")]
     public GameObject visualizarDirecao;
     bool podeMovimentar = true; // Solução TEMPORARIA enquanto não há estados implementados
     
+
+
     // Titizim:
     [Header("Config do Escudo")]
     public bool escudoAtivo {get; set;}
     public float velocidadeComEscudo = 4f;
+
+
 
     // Referências internas
     public Ferramenta ferramenta;
@@ -52,9 +66,9 @@ public class Player : NetworkBehaviour {
     public Carregavel carregando => carregador.carregado; // O que o jogador está carregando
     Carregavel carregavel; // O que permite o jogador a ser carregado
     public bool sendoCarregado => carregavel.sendoCarregado; // Se o jogador está sendo carregado
-
     Rigidbody playerRigidbody;
     AnimadorPlayer animacaoJogador;
+
 
 
     // Awake: trata de referências/configurações internas
@@ -92,10 +106,14 @@ public class Player : NetworkBehaviour {
         
         inputActionMap = GameManager.instance.GetPlayerInput(qualPlayer);
 
-        if (!GameManager.instance.isOnline || isLocalPlayer) {
+        if (!GameManager.instance.isOnline) {
             inputActionMap["Interact"].performed += Interagir;
             inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
             inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
+        } else if (isLocalPlayer) {
+            inputActionMap["Interact"].performed += ctx => InteragirOnlineCmd();
+            inputActionMap["Attack"].performed += ctx => AcionarFerramentaOnlineCmd();
+            inputActionMap["Attack"].canceled += ctx => SoltarFerramentaOnlineCmd();
         }
     }
 
@@ -126,21 +144,6 @@ public class Player : NetworkBehaviour {
         }
     }
 
-    #region Online
-    [HideInInspector, SyncVar(hook=nameof(AtualizarStatusConectado))] public bool conectado = false;
-
-    void AtualizarStatusConectado(bool oldValue, bool newValue) {
-        if (isLocalPlayer) {
-            if (!oldValue && newValue) {
-                GameManager.instance.ComecarOnline();
-            } else {
-                GameManager.instance.VoltarParaMenu();
-            }
-        }
-    }
-
-    #endregion
-
     void FixedUpdate() {
         if (GameManager.instance.isOnline && !isLocalPlayer) return;
 
@@ -158,26 +161,81 @@ public class Player : NetworkBehaviour {
         Movimentacao();
     }
 
-    public void PausaJogo(){
-        if(Time.timeScale == 1){
-            Debug.Log("pausa");
-            Time.timeScale = 0;
-        }
+
+    /// <summary>
+    /// Aumenta ou diminui a vida do jogador
+    /// </summary>
+    /// <param name="valor">Valor a ser adicionado ou subtraído da vida do jogador</param>
+    public void MudarVida(int valor){
+        playerVidas += valor;
     }
 
-    //Mesmo que "Tomar dano" e "Ganhar vida"
-    public void MudarVida(int valor){
-        //Se o valor for -1, ele tira vida
-        //se for 1 ele ganha vida
-        if(playerVidas + valor <= 3 && playerVidas >= 0){ //>= para poder resetar a sala e as vidas
-            playerVidas += valor;
-            if(playerVidas <= 0){
-                //SceneManager.LoadScene.GameManager.instance.sala.scene.name;
-                GameManager.instance.ResetSala();
-                Debug.Log("morreu");
+
+
+    #region Online
+
+    [HideInInspector, SyncVar(hook=nameof(AtualizarStatusConectado))] public bool conectado = false;
+    void AtualizarStatusConectado(bool oldValue, bool newValue) {
+        if (isLocalPlayer) {
+            if (!oldValue && newValue) {
+                GameManager.instance.ComecarOnline();
+            } else {
+                GameManager.instance.VoltarParaMenu();
             }
         }
     }
+
+
+    [Command]
+    void AtualizarDirecaoCmd(Vector3 valor) {
+        AtualizarDirecaoClientRpc(valor);
+    }
+
+    [ClientRpc]
+    void AtualizarDirecaoClientRpc(Vector3 valor) {
+        if (isLocalPlayer) return; // Não atualiza a direção do jogador local
+
+        direcao = valor;
+        visualizarDirecao.transform.forward = direcao;
+    }
+
+
+    // Respota para inputs na versão Online (é uma gambiarra que funciona)
+
+    [Command]
+    void InteragirOnlineCmd() {
+        InteragirOnlineClientRpc();
+    }
+
+    [ClientRpc]
+    void InteragirOnlineClientRpc() {
+        ChecarInteragiveis();
+        Interagir();
+    }
+
+    [Command]
+    void AcionarFerramentaOnlineCmd() {
+        AcionarFerramentaOnlineClientRpc();
+    }
+
+    [ClientRpc]
+    void AcionarFerramentaOnlineClientRpc() {
+        AcionarFerramenta();
+    }
+
+    [Command]
+    void SoltarFerramentaOnlineCmd() {
+        SoltarFerramentaOnlineClientRpc();
+    }
+
+    [ClientRpc]
+    void SoltarFerramentaOnlineClientRpc() {
+        SoltarFerramenta();
+    }
+
+    #endregion
+
+
 
     #region Ferramenta
 
@@ -205,6 +263,9 @@ public class Player : NetworkBehaviour {
 
     #endregion
 
+
+
+    #region Movimentacao
     /// <summary>
     /// Trata da movimentação do jogador
     /// </summary>
@@ -242,12 +303,18 @@ public class Player : NetworkBehaviour {
         if (movimentacao.magnitude > 0) {
             direcao = movimentacao;
             visualizarDirecao.transform.forward = direcao;
+
+            if (GameManager.instance.isOnline && isLocalPlayer) AtualizarDirecaoCmd(direcao);
         }
     }
 
     public bool estaNoChao {
         get { return Physics.Raycast(transform.position, Vector3.down, 1.1f); }
     }
+
+    #endregion
+
+
 
     #region Interacao
 
@@ -391,6 +458,13 @@ public class Player : NetworkBehaviour {
 
     #endregion
 
+
+
+    /// <summary>
+    /// Mostra ou esconde o indicador de direção (seta)
+    /// Se mostrar, o jogador não pode se mover.
+    /// </summary>
+    /// <param name="mostrar">Se irá mostrar ou não</param>
     public void MostrarDirecional(bool mostrar) {
         visualizarDirecao.SetActive(mostrar);
         podeMovimentar = !mostrar;

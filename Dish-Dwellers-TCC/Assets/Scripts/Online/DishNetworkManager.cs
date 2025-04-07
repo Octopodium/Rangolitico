@@ -8,7 +8,7 @@ public class DishNetworkManager : NetworkManager {
     public GameObject heaterPrefab;
     public GameObject anglerPrefab;
 
-    public LobbyPlayer[] lobbyPlayers;
+    public LobbyPlayer[] lobbyPlayers; // Players do lobby (para escolher personagem)
     public Player[] players; // Players instanciados na cena (são criados a partir de um LobbyPlayer)
 
     public enum Personagem { Heater, Angler }
@@ -59,6 +59,8 @@ public class DishNetworkManager : NetworkManager {
 
         base.OnServerDisconnect(conn);
     }
+
+    #region No Lobby
 
     [Server]
     public void TrocarPersonagens() {
@@ -118,4 +120,7 @@ public class DishNetworkManager : NetworkManager {
             player.conectado = true;
         }
     }
+
+    #endregion No Lobby
+
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class Carregador: MonoBehaviour {
     public Transform carregarTransform;
@@ -17,6 +18,7 @@ public class Carregador: MonoBehaviour {
     float tempoLimpaUltimoCarregado = 0.25f; // Impede jogador de soltar e pegar um carregavel no mesmo momento
     float timerLimparUltimoCarregado = 0;
 
+    int carregandoParentSourceId = -1;
     public bool estaCarregando => carregado != null;
 
     public System.Action<Carregavel> OnCarregar, OnSoltar; // Chamado quando o carregador carrega ou solta um objeto
@@ -51,7 +53,7 @@ public class Carregador: MonoBehaviour {
             float distancia = Vector3.Distance(carregarTransform.position, collider.transform.position);
             if (distancia < menorDistancia) {
                 Carregavel carregavel = collider.GetComponent<Carregavel>();
-                if (carregavel != null) {
+                if (carregavel != null && !carregavel.sendoCarregado) {
                     menorDistancia = distancia;
                     carregavelProximo = carregavel;
                 }
@@ -63,14 +65,25 @@ public class Carregador: MonoBehaviour {
         Carregar(carregavelProximo);
     }
 
+    /// <summary>
+    /// Chamado automaticamente por um objeto Carregavel (ver método Carregar(Carregador carregador))
+    /// Carrega um objeto. Se o objeto já estiver carregado, não faz nada.
+    /// </summary>
+    /// <param name="carregavel">Objeto a ser carregado</param>
     public void Carregar(Carregavel carregavel) {
         if (carregado != null || carregavel == null || carregavel == ultimoCarregado) return;
         
         carregado = carregavel;
         ultimoCarregado = carregavel;
 
-        carregavel.transform.SetParent(carregarTransform);
-        carregavel.transform.localPosition = Vector3.zero;
+
+        carregandoParentSourceId = carregavel.parentConstraint.AddSource(new ConstraintSource() {
+            sourceTransform = carregarTransform,
+            weight = 1f
+        });
+        carregavel.parentConstraint.SetTranslationOffset(0, Vector3.zero);
+        carregavel.parentConstraint.constraintActive = true; // Ativa o ParentConstraint para seguir o carregador
+
 
         Rigidbody cargaRigidbody = carregavel.GetComponent<Rigidbody>();
         if (cargaRigidbody != null) {
@@ -80,10 +93,19 @@ public class Carregador: MonoBehaviour {
         OnCarregar?.Invoke(carregado);
     }
 
-    public void Soltar(Vector3 direcao, float velocidade, bool movendo = false) {
+    /// <summary>
+    /// Solta o objeto carregado. Se não houver nenhum objeto carregado, não faz nada.
+    /// Se o objeto possuir um Rigidbody, ele será arremessado na direção especificada.
+    /// </summary>
+    /// <param name="direcao">Direção que o objeto vai ser solto</param>
+    /// <param name="velocidade">Velocidade base do carregador</param>
+    /// <param name="movendo">Se o carregador estava se movendo ao soltar o objeto (se True, adiciona 'velocidade' a força final com base no valor influenciaDaInerciaNoArremesso)</param>
+    public void Soltar(Vector3 direcao, float velocidade = 0, bool movendo = false) {
         OnSoltar?.Invoke(carregado);
 
-        carregado.transform.SetParent(null);
+        carregado.parentConstraint.constraintActive = false; // Desativa o ParentConstraint
+        carregado.parentConstraint.RemoveSource(carregandoParentSourceId); // Remove a fonte do ParentConstraint
+
 
         Rigidbody cargaRigidbody = carregado.GetComponent<Rigidbody>();
 
@@ -102,6 +124,14 @@ public class Carregador: MonoBehaviour {
         timerLimparUltimoCarregado = tempoLimpaUltimoCarregado;
     }
 
+    /// <summary>
+    /// Previsão da trajetória de arremesso de um objeto sem considerar colisões.
+    /// </summary>
+    /// <param name="rigidbody">Rigidbody do objeto a ser arremessado</param>
+    /// <param name="direcao">Direção do arremesso</param>
+    /// <param name="forca">Força do arremesso</param>
+    /// <param name="velocidadeInicial">Velocidade inicial do arremesso</param>
+    /// <returns>Retorna um vetor de posições da trajetória, sem considerar posiveis colisões no caminho.</returns>
     public Vector3[] PreverArremesso(Rigidbody rigidbody, Vector3 direcao, float forca, Vector3 velocidadeInicial) {
         int quantidadeMaxPontos = 20;
         float tempo = 10 * Time.fixedDeltaTime; // Intervalos de tempo

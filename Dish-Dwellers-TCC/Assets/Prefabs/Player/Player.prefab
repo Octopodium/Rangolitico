@@ -104,6 +104,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3875a36d754286047a82cc2717ccd290, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  personagem: 0
   qualPlayer: 0
   velocidade: 10
   direcao: {x: 0, y: 0, z: 0}
@@ -114,8 +118,11 @@ MonoBehaviour:
   layerInteragivel:
     serializedVersion: 2
     m_Bits: 192
+  collidersIgnoraveis: []
   visualizarDirecao: {fileID: 5890127384661449939}
+  velocidadeComEscudo: 4
   carregador: {fileID: 0}
+  conectado: 0
 --- !u!54 &4090979343585388715
 Rigidbody:
   m_ObjectHideFlags: 0

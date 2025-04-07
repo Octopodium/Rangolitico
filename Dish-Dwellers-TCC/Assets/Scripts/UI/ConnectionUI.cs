@@ -13,8 +13,6 @@ public class ConnectionUI : MonoBehaviour {
 
 
     [Header("UI")]
-    public Button prontoButton;
-    public Button comecarButton;
     public Text anglerText, heaterText;
     public GameObject anglerReady, heaterReady;
     public GameObject esperandoJogador;
@@ -76,6 +74,8 @@ public class ConnectionUI : MonoBehaviour {
     }
 
     public void SetPronto() {
+        SetComecar();
+
         LobbyPlayer lobbyPlayer = NetworkClient.localPlayer.GetComponent<LobbyPlayer>();
         lobbyPlayer.SetPronto(!lobbyPlayer.pronto);
     }
@@ -87,7 +87,7 @@ public class ConnectionUI : MonoBehaviour {
         else anglerReady.SetActive(val);
 
         if (p1.isLocalPlayer) {
-            prontoButton.GetComponentInChildren<Text>().text = (val) ? "Cancelar" : "Pronto";
+            //prontoButton.GetComponentInChildren<Text>().text = (val) ? "Cancelar" : "Pronto";
         }
     }
 
@@ -98,7 +98,7 @@ public class ConnectionUI : MonoBehaviour {
         else heaterReady.SetActive(val);
 
         if (p2.isLocalPlayer) {
-            prontoButton.GetComponentInChildren<Text>().text = (val) ? "Cancelar" : "Pronto";
+            //prontoButton.GetComponentInChildren<Text>().text = (val) ? "Cancelar" : "Pronto";
         }
     }
 

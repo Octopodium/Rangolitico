@@ -7,13 +7,35 @@ public class DropShadow : MonoBehaviour{
     public Color corJogador1, corJogador2;
     public float tamanho = 1.0f;
     public bool compartilhado;
+    [SerializeField] private LayerMask layerDoChao;
+    [SerializeField] private Transform playerTransform;
     
+    const float offset = 0.025f;
     private int idAlhpa = Shader.PropertyToID("_Alpha");
     private int idCor = Shader.PropertyToID("_Color");
     private MaterialPropertyBlock mpb;
 
+    private void Start(){
+        Setup();
+    }
 
     private void OnValidate(){
+        Setup();
+    }
+
+    private void LateUpdate(){
+        GrudarNoChao();
+    }
+
+    private void GrudarNoChao(){
+        if(Physics.Raycast(playerTransform.position + Vector3.up, Vector3.down, out RaycastHit hitInfo, 10f, layerDoChao)){
+            Vector3 novaPos = playerTransform.position;
+            novaPos.y = hitInfo.point.y + offset;
+            transform.position = novaPos;
+        }
+    }
+
+    private void Setup(){
         AtualizarTamanho();
 
         int jogador = GetQualJogador();
@@ -56,7 +78,6 @@ public class DropShadow : MonoBehaviour{
             mpb.SetColor(idCor, cor);
             renderer.SetPropertyBlock(mpb);
         }
-
     }
 
 }

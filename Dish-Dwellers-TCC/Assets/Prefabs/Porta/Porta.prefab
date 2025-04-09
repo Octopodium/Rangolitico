@@ -84,6 +84,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   portal: {fileID: 4017300163315922825}
+  OnDestrancaPorta:
+    m_PersistentCalls:
+      m_Calls: []
+  portalRenderer: {fileID: 6747373940630183111}
 --- !u!1 &4017300163315922825
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,6 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10a66dfffd3dab5418d06b3200a15a04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  finalDaDemo: 0
+  canvasFinalDaDemo: {fileID: 0}
 --- !u!1 &7405655120112204991
 GameObject:
   m_ObjectHideFlags: 0
@@ -214,7 +220,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1fd02456547c32240b20f55d79282a58, type: 2}
+  - {fileID: 2100000, guid: 7eb5c9c5ca06e4a48ac6d50fd95622ce, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

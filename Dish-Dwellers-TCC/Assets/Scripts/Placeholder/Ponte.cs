@@ -1,27 +1,44 @@
 using UnityEngine;
 
-public class MoveObject : MonoBehaviour
+public class Ponte : MonoBehaviour
 {
-    public Transform target;
+    public Transform target; 
     public float speed = 2.0f; 
+
+    private Vector3 initialPosition;
+    private Vector3 destination;
     private bool isMoving = false;
+
+    void Start()
+    {
+        initialPosition = transform.position;
+    }
 
     void Update()
     {
-        if (isMoving && target != null)
+        if (isMoving)
         {
-            transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
 
-            if (Vector3.Distance(transform.position, target.position) < 0.01f)
+            if (Vector3.Distance(transform.position, destination) < 0.01f)
             {
                 isMoving = false;
             }
         }
     }
 
-    public void StartMoving()
+    public void MoveToTarget()
     {
+        if (target != null)
+        {
+            destination = target.position;
+            isMoving = true;
+        }
+    }
+
+    public void ReturnToStart()
+    {
+        destination = initialPosition;
         isMoving = true;
-        Debug.Log("descendo");
     }
 }

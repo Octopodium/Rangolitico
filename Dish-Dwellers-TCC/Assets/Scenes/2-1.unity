@@ -949,7 +949,7 @@ Transform:
   m_GameObject: {fileID: 193654121}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.076916, y: 5.3832393, z: 20.550713}
+  m_LocalPosition: {x: 9.076916, y: 5.46, z: 20.550713}
   m_LocalScale: {x: 9.370416, y: 8.692221, z: 6.910481}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1037,6 +1037,7 @@ GameObject:
   - component: {fileID: 226067390}
   - component: {fileID: 226067389}
   - component: {fileID: 226067388}
+  - component: {fileID: 226067393}
   m_Layer: 7
   m_Name: Alavanca
   m_TagString: Untagged
@@ -1081,9 +1082,9 @@ MonoBehaviour:
   onPuxado:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2028272210}
-        m_TargetAssemblyTypeName: MoveObject, Assembly-CSharp
-        m_MethodName: StartMoving
+      - m_Target: {fileID: 226067393}
+        m_TargetAssemblyTypeName: Ponte2, Assembly-CSharp
+        m_MethodName: PlayAnimation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1155,6 +1156,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   indicadorPrefab: {fileID: 2452886219556310934, guid: c0bbace7bfeeef84883f72b9b3761e13, type: 3}
   offsetIndicador: {x: 0, y: 2, z: 0}
+--- !u!114 &226067393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 226067386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b3f54c0fd16c3b4ea37c77340b7bde6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 896712514}
 --- !u!1 &236933270
 GameObject:
   m_ObjectHideFlags: 0
@@ -3809,6 +3823,11 @@ Transform:
   - {fileID: 2117590251}
   m_Father: {fileID: 1851350415}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &896712514 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 1742353176684564699, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
+  m_PrefabInstance: {fileID: 6537732546770195761}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &914828530
 PrefabInstance:
   m_ObjectHideFlags: 0

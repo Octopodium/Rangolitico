@@ -2274,6 +2274,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 389403489}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &454835210
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 454835211}
+  m_Layer: 0
+  m_Name: WaypointRampa
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &454835211
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454835210}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 19.24, y: 0.53, z: -13.312}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &468812946
 GameObject:
   m_ObjectHideFlags: 0
@@ -5063,13 +5094,14 @@ GameObject:
   - component: {fileID: 1125802306}
   - component: {fileID: 1125802305}
   - component: {fileID: 1125802304}
+  - component: {fileID: 1125802308}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &1125802304
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5153,12 +5185,26 @@ Transform:
   m_GameObject: {fileID: 1125802303}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.385045, w: 0.9228978}
-  m_LocalPosition: {x: 19.24, y: 0.52, z: -13.13}
+  m_LocalPosition: {x: 21.8, y: 0.52, z: -13.13}
   m_LocalScale: {x: 1, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -45.293}
+--- !u!114 &1125802308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1125802303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a411c08322251474f82160636bd03f8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 454835211}
+  speed: 2
 --- !u!1001 &1131077503
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7964,10 +8010,10 @@ MonoBehaviour:
   OnAtivado:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1125802303}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1125802308}
+        m_TargetAssemblyTypeName: Ponte, Assembly-CSharp
+        m_MethodName: MoveToTarget
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -7979,10 +8025,10 @@ MonoBehaviour:
   OnDesativado:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1125802303}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 1125802308}
+        m_TargetAssemblyTypeName: Ponte, Assembly-CSharp
+        m_MethodName: ReturnToStart
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -11032,7 +11078,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1001 &7191167293859302180
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11043,15 +11089,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4834682890554159125, guid: 473745424039d9d4a8d70f8c8d22666b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.65
+      value: 25.87
       objectReference: {fileID: 0}
     - target: {fileID: 4834682890554159125, guid: 473745424039d9d4a8d70f8c8d22666b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 3.45
       objectReference: {fileID: 0}
     - target: {fileID: 4834682890554159125, guid: 473745424039d9d4a8d70f8c8d22666b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.09
+      value: -21.42
       objectReference: {fileID: 0}
     - target: {fileID: 4834682890554159125, guid: 473745424039d9d4a8d70f8c8d22666b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -11147,3 +11193,4 @@ SceneRoots:
   - {fileID: 853965599}
   - {fileID: 1630914785}
   - {fileID: 1125802307}
+  - {fileID: 454835211}

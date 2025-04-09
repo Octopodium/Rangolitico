@@ -13,6 +13,14 @@ public class DishNetworkManager : NetworkManager {
 
     public enum Personagem { Heater, Angler }
 
+
+    public override void Awake() {
+        base.Awake();
+
+        NetworkServer.RegisterHandler<RequestPassaDeSalaMessage>(OnRequestedPassaDeSala);
+    }
+
+
     public override void OnServerAddPlayer(NetworkConnectionToClient conn) {
         if (lobbyPlayers.Length == 0) {
             lobbyPlayers = new LobbyPlayer[2];
@@ -123,4 +131,30 @@ public class DishNetworkManager : NetworkManager {
 
     #endregion No Lobby
 
+    #region In Game
+
+    public struct RequestPassaDeSalaMessage : NetworkMessage {
+        public bool passarDeSala;
+
+        public RequestPassaDeSalaMessage(bool passarDeSala = true) {
+            this.passarDeSala = passarDeSala;
+        }
+    }
+
+    public struct AcaoPassaDeSalaMessage : NetworkMessage {
+        public bool passarDeSala;
+
+        public AcaoPassaDeSalaMessage(bool passarDeSala = true) {
+            this.passarDeSala = passarDeSala;
+        }
+    }
+
+    private void OnRequestedPassaDeSala(NetworkConnectionToClient conn, RequestPassaDeSalaMessage msg) {
+        if (players == null || players.Length == 0) return;
+        if (players[0] == null || players[1] == null) return;
+
+        NetworkServer.SendToAll(new AcaoPassaDeSalaMessage(msg.passarDeSala));
+    }
+
+    #endregion In Game
 }

@@ -261,6 +261,17 @@ public class Player : NetworkBehaviour {
         SoltarFerramenta();
     }
 
+    /// <summary>
+    /// Mostra ou esconde o indicador de direção (seta)
+    /// Se mostrar, o jogador não pode se mover.
+    /// </summary>
+    /// <param name="mostrar">Se irá mostrar ou não</param>
+    public void MostrarDirecional(bool mostrar) {
+        visualizarDirecao.SetActive(mostrar);
+        podeMovimentar = !mostrar;
+    }
+
+
     #endregion
 
 
@@ -459,17 +470,7 @@ public class Player : NetworkBehaviour {
     #endregion
 
 
-
-    /// <summary>
-    /// Mostra ou esconde o indicador de direção (seta)
-    /// Se mostrar, o jogador não pode se mover.
-    /// </summary>
-    /// <param name="mostrar">Se irá mostrar ou não</param>
-    public void MostrarDirecional(bool mostrar) {
-        visualizarDirecao.SetActive(mostrar);
-        podeMovimentar = !mostrar;
-    }
-
+    
     void OnDrawGizmos() {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, raioInteracao);

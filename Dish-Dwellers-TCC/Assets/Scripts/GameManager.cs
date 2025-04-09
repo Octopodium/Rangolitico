@@ -62,6 +62,8 @@ public class GameManager : MonoBehaviour {
         SetarInputs();
         if (!isOnline) {
             GerarPlayersOfline();
+        } else {
+            NetworkClient.RegisterHandler<DishNetworkManager.AcaoPassaDeSalaMessage>(OnRequestedPassaDeSalaOnline);
         }
     }
 
@@ -172,6 +174,11 @@ public class GameManager : MonoBehaviour {
     /// Descarrega a sala atual, finaliza o carregamento da proxima e posiciona o jogador no porximo ponto de spawn.
     /// </summary>
     public void PassaDeSala(){
+        if (isOnline) RequestPassaDeSalaOnline();
+        else PassaDeSalaOffline();
+    }
+
+    private void PassaDeSalaOffline() {
         cenaProx.allowSceneActivation = true;
     }
 
@@ -261,10 +268,15 @@ public class GameManager : MonoBehaviour {
 
     #endregion
 
+
     #region Online
     // Referente ao Online
 
     [HideInInspector] public QualPlayer playerOnlineAtual = QualPlayer.Player1; // O jogador que está jogando atualmente, no online
+
+    /// <summary>
+    /// Chamado quando o player local é instanciado.
+    /// </summary>
     public void SetarPlayerAtualOnline(QualPlayer player) {
         if (isOnline) {
             playerOnlineAtual = player;
@@ -310,6 +322,29 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+
+    
+
+    /// <summary>
+    /// Envia uma mensagem para servidor pedindo para passar de sala.
+    /// </summary>
+    private void RequestPassaDeSalaOnline() {
+        NetworkClient.Send(new DishNetworkManager.RequestPassaDeSalaMessage(true));
+    }
+
+    /// <summary>
+    /// Recebe a mensagem de passar de sala do servidor e chama o método para passar de sala offline.
+    /// (Roda em todos os clientes)
+    /// </summary>
+    private void OnRequestedPassaDeSalaOnline(DishNetworkManager.AcaoPassaDeSalaMessage msg) {
+        if (isOnline && msg.passarDeSala) {
+            PassaDeSalaOffline();
+        }
+    }
+
+    #endregion
+
+
     public void VoltarParaMenu() {
         if (isOnline) {
             NetworkManager networkManager = NetworkManager.singleton;
@@ -327,6 +362,4 @@ public class GameManager : MonoBehaviour {
 
         SceneManager.LoadScene(menuPrincipalSceneName, LoadSceneMode.Single);
     }
-
-    #endregion
 }

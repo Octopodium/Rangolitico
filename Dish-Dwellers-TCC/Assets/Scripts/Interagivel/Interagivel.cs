@@ -10,13 +10,14 @@ public class Interagivel : MonoBehaviour {
 
     // Awake: coisas que são da própria classe
     void Awake() {
-        if (indicadorPrefab) {
+        /*if (indicadorPrefab) {
             indicador = Instantiate(indicadorPrefab, transform.position + offsetIndicador, Quaternion.identity);
             indicador.transform.SetParent(transform);
             indicador.SetActive(false);
         } else {
             Debug.LogWarning("Indicador de interação não configurado");
-        }
+        }*/
+        indicadorPrefab = GameObject.Find("IndicadorE");
     }
 
     void OnDrawGizmosSelected() {
@@ -25,7 +26,10 @@ public class Interagivel : MonoBehaviour {
     }
 
     public void MostarIndicador(bool mostrar) {
-        if (indicador) indicador.SetActive(mostrar);
+        if (indicadorPrefab) {
+            indicadorPrefab.transform.position = transform.position + offsetIndicador;
+            indicadorPrefab.SetActive(mostrar);
+        }
     }
 
     public void Interagir(Player jogador) {

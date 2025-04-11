@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3978844108890528751}
   - component: {fileID: 6266173109802037185}
+  - component: {fileID: 1644071224377593344}
   m_Layer: 0
   m_Name: GameManager 1
   m_TagString: Untagged
@@ -47,12 +48,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modoDeJogo: 0
-  isOnline: 0
   primeiraFaseSceneName: 1-1
   menuPrincipalSceneName: MainMenu
   offlineAnglerPrefab: {fileID: 4588282149540006099, guid: 0d1a8ccc94036cf4b90e6e5d1c9edfcc, type: 3}
   offlineHeaterPrefab: {fileID: 8083238583546821931, guid: 21cd7b3c7357e38469e9b1ef7955ce59, type: 3}
   jogadores: []
+  playerOnlineAtual: 0
+--- !u!114 &1644071224377593344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5370679958162542896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90f64200b48d8ff44875261cfb319154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gamepadUI: {fileID: 0}
+  keyboardUI: {fileID: 0}
+  prefabY: {fileID: 0}
+  prefabE: {fileID: 0}
+  interagiveis: []
 --- !u!1001 &8858452050759319077
 PrefabInstance:
   m_ObjectHideFlags: 0

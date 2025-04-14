@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5163625686886659779}
+  - component: {fileID: 4287471414163826744}
   m_Layer: 0
   m_Name: DoubleDoor
   m_TagString: Untagged
@@ -33,6 +34,27 @@ Transform:
   - {fileID: 5245400477381226519}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4287471414163826744
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2429675034827490669}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.34797096, y: 3.4886456, z: 4.174389}
+  m_Center: {x: 0.39359665, y: -0.18671322, z: 0.23912048}
 --- !u!1001 &5711090495900719100
 PrefabInstance:
   m_ObjectHideFlags: 0

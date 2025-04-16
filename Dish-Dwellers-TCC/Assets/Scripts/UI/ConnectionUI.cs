@@ -13,9 +13,11 @@ public class ConnectionUI : MonoBehaviour {
 
 
     [Header("UI")]
-    public Text anglerText, heaterText;
-    public GameObject anglerReady, heaterReady;
     public GameObject esperandoJogador;
+    public GameObject tentandoConectar;
+    public InputField anglerInput, heaterInput;
+    public GameObject anglerReady, heaterReady;
+    public Transform logsHolder;
 
     
 
@@ -35,9 +37,11 @@ public class ConnectionUI : MonoBehaviour {
         }
     }
 
-    void OnDisable() { }
 
-    // Pede pro servidor trocar os personagens
+
+    #region Lobby 
+
+    // Pede pro servidor trocar os personagens (ao apertar o botão de trocar personagens)
     public void TrocarPersonagens() {
         UpdateP1ProntoUI(false);
         UpdateP2ProntoUI(false);
@@ -46,6 +50,8 @@ public class ConnectionUI : MonoBehaviour {
         else p2.TrocarPersonagens();
     }
 
+
+    // Atualiza a informação de nome do jogador (quando o jogador muda o nome no input)
     public void UpdateNominhos(LobbyPlayer lobbyPlayer) {
         UpdateNominhos();
     }
@@ -54,25 +60,47 @@ public class ConnectionUI : MonoBehaviour {
     public void UpdateNominhos() {
         if (networkManager.lobbyPlayers == null) return;
 
-        string p1Nome = "???";
-        string p2Nome = "???";
-
-
-        if (p1 != null)
-            p1Nome = p1.nome;
-        
-        if (p2 != null)
-            p2Nome = p2.nome;
+        InputField inputP1 = null;
+        InputField inputP2 = null;
 
         if ((p1 != null && p1.personagem == DishNetworkManager.Personagem.Angler) || (p2 != null && p2.personagem == DishNetworkManager.Personagem.Heater)) {
-            anglerText.text = p1Nome;
-            heaterText.text = p2Nome;
+            inputP1 = anglerInput;
+            inputP2 = heaterInput;
         } else {
-            anglerText.text = p2Nome;
-            heaterText.text = p1Nome;
+            inputP1 = heaterInput;
+            inputP2 = anglerInput;
+        }
+
+        inputP1.text = (p1 != null) ? p1.nome : "???";
+        inputP2.text = (p2 != null) ? p2.nome : "???";
+
+        if (p1 != null && p1.isLocalPlayer) {
+            inputP1.interactable = true;
+            inputP2.interactable = false;
+        } else if (p2 != null && p2.isLocalPlayer) {
+            inputP1.interactable = false;
+            inputP2.interactable = true;
+        } else {
+            inputP1.interactable = false;
+            inputP2.interactable = false;
         }
     }
 
+
+    // Chamado quando o nome no input do jogador atual é alterado
+    public void OnNomeChange() {
+        // A função não recebe o input como parâmetro para garantir que só altere o nome do jogador atual
+        LobbyPlayer jogadorAtual = (p1 != null && p1.isLocalPlayer) ? p1 : ((p2 != null && p2.isLocalPlayer) ? p2 : null);
+        if (jogadorAtual == null) return;
+
+
+        InputField input = jogadorAtual.personagem == DishNetworkManager.Personagem.Angler ? anglerInput : heaterInput;
+        string nome = input.text;
+        jogadorAtual.TrocarNome(nome);
+    }
+
+
+    // Chamado quando o cliente clica no botão de começar
     public void SetPronto() {
         SetComecar();
 
@@ -80,6 +108,8 @@ public class ConnectionUI : MonoBehaviour {
         lobbyPlayer.SetPronto(!lobbyPlayer.pronto);
     }
 
+
+    // Atualiza a UI a partir do valor do LobbyPlayer 1
     public void UpdateP1ProntoUI(bool val) {
         if (p1 == null) return;
 
@@ -91,6 +121,8 @@ public class ConnectionUI : MonoBehaviour {
         }
     }
 
+
+    // Atualiza a UI a partir do valor do LobbyPlayer 2
     public void UpdateP2ProntoUI(bool val) {
         if (p2 == null) return;
 
@@ -102,10 +134,14 @@ public class ConnectionUI : MonoBehaviour {
         }
     }
 
+
+    // Atualiza informações de espera de jogador
     public void UpdateAguardandoJogadorUI() {
         esperandoJogador.SetActive(p1 == null || p2 == null);
     }
 
+
+    // Chamado quando um jogador tenta começar o jogo
     public void SetComecar() {
         if (p1 == null || p2 == null) return;
 
@@ -113,14 +149,25 @@ public class ConnectionUI : MonoBehaviour {
         else p2.TentarComecar();
     }
 
+    #endregion
 
 
+    #region Entrar em Lobby
 
     [Header("Entrar em Lobby")]
     public GameObject entrarLobbyPanel;
     public InputField ipInputField, portInputField;
 
+    
+    // Chamado quando o cliente tenta criar um lobby
+    public void ComecarHostear() {
+        entrarLobbyPanel.SetActive(false);
+        networkManager.StartHost();
+    }
+
+    // Mostra modal para entrar em um lobby já criado
     public void PrepararPraEntrarLobby() {
+        tentandoConectar.SetActive(false);
         entrarLobbyPanel.SetActive(true);
         ipInputField.text = networkManager.networkAddress;
 
@@ -130,13 +177,10 @@ public class ConnectionUI : MonoBehaviour {
         }
     }
 
-    public void ComecarHostear() {
-        entrarLobbyPanel.SetActive(false);
-        networkManager.StartHost();
-    }
-
+    // Chamado quando um cliente tenta entrar em um lobby já criado
     public void EntrarNoLobby() {
         entrarLobbyPanel.SetActive(false);
+        tentandoConectar.SetActive(true);
 
         networkManager.networkAddress = ipInputField.text;
         TelepathyTransport telepathyTransport = networkManager.gameObject.GetComponent<TelepathyTransport>();
@@ -146,6 +190,20 @@ public class ConnectionUI : MonoBehaviour {
 
         networkManager.StartClient();
     }
+
+    // Chamado quando um cliente entra no lobby com sucesso (pelo LobbyPlayer)
+    public void EntrouNoLobby() {
+        tentandoConectar.SetActive(false);
+    }
+
+    public void CancelarEntrada() {
+        tentandoConectar.SetActive(false);
+        entrarLobbyPanel.SetActive(true);
+        networkManager.StopClient();
+    }
+
+    #endregion
+
 
     public void SairDoLobby() {
         networkManager.StopHost();

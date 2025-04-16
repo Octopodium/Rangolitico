@@ -139,7 +139,7 @@ public class Player : NetworkBehaviour {
             ultimoInteragivel = null;
         }
 
-        if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap.enabled) {
+        if (GameManager.instance != null && GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap.enabled) {
             GameManager.instance.TrocarControleSingleplayer();
         }
     }

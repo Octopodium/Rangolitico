@@ -17,8 +17,13 @@ public class LobbyPlayer : NetworkBehaviour {
 
         ConnectionUI.instance.UpdateNominhos();
         ConnectionUI.instance.UpdateAguardandoJogadorUI();
+
+        if (ConnectionUI.instance != null) {
+            ConnectionUI.instance.EntrouNoLobby();
+        }
     }
 
+    // Definir que o jogador está pronto
     public void SetPronto(bool pronto) {
         if (isLocalPlayer) {
             CmdSetPronto(pronto);
@@ -36,6 +41,9 @@ public class LobbyPlayer : NetworkBehaviour {
         else ConnectionUI.instance.UpdateP2ProntoUI(newValue);
     }
 
+
+
+    // Trocar de personagem (Heater <-> Angler)
     public void TrocarPersonagens() {
         if (isLocalPlayer) {
             CmdTrocarPersonagens();
@@ -48,6 +56,9 @@ public class LobbyPlayer : NetworkBehaviour {
         manager.TrocarPersonagens();
     }
 
+
+
+    // Tentar começar o jogo (qualquer um pode fazer desde que os dois estejam prontos)
     public void TentarComecar() {
         if (isLocalPlayer) {
             CmdTentarComecar();
@@ -59,6 +70,26 @@ public class LobbyPlayer : NetworkBehaviour {
         DishNetworkManager manager = (DishNetworkManager)NetworkManager.singleton;
         manager.IniciarJogo();
     }
+
+
+
+    // Trocar o nome do personagem
+    public void TrocarNome(string nome) {
+        if (isLocalPlayer) {
+            CmdTrocarNome(nome);
+        }
+    }
+
+    [Command]
+    void CmdTrocarNome(string nome) {
+        this.nome = nome;
+
+        if (nome.Trim() == "") {
+            pronto = false;
+        }
+    }
+
+
 
     void UpdatePersonagemUI(DishNetworkManager.Personagem oldValue, DishNetworkManager.Personagem newValue) {
         ConnectionUI.instance.UpdateNominhos();

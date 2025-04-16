@@ -35,8 +35,7 @@ public class CameraController : MonoBehaviour{
                 break;
 
             case ModoDeJogo.MULTIPLAYER_ONLINE:
-                GameManager.instance.OnTrocarControle += TrocarCamera;
-                TrocarCamera(GameManager.instance.playerOnlineAtual);
+                TrocarCamera1();
                 break;
         }
 
@@ -54,7 +53,6 @@ public class CameraController : MonoBehaviour{
                 break;
             
             case ModoDeJogo.MULTIPLAYER_ONLINE:
-                GameManager.instance.OnTrocarControle -= TrocarCamera;
                 break;
         }
     }
@@ -65,14 +63,24 @@ public class CameraController : MonoBehaviour{
     private void ConfigurarCameras(){
         List<Player> players = GameManager.instance.jogadores;
 
+        if (modoDeJogoConfigurado == ModoDeJogo.MULTIPLAYER_ONLINE) {
+            Player jogador = players[0].isLocalPlayer ? players[0] : players[1];
+            Player outro_jogador = players[0].isLocalPlayer ? players[1] : players[0];
+
+            cameras[0].Follow = jogador.transform;
+            cameras[1].Follow = outro_jogador.transform;
+
+            return;
+        }
+
         for (int i = 0; i < players.Count; i++){
-            cameras[i].Follow = players[i].transform;
+            if (players[i].qualPlayer == QualPlayer.Player1) cameras[0].Follow = players[i].transform;
+            else cameras[1].Follow = players[i].transform;
         }
     }
 
     // Alterna entre cameras.
     public void TrocarCamera(QualPlayer player){
-        Debug.Log("Pedido de trocar camera para " + player.ToString());
         if (player == QualPlayer.Player1) TrocarCamera1();
         else TrocarCamera2();
     }

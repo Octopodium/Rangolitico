@@ -11,7 +11,7 @@ public class DishNetworkManager : NetworkManager {
     public LobbyPlayer[] lobbyPlayers; // Players do lobby (para escolher personagem)
     public Player[] players; // Players instanciados na cena (são criados a partir de um LobbyPlayer)
 
-    public enum Personagem { Heater, Angler }
+    public enum Personagem { Indefinido, Heater, Angler }
 
 
     public override void Awake() {
@@ -21,6 +21,7 @@ public class DishNetworkManager : NetworkManager {
     }
 
 
+    // Chamado quando um player se conecta ao servidor
     public override void OnServerAddPlayer(NetworkConnectionToClient conn) {
         if (lobbyPlayers.Length == 0) {
             lobbyPlayers = new LobbyPlayer[2];
@@ -28,21 +29,22 @@ public class DishNetworkManager : NetworkManager {
             return;
         }
 
+        // Cria um novo jogador no lobby
         GameObject player = Instantiate(playerPrefab);
 
         LobbyPlayer lobbyPlayer = player.GetComponent<LobbyPlayer>();
         lobbyPlayer.isPlayerOne = lobbyPlayers[0] == null;
+        lobbyPlayer.personagem = GetPersonagemNaoUsado();
 
         if (lobbyPlayer.isPlayerOne) lobbyPlayers[0] = lobbyPlayer;
         else lobbyPlayers[1] = lobbyPlayer;
 
-        lobbyPlayer.personagem = GetPersonagemNaoUsado();
         lobbyPlayer.nome = (lobbyPlayer.isPlayerOne) ? "Player 1" : "Player 2";
-
         player.name = $"[connId={conn.connectionId}]";
         NetworkServer.AddPlayerForConnection(conn, player);
     }
 
+    // Retorna um personagem que não está sendo usado por nenhum jogador
     Personagem GetPersonagemNaoUsado() {
         if (lobbyPlayers[0] == null && lobbyPlayers[1] == null) return Personagem.Heater;
         if (lobbyPlayers[0] == null) return (lobbyPlayers[1].personagem == Personagem.Heater) ? Personagem.Angler : Personagem.Heater;
@@ -70,6 +72,7 @@ public class DishNetworkManager : NetworkManager {
 
     #region No Lobby
 
+    // Chamado por um jogador ao apertar o botão de trocar personagens
     [Server]
     public void TrocarPersonagens() {
         foreach (LobbyPlayer lobbyPlayer in lobbyPlayers) {
@@ -93,6 +96,8 @@ public class DishNetworkManager : NetworkManager {
         return null;
     }
 
+
+    // Chamado pelo LobbyPlayer quando o jogador muda o status de pronto
     [Server]
     public void SetPronto(NetworkConnectionToClient conn, bool pronto) {
         LobbyPlayer lobbyPlayer = GetLobbyPlayer(conn);
@@ -101,29 +106,41 @@ public class DishNetworkManager : NetworkManager {
             return;
         }
 
+        if (pronto && lobbyPlayer.nome.Trim() == "") {
+            Debug.LogError("Jogador " + conn + " não pode ficar pronto sem nome!");
+            pronto = false;
+        }
+
         lobbyPlayer.pronto = pronto;
     }
 
+    // Tenta iniciar o jogo (se os dois jogadores estiverem prontos e com nomes)
     public void IniciarJogo() {
         if (lobbyPlayers[0] == null || lobbyPlayers[1] == null) return;
         if (!lobbyPlayers[0].pronto || !lobbyPlayers[1].pronto) return;
+        if (lobbyPlayers[0].nome.Trim() == "" || lobbyPlayers[1].nome.Trim() == "") return;
 
         players = new Player[lobbyPlayers.Length];
 
         for (int i = 0; i < lobbyPlayers.Length; i++) {
+            // Para cada lobbyPlayer, cria uma instancia de jogador na cena (Player)
+
             LobbyPlayer lobbyPlayer = lobbyPlayers[i];
             if (lobbyPlayer == null) continue;
 
+            // Pega o prefab do personagem correto
             GameObject playerPrefab = (lobbyPlayer.personagem == Personagem.Heater) ? heaterPrefab : anglerPrefab;
 
             GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
             player.name = $"{lobbyPlayer.nome} [connId={lobbyPlayer.connectionToClient.connectionId}]";
-            NetworkServer.ReplacePlayerForConnection(lobbyPlayer.connectionToClient, player, true);
+
+            // Substitui o player atual (LobbyPlayer) do cliente pelo novo player (Player)
+            NetworkServer.ReplacePlayerForConnection(lobbyPlayer.connectionToClient, player, ReplacePlayerOptions.Destroy);
 
             players[i] = player.GetComponent<Player>();
-            Destroy(lobbyPlayer.gameObject);
         }
 
+        // Informa a todos os clientes que o jogo começou
         foreach (Player player in players) {
             player.conectado = true;
         }
@@ -149,6 +166,7 @@ public class DishNetworkManager : NetworkManager {
         }
     }
 
+    // Recebe a requisição de passar de sala e avisa todos os clientes para passar de sala
     private void OnRequestedPassaDeSala(NetworkConnectionToClient conn, RequestPassaDeSalaMessage msg) {
         if (players == null || players.Length == 0) return;
         if (players[0] == null || players[1] == null) return;

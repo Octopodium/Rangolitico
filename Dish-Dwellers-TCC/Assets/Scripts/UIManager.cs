@@ -50,6 +50,14 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void VoltarParaMenu() {
+        // Eu não devia ter que chamar nessa função,
+        // mas se eu referenciar o GameManager 
+        if(GameManager.instance != null){
+            GameManager.instance.VoltarParaMenu();
+        }
+    }
+
     public void QuitJogo(){
         Application.Quit();
     }

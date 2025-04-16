@@ -7,37 +7,24 @@ public class LeitorDeControle : MonoBehaviour
     public GameObject gamepadUI;
     public GameObject keyboardUI;
     public GameObject prefabY, prefabE; //depois vou analisar a possibilidade de mudar pra 1 prefab e trocar so o sprite
-    public Interagivel[] interagiveis;
+
+    public System.Action<InputDevice> OnDeviceChanged; //para quando o jogador mudar de controle
+    public System.Action<GameObject> OnIndicadorChange;
 
     public Actions input;
+    public InputDevice controleAtual { get; private set; }
+    public GameObject indicadorAtual { get { return controleAtual is Gamepad ? prefabY : prefabE; } }
 
     //pegar todos os interagiveis do jogo e mudar o prefab
     public void Start(){
-        interagiveis = FindObjectsOfType(typeof(Interagivel)) as Interagivel[];
         input = GameManager.instance.input;
         input.Player.Get().actionTriggered += ChecaInput; //pega qualquer acao triggerada
     }
 
     public void ChecaInput(InputAction.CallbackContext ctx){
-        InputDevice controle = ctx.control.device;
+        controleAtual = ctx.control.device;
+        OnDeviceChanged?.Invoke(controleAtual);
 
-        if(controle is Gamepad){
-            //para quando tiver indicacao de botoes na UI
-            //keyboardUI.SetActive(false); gamepadUI.SetActive(true);
-
-            if(prefabE.activeSelf) prefabE.SetActive(false); //para impedir conflitos de multiple devices
-
-            foreach(Interagivel interagivel in interagiveis){
-                interagivel.indicadorPrefab = prefabY;
-            }
-        }else if(controle is Keyboard){
-            //gamepadUI.SetActive(false); keyboardUI.SetActive(true);
-            
-            if(prefabY.activeSelf) prefabY.SetActive(false);
-
-            foreach(Interagivel interagivel in interagiveis){
-                interagivel.indicadorPrefab = prefabE;
-            }
-        }
+        OnIndicadorChange?.Invoke(indicadorAtual);
     }
 }

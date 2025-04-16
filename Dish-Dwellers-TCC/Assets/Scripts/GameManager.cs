@@ -13,10 +13,18 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager instance;
     public Actions input;
-    
-    public System.Action<QualPlayer> OnTrocarControle; // Chamado no singleplayer, quando o jogador troca de controle, e no online para definir o jogador que está jogando
 
+
+    public LeitorDeControle controle;
+    
+
+    // Eventos
+    public System.Action<QualPlayer> OnTrocarControle; // Chamado no singleplayer, quando o jogador troca de controle, e no online para definir o jogador que está jogando
+    public System.Action<Player,Player> OnPlayersInstanciados; // Chamado quando os jogadores são instanciados na cena
+    public System.Action OnMudaDeSala;
     public static event UnityAction<bool> OnPause;
+
+
 
     public bool isOnline {
         get { return modoDeJogo == ModoDeJogo.MULTIPLAYER_ONLINE; }
@@ -45,14 +53,16 @@ public class GameManager : MonoBehaviour {
             Destroy(gameObject);
             return;
         }
-
-
-        if (PartidaInfo.instance != null) {
-            modoDeJogo = PartidaInfo.instance.modoDeJogo;
-        }
         
         DontDestroyOnLoad(gameObject);
 
+        // Lê o modo de jogo escolhido pelo jogador (é definido na escolha do menu)
+        if (PartidaInfo.instance != null) {
+            modoDeJogo = PartidaInfo.instance.modoDeJogo;
+        }
+
+
+        // Inicializar o input
         input = new Actions();
         input.Enable();
 
@@ -60,9 +70,17 @@ public class GameManager : MonoBehaviour {
         input.Geral.TrocarPersonagens.performed += ctx => TrocarControleSingleplayer();
         
         SetarInputs();
+
+
+        // Referencia interna
+        controle = GetComponent<LeitorDeControle>();
+
+
         if (!isOnline) {
+            // Apenas no modo offline que o GameManager deve instanciar os jogadores, no modo online o NetworkManager faz isso
             GerarPlayersOfline();
         } else {
+            // No modo online, não se muda a sala diretamente, mas sim através de uma mensagem
             NetworkClient.RegisterHandler<DishNetworkManager.AcaoPassaDeSalaMessage>(OnRequestedPassaDeSalaOnline);
         }
     }
@@ -180,6 +198,8 @@ public class GameManager : MonoBehaviour {
 
     private void PassaDeSalaOffline() {
         cenaProx.allowSceneActivation = true;
+
+        OnMudaDeSala?.Invoke();
     }
 
     /// <summary>
@@ -217,6 +237,8 @@ public class GameManager : MonoBehaviour {
 
         angler.name = "Angler";
         heater.name = "Heater";
+
+        OnPlayersInstanciados?.Invoke(jogadores[0], jogadores[1]);
     }
 
     /// <summary>
@@ -316,6 +338,8 @@ public class GameManager : MonoBehaviour {
         sala sala = GameObject.FindFirstObjectByType<sala>();
         sala.PosicionarJogador();
 
+        OnPlayersInstanciados?.Invoke(jogadores[0], jogadores[1]);
+
         UIManager uiManager = GetComponentInChildren<UIManager>(true);
         if (uiManager != null) {
             uiManager.gameObject.SetActive(true);
@@ -356,10 +380,16 @@ public class GameManager : MonoBehaviour {
                 Destroy(networkManager.gameObject);
             }
         }
-        
+
+        Time.timeScale = 1;
         Destroy(gameObject);
         instance = null;
 
         SceneManager.LoadScene(menuPrincipalSceneName, LoadSceneMode.Single);
+
+        // Por algum motivo, mesmo destruindo o GameManager e mudando de cena, alguma coisa
+        // cria um novo GameManager, na transição entre uma cena e outra. Eu não entendo,
+        // estou na jornada de descobrir o que é, mas ainda não sei.
     }
+
 }

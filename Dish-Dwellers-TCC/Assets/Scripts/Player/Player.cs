@@ -17,7 +17,10 @@ public class Player : NetworkBehaviour {
 
 
     [Header("Atributos do Player")]
-    public float velocidade = 6f;
+    public bool novoMovimento = false;
+    public float velocidadeNovoMovimento = 14f; // Multiplicador de movimento (para o jogador andar mais rápido ou mais
+
+    public float velocidade = 10f;
     [HideInInspector] public Vector3 direcao, mira, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
     private int _playerVidas = 3;
     public int playerVidas {
@@ -27,7 +30,6 @@ public class Player : NetworkBehaviour {
             OnVidaMudada?.Invoke(this, _playerVidas);
 
             if (_playerVidas == 0){
-                //SceneManager.LoadScene.GameManager.instance.sala.scene.name;
                 GameManager.instance.ResetSala();
                 Debug.Log("morreu");
             }
@@ -303,10 +305,21 @@ public class Player : NetworkBehaviour {
             animacaoJogador.Mover(movimentacao * 0.3f);
         }
         */
-        else if (podeMovimentar)  
-        {
-            playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
-            animacaoJogador.Mover(movimentacao);            
+        else if (podeMovimentar) {
+            
+            if (movimentacao.magnitude > 0) {
+                if (novoMovimento) {
+                    Vector3 velocidadeDesejada = movimentacao * velocidadeNovoMovimento;
+                    Vector3 velocidadeAdicionada = velocidadeDesejada - playerRigidbody.linearVelocity; // Calcula a velocidade a ser adicionada
+                    velocidadeAdicionada.y = 0;
+
+                    playerRigidbody.AddForce(velocidadeAdicionada, ForceMode.VelocityChange);
+                } else {
+                    playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
+                }
+            }
+
+            animacaoJogador.Mover(movimentacao);
         }
     }
 

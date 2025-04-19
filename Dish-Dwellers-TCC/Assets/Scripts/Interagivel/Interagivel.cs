@@ -3,14 +3,14 @@ using UnityEngine;
 public class Interagivel : MonoBehaviour {
 
     [Header("Indicador de interação")]
-    public GameObject indicadorPrefab;
+    public Indicador indicador;
     //GameObject indicador;
     public Vector3 offsetIndicador = Vector3.up;
 
 
     void Start() {
         GameManager.instance.controle.OnIndicadorChange += OnIndicadorChange;
-        indicadorPrefab = GameManager.instance.controle.indicadorAtual;
+        indicador = GameManager.instance.controle.indicadorAtual;
     }
 
     void OnDestroy() {
@@ -20,9 +20,9 @@ public class Interagivel : MonoBehaviour {
 
     
     public void MostarIndicador(bool mostrar) {
-        if (indicadorPrefab) {
-            indicadorPrefab.transform.position = transform.position + offsetIndicador;
-            indicadorPrefab.SetActive(mostrar);
+        if (indicador) {
+            if (mostrar) indicador.Mostrar(this);
+            else indicador.Esconder(this);
         }
     }
 
@@ -32,13 +32,15 @@ public class Interagivel : MonoBehaviour {
     }
 
 
-    public void OnIndicadorChange(GameObject novoIndicador) {
-        if (indicadorPrefab != null && indicadorPrefab.activeSelf) {
-            indicadorPrefab.SetActive(false);
-            indicadorPrefab = novoIndicador;
-            indicadorPrefab.SetActive(true);
+    public void OnIndicadorChange(Indicador novoIndicador) {
+        if (novoIndicador == indicador) return;
+
+        if (indicador != null && indicador.interagivel == this) {
+            indicador.Esconder(this);
+            indicador = novoIndicador;
+            indicador.Mostrar(this);
         } else {
-            indicadorPrefab = novoIndicador;
+            indicador = novoIndicador;
         }
     }
 

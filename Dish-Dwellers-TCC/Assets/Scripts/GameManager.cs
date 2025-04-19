@@ -39,6 +39,7 @@ public class GameManager : MonoBehaviour {
     
     public string primeiraFaseSceneName = "1-1";
     public string menuPrincipalSceneName = "MainMenu"; // Cena do menu do jogo
+    bool voltandoParaMenu = false; // Evitar fadiga
 
 
     [Header("Opção Offline")]
@@ -99,7 +100,7 @@ public class GameManager : MonoBehaviour {
     #region Input
 
     Actions input2_singleplayer;
-    QualPlayer playerAtual = QualPlayer.Player1;
+    public QualPlayer playerAtual {get; private set;} = QualPlayer.Player1;
 
     public InputActionMap GetPlayerInput(QualPlayer player = QualPlayer.Player1){
         switch(modoDeJogo){
@@ -257,6 +258,9 @@ public class GameManager : MonoBehaviour {
         // Determina a sala informada como a sala atual :
         this.sala = sala;
 
+        // Evita de tentar carregar uma sala quando está voltando para o menu principal:
+        if (voltandoParaMenu) return;
+
         // Inicia o precarregamento da próxima sala :
         string proximaSala = sala.NomeProximaSala();
         if(proximaSala == string.Empty){
@@ -370,6 +374,9 @@ public class GameManager : MonoBehaviour {
 
 
     public void VoltarParaMenu() {
+        if (voltandoParaMenu) return;
+        voltandoParaMenu = true;
+
         if (isOnline) {
             NetworkManager networkManager = NetworkManager.singleton;
             if (networkManager != null) {
@@ -381,15 +388,27 @@ public class GameManager : MonoBehaviour {
             }
         }
 
+        if (cenaProx != null) {
+            cenaProx.allowSceneActivation = true;
+            cenaProx = null;
+        }
+
+        StartCoroutine(VoltarParaMenuAsync());
+    }
+
+    IEnumerator VoltarParaMenuAsync() {
+        AsyncOperation op = SceneManager.LoadSceneAsync(menuPrincipalSceneName, LoadSceneMode.Single);
+        op.allowSceneActivation = true;
+        yield return new WaitUntil(() => op.isDone);
+        
         Time.timeScale = 1;
-        Destroy(gameObject);
+        voltandoParaMenu = false;
+
+        input.Disable();
+        input2_singleplayer.Disable();
+
         instance = null;
-
-        SceneManager.LoadScene(menuPrincipalSceneName, LoadSceneMode.Single);
-
-        // Por algum motivo, mesmo destruindo o GameManager e mudando de cena, alguma coisa
-        // cria um novo GameManager, na transição entre uma cena e outra. Eu não entendo,
-        // estou na jornada de descobrir o que é, mas ainda não sei.
+        Destroy(gameObject);
     }
 
 }

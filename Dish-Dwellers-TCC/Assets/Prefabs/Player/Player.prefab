@@ -109,6 +109,8 @@ MonoBehaviour:
   syncInterval: 0
   personagem: 0
   qualPlayer: 0
+  novoMovimento: 0
+  velocidadeNovoMovimento: 14
   velocidade: 10
   direcao: {x: 0, y: 0, z: 0}
   mira: {x: 0, y: 0, z: 0}
@@ -222,7 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 460b25a6d8ae3ef499faf7410e41ca4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  indicadorPrefab: {fileID: 2452886219556310934, guid: c0bbace7bfeeef84883f72b9b3761e13, type: 3}
+  indicador: {fileID: 0}
   offsetIndicador: {x: 0, y: 2.65, z: 0}
 --- !u!114 &7184748271679852735
 MonoBehaviour:

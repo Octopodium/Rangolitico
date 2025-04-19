@@ -27,6 +27,7 @@ public class CameraController : MonoBehaviour{
         switch(modoDeJogoConfigurado) {
             case ModoDeJogo.SINGLEPLAYER:
                 GameManager.instance.OnTrocarControle += TrocarCamera;
+                TrocarCamera(GameManager.instance.playerAtual);
                 break;
 
             case ModoDeJogo.MULTIPLAYER_LOCAL:

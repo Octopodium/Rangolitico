@@ -169,6 +169,8 @@ GameObject:
   m_Component:
   - component: {fileID: 93358399404550594}
   - component: {fileID: 5228067432256688985}
+  - component: {fileID: 8942401961451137109}
+  - component: {fileID: 1421252813168890779}
   m_Layer: 0
   m_Name: IndicadorE
   m_TagString: Untagged
@@ -209,3 +211,39 @@ MonoBehaviour:
   lockZ: 0
   faceCamera: 1
   targetObj: {fileID: 0}
+--- !u!114 &8942401961451137109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2452886219556310934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 266665ae30de4c042a76f8695e33d06a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentConstraint: {fileID: 1421252813168890779}
+--- !u!1773428102 &1421252813168890779
+ParentConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2452886219556310934}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Weight: 1
+  m_TranslationAtRest: {x: 0, y: 0.319, z: 0}
+  m_RotationAtRest: {x: 0, y: 0, z: 0}
+  m_TranslationOffsets: []
+  m_RotationOffsets: []
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_AffectRotationX: 1
+  m_AffectRotationY: 1
+  m_AffectRotationZ: 1
+  m_Active: 0
+  m_IsLocked: 0
+  m_Sources: []

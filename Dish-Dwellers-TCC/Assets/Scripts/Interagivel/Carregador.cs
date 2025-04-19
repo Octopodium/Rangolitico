@@ -53,7 +53,7 @@ public class Carregador: MonoBehaviour {
             float distancia = Vector3.Distance(carregarTransform.position, collider.transform.position);
             if (distancia < menorDistancia) {
                 Carregavel carregavel = collider.GetComponent<Carregavel>();
-                if (carregavel != null && !carregavel.sendoCarregado) {
+                if (carregavel != null && carregavel.PodeInteragir(this) && carregavel != ultimoCarregado) {
                     menorDistancia = distancia;
                     carregavelProximo = carregavel;
                 }
@@ -62,7 +62,7 @@ public class Carregador: MonoBehaviour {
 
         if (carregavelProximo == null) return;
 
-        Carregar(carregavelProximo);
+        carregavelProximo.Carregar(this);
     }
 
     /// <summary>
@@ -70,8 +70,8 @@ public class Carregador: MonoBehaviour {
     /// Carrega um objeto. Se o objeto já estiver carregado, não faz nada.
     /// </summary>
     /// <param name="carregavel">Objeto a ser carregado</param>
-    public void Carregar(Carregavel carregavel) {
-        if (carregado != null || carregavel == null || carregavel == ultimoCarregado) return;
+    public bool Carregar(Carregavel carregavel) {
+        if (carregado != null || carregavel == null || carregavel == ultimoCarregado) return false;
         
         carregado = carregavel;
         ultimoCarregado = carregavel;
@@ -91,6 +91,7 @@ public class Carregador: MonoBehaviour {
         }
 
         OnCarregar?.Invoke(carregado);
+        return true;
     }
 
     /// <summary>

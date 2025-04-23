@@ -1,13 +1,23 @@
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.SocialPlatforms;
 public class SpriteChanger : MonoBehaviour{
 
     // Info :
-    [SerializeField][Range(0, 3)]private int sprite;
+    [SerializeField][Range(0, 3)]private int sprite = 0;
 
     // Material :
     private MaterialPropertyBlock mpb;
-    private int SpriteId = Shader.PropertyToID("_Sprite");
+    private LocalKeyword[] keywords;
+    const string REFERENCE = "_SPRITE";
+    readonly string[] SULFIX = {
+        "_ONE",
+        "_TWO",
+        "_THREE",
+        "_FOUR"
+    };
+    
 
     // Componentes :
     private Renderer render;
@@ -15,10 +25,11 @@ public class SpriteChanger : MonoBehaviour{
 
     private void Awake(){
         render = GetComponentInChildren<Renderer>();
+        keywords = render.material.enabledKeywords;
+        Debug.Log(render.sharedMaterial.shaderKeywords.Length);
     }
 
-    private void OnValidate(){
-        if(!render) render = GetComponentInChildren<Renderer>();
+    private void FixedUpdate(){
         ChangeSprite(sprite);
     }
 
@@ -27,13 +38,19 @@ public class SpriteChanger : MonoBehaviour{
     /// </summary>
     /// <param name="sprite"></param>
     public void ChangeSprite(int sprite){
-        mpb = new MaterialPropertyBlock();
-
         Math.Clamp(sprite, 0, 3);
-        this.sprite = sprite;
+        
+        SelectKeyword(sprite);
 
-        mpb.SetInt(SpriteId, sprite);
-        render.SetPropertyBlock(mpb);
+        this.sprite = sprite;
     }
+
+    private void SelectKeyword(int index){
+        foreach(var keyword in SULFIX){
+            render.material.DisableKeyword(REFERENCE + keyword);
+        }
+        render.material.EnableKeyword(REFERENCE + SULFIX[index]);
+    }
+
     
 }

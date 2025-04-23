@@ -17,6 +17,7 @@ public class AnimadorPlayer : MonoBehaviour
 
     #endregion
 
+    // Configuração do RaioX:
 
     private void Start(){
         animator = GetComponent<Animator>();

@@ -6,8 +6,11 @@ Shader "Custom/SpriteCharacter"
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.0
         _Metallic ("Metallic", Range(0,1)) = 0.0
-        _Sprite ("Sprite Channel", Range(0, 3)) = 0
-        [HideInInspector]_Cutoff ("Alpha Cutoff", Range(0, 1)) = 0.5
+
+        [Space(15)][Header(Sprite Config)][Space(10)]
+        [KeywordEnum(one, two, three, four)] _Sprite("Current Sprite Being used", Float) = 0.0
+        _Cutoff ("Cutoff", Range(0, 1)) = 0.5
+        
     }
     SubShader
     {
@@ -18,13 +21,17 @@ Shader "Custom/SpriteCharacter"
             "PreviewType"="Plane"
         }
         Cull Back
+        Stencil{
+            Ref 1
+            Comp Always
+            Pass replace
+        }
 
         CGPROGRAM
         #pragma surface surf Standard fullforwardshadows alphatest:_Cutoff addshadow
-        //#pragma dynamic_branch SPRITE_CHANNEL1 SPRITE_CHANNEL2 SPRITE_CHANNEL3
+        #pragma multi_compile _SPRITE_ONE _SPRITE_TWO _SPRITE_THREE _SPRITE_FOUR
 
         sampler2D _MainTex;
-        int _Sprite;
 
         struct Input
         {
@@ -44,27 +51,17 @@ Shader "Custom/SpriteCharacter"
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
             // Albedo comes from a texture tinted by color
-            fixed4 c;
+            half4 c;
 
-            switch(_Sprite){
-
-                case 0:
-                    c = tex2D(_MainTex, IN.uv_MainTex);
-                break;
-
-                case 1:
-                    c = tex2D(_MainTex, IN.uv2_MainTex);
-                break;
-
-                case 2:
-                    c = tex2D(_MainTex, IN.uv3_MainTex);
-                break;
-
-                case 3:
-                    c = tex2D(_MainTex, IN.uv4_MainTex);
-                break;
-
-            }
+            #if _SPRITE_ONE
+                c = tex2D(_MainTex, IN.uv_MainTex);
+            #elif _SPRITE_TWO
+                c = tex2D(_MainTex, IN.uv2_MainTex);
+            #elif _SPRITE_THREE
+                c = tex2D(_MainTex, IN.uv3_MainTex);
+            #elif _SPRITE_FOUR
+                c = tex2D(_MainTex, IN.uv4_MainTex);
+            #endif
 
             o.Albedo = c.rgb;
 
@@ -74,25 +71,6 @@ Shader "Custom/SpriteCharacter"
             o.Alpha = c.a;
         }
         ENDCG
-
-        Pass{
-            Tags {
-                "Queue"="Geometry"
-                "IgnoreProjector"="True"
-                "RenderType"="Opaque"
-            }
-            ZTest Greater
-            Cull Back
-            
-    
-            
-            Stencil{
-                Ref 1
-                Comp equal
-                Pass Keep
-            }
-            
-        }
     }
     FallBack "Diffuse"
 }

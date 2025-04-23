@@ -10,15 +10,15 @@ public class SpriteChanger : MonoBehaviour{
     private int SpriteId = Shader.PropertyToID("_Sprite");
 
     // Componentes :
-    private Renderer renderer;
+    private Renderer render;
 
 
     private void Awake(){
-        renderer = GetComponentInChildren<Renderer>();
+        render = GetComponentInChildren<Renderer>();
     }
 
     private void OnValidate(){
-        if(!renderer) renderer = GetComponentInChildren<Renderer>();
+        if(!render) render = GetComponentInChildren<Renderer>();
         ChangeSprite(sprite);
     }
 
@@ -33,7 +33,7 @@ public class SpriteChanger : MonoBehaviour{
         this.sprite = sprite;
 
         mpb.SetInt(SpriteId, sprite);
-        renderer.SetPropertyBlock(mpb);
+        render.SetPropertyBlock(mpb);
     }
     
 }

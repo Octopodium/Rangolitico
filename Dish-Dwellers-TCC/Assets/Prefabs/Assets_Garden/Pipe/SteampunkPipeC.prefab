@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2137837221282988557
+--- !u!1 &3711941541669129319
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,38 +8,38 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6519179684751918755}
-  - component: {fileID: 6739509360978400153}
+  - component: {fileID: 7940892109919670174}
+  - component: {fileID: 857046213156660370}
   m_Layer: 0
-  m_Name: PipeVar2
+  m_Name: SteampunkPipeC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!4 &6519179684751918755
+--- !u!4 &7940892109919670174
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2137837221282988557}
+  m_GameObject: {fileID: 3711941541669129319}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3373048584747037386}
+  - {fileID: 8718267597659429504}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &6739509360978400153
+--- !u!65 &857046213156660370
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2137837221282988557}
+  m_GameObject: {fileID: 3711941541669129319}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -52,9 +52,9 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.3580775, y: 0.5262302, z: 0.382886}
-  m_Center: {x: 0.11080831, y: 0.06902373, z: 0.010065526}
---- !u!1 &8166726645039328202
+  m_Size: {x: 1.8333173, y: 2.468258, z: 0.4198482}
+  m_Center: {x: 0.2811253, y: -0.23052186, z: -0.07610577}
+--- !u!1 &8337942593681326138
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -62,46 +62,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3373048584747037386}
-  - component: {fileID: 5672516046706964076}
-  - component: {fileID: 2305578137662260046}
+  - component: {fileID: 8718267597659429504}
+  - component: {fileID: 5715729442446693669}
+  - component: {fileID: 7545410558155432431}
   m_Layer: 0
-  m_Name: PipeVar2
+  m_Name: SteampunkPipeC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3373048584747037386
+--- !u!4 &8718267597659429504
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8166726645039328202}
+  m_GameObject: {fileID: 8337942593681326138}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6519179684751918755}
+  m_Father: {fileID: 7940892109919670174}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5672516046706964076
+--- !u!33 &5715729442446693669
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8166726645039328202}
-  m_Mesh: {fileID: 3152998621262611775, guid: 1e4f01e0942c6a74a8cb870368a820e7, type: 3}
---- !u!23 &2305578137662260046
+  m_GameObject: {fileID: 8337942593681326138}
+  m_Mesh: {fileID: 8600715621174918323, guid: 495c501375aef714ba9511f2e8e0e3a2, type: 3}
+--- !u!23 &7545410558155432431
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8166726645039328202}
+  m_GameObject: {fileID: 8337942593681326138}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -118,7 +118,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4333970119374640218, guid: 1e4f01e0942c6a74a8cb870368a820e7, type: 3}
+  - {fileID: 4333970119374640218, guid: 495c501375aef714ba9511f2e8e0e3a2, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

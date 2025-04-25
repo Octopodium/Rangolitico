@@ -17,10 +17,11 @@ public class Player : NetworkBehaviour {
 
 
     [Header("Atributos do Player")]
-    public bool novoMovimento = false;
-    public float velocidadeNovoMovimento = 14f; // Multiplicador de movimento (para o jogador andar mais rápido ou mais
+    public float velocidade = 14f;
+    public float velocidadeRB = 14f; // Velocidade do Rigidbody
+    public LayerMask layerChao;
 
-    public float velocidade = 10f;
+
     [HideInInspector] public Vector3 direcao, mira, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
     private int _playerVidas = 3;
     public int playerVidas {
@@ -68,8 +69,11 @@ public class Player : NetworkBehaviour {
     public Carregavel carregando => carregador.carregado; // O que o jogador está carregando
     Carregavel carregavel; // O que permite o jogador a ser carregado
     public bool sendoCarregado => carregavel.sendoCarregado; // Se o jogador está sendo carregado
-    Rigidbody playerRigidbody;
     AnimadorPlayer animacaoJogador;
+
+    public bool estaNoChao = true;
+    CharacterController characterController;
+    Rigidbody rb; // Rigidbody do jogador (se houver)
 
 
 
@@ -77,7 +81,8 @@ public class Player : NetworkBehaviour {
     void Awake() {
         collidersInteragiveis = new Collider[maxInteragiveisEmRaio];
 
-        playerRigidbody = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
         carregador = GetComponent<Carregador>();
         carregavel = GetComponent<Carregavel>();
         ferramenta = GetComponentInChildren<Ferramenta>();
@@ -85,14 +90,18 @@ public class Player : NetworkBehaviour {
 
         animacaoJogador = GetComponentInChildren<AnimadorPlayer>();
 
-        collidersIgnoraveis.Add(GetComponent<Collider>());
+        Collider[] colliders = GetComponents<Collider>();
+        foreach (var col in colliders) {
+            collidersIgnoraveis.Add(col);
+        }
+        
 
         // Se está carregando algo, ignora a interação com esta coisa
         carregador.OnCarregar += (carregavel) => { if (carregavel != null)  collidersIgnoraveis.Add(carregavel.GetComponent<Collider>()); };
         carregador.OnSoltar += (carregavel) => { if (carregavel != null)  collidersIgnoraveis.Remove(carregavel.GetComponent<Collider>()); };
 
         // Se o jogador está sendo carregado, ignora a interação com o carregador
-        carregavel.OnCarregado += (carregador) => { if (carregador != null)  collidersIgnoraveis.Add(carregador.GetComponent<Collider>()); };
+        carregavel.OnCarregado += (carregador) => { if (carregador != null)  collidersIgnoraveis.Add(carregador.GetComponent<Collider>()); UsarRB(true); };
         carregavel.OnSolto += (carregador) => {  if (carregador != null)  collidersIgnoraveis.Remove(carregador.GetComponent<Collider>()); };
     }
 
@@ -117,6 +126,10 @@ public class Player : NetworkBehaviour {
             inputActionMap["Attack"].performed += ctx => AcionarFerramentaOnlineCmd();
             inputActionMap["Attack"].canceled += ctx => SoltarFerramentaOnlineCmd();
         }
+
+        estaNoChao = CheckEstaNoChao(); // Verifica se o jogador está no chão
+        if (estaNoChao) UsarCC(true); // Se o jogador está no chão, habilita o CharacterController (desabilita o Rigidbody)
+        else UsarRB(true); // Se o jogador não está no chão, desabilita o CharacterController (habilita o Rigidbody)
     }
 
     void OnEnable() {
@@ -147,7 +160,11 @@ public class Player : NetworkBehaviour {
     }
 
     void FixedUpdate() {
-        if (GameManager.instance.isOnline && !isLocalPlayer) return;
+        bool estaJogando = true;
+
+        if (GameManager.instance.isOnline && !isLocalPlayer) {
+            estaJogando = false; // Não atualiza a movimentação do jogador se não for o jogador local
+        }
 
         // No modo singleplayer, caso este jogador não seja o atual, não faz nada
         if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && !inputActionMap.enabled) {
@@ -156,11 +173,11 @@ public class Player : NetworkBehaviour {
                 ultimoInteragivel = null;
             }
 
-            return;
+            estaJogando = false; // Não atualiza a movimentação do jogador se não for o jogador local
         }
 
-        ChecarInteragiveis();
-        Movimentacao();
+        if (estaJogando) ChecarInteragiveis();
+        Movimentacao(estaJogando);
     }
 
 
@@ -284,46 +301,24 @@ public class Player : NetworkBehaviour {
     /// </summary>
     
     //Titi: Fiz algumas alterações aqui na movimentação pro escudo ok :3
-    void Movimentacao() {
+    void Movimentacao(bool permitidoMover) {
+        CalcularDirecao();
+
+        estaNoChao = CheckEstaNoChao();
+
+        if (estaNoChao) MovimentacaoNoChao(permitidoMover);
+        else MovimentacaoNoAr(permitidoMover);
+
+        animacaoJogador.Mover(movimentacao);
+    }
+
+    void CalcularDirecao() {
         Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
         float x = input.x;
         float z = input.y;
 
         movimentacao = (transform.right * x + transform.forward * z).normalized;
-        CalculaDirecao(movimentacao);
 
-        if(sendoCarregado) return;
-
-        // Descomente esse trecho para o player se mover enquanto levanta o escudo.
-        /*
-        if (escudoAtivo) 
-        {
-            if (movimentacao.magnitude > 0) 
-            {   
-                playerRigidbody.MovePosition(transform.position + movimentacao * (velocidade * 0.3f) * Time.fixedDeltaTime);
-            }
-            animacaoJogador.Mover(movimentacao * 0.3f);
-        }
-        */
-        else if (podeMovimentar) {
-            
-            if (movimentacao.magnitude > 0) {
-                if (novoMovimento) {
-                    Vector3 velocidadeDesejada = movimentacao * velocidadeNovoMovimento;
-                    Vector3 velocidadeAdicionada = velocidadeDesejada - playerRigidbody.linearVelocity; // Calcula a velocidade a ser adicionada
-                    velocidadeAdicionada.y = 0;
-
-                    playerRigidbody.AddForce(velocidadeAdicionada, ForceMode.VelocityChange);
-                } else {
-                    playerRigidbody.MovePosition(transform.position + movimentacao * velocidade * Time.fixedDeltaTime);
-                }
-            }
-
-            animacaoJogador.Mover(movimentacao);
-        }
-    }
-
-    private void CalculaDirecao(Vector3 movimentacao){
         if (movimentacao.magnitude > 0) {
             direcao = movimentacao;
             visualizarDirecao.transform.forward = direcao;
@@ -332,8 +327,77 @@ public class Player : NetworkBehaviour {
         }
     }
 
-    public bool estaNoChao {
-        get { return Physics.Raycast(transform.position, Vector3.down, 1.1f); }
+    // Chamado automaticamente pelo método Movimentacao
+    void MovimentacaoNoChao(bool permitidoMover) {
+        UsarCC();
+
+        Vector3 movimentacaoEfetiva = Vector3.zero; 
+
+        if (permitidoMover && !sendoCarregado && podeMovimentar && movimentacao.magnitude > 0) 
+            movimentacaoEfetiva += movimentacao * velocidade;
+        
+        if (!characterController.isGrounded && !sendoCarregado)
+            movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
+        
+        characterController.Move(movimentacaoEfetiva * Time.deltaTime);
+    }
+
+    // Chamado automaticamente pelo método Movimentacao
+    void MovimentacaoNoAr(bool permitidoMover) {
+        UsarRB();
+
+        if (!permitidoMover || sendoCarregado || !podeMovimentar || movimentacao.magnitude == 0)  return;
+
+        Vector3 movimentacaoEfetiva = Vector3.zero;
+
+        rb.AddForce(movimentacao * velocidadeRB * 10f, ForceMode.Force);
+
+        Vector3 velocity = rb.linearVelocity;
+        velocity.y = 0; // Mantém a velocidade vertical do Rigidbody
+        if (velocity.magnitude > velocidadeRB) {
+            velocity = velocity.normalized * velocidadeRB;
+            velocity.y = rb.linearVelocity.y;
+            rb.linearVelocity = velocity.normalized * velocidadeRB; // Limita a velocidade do jogador
+        }
+    }
+
+    
+    bool usandoRb = true;
+    public void UsarRB(bool ignorarChecagem = false) {
+        if (!ignorarChecagem && usandoRb) return; // Se já está usando o Rigidbody, não faz nada
+
+        characterController.enabled = false; // Desabilita o CharacterController para evitar colisões
+        rb.isKinematic = false; // Habilita o Rigidbody para permitir a física
+
+        CalcularDirecao();
+        rb.linearVelocity = movimentacao * velocidadeRB;
+        
+        usandoRb = true;
+    }
+
+    public void UsarCC(bool ignorarChecagem = false) {
+        if (!ignorarChecagem && !usandoRb) return; // Se não está usando o Rigidbody, não faz nada
+
+        characterController.enabled = true; // Habilita o CharacterController novamente
+        rb.linearVelocity = Vector3.zero; // Zera a velocidade do Rigidbody
+        rb.isKinematic = true; // Desabilita o Rigidbody para evitar a física
+
+        usandoRb = false;
+    }
+
+
+    public bool CheckEstaNoChao() {
+        return Physics.Raycast(transform.position, Vector3.down, 0.5f, layerChao);
+    }
+
+    public void Teletransportar(Vector3 posicao) {
+        if (!usandoRb) characterController.enabled = false; // Desabilita o CharacterController para evitar colisões
+        transform.position = posicao;
+        if (!usandoRb) characterController.enabled = true; // Habilita o CharacterController novamente
+    }
+
+    public void Teletransportar(Transform posicao) {
+        Teletransportar(posicao.position);
     }
 
     #endregion
@@ -504,6 +568,7 @@ public class Player : NetworkBehaviour {
                 velocidadeInicial = carregador.influenciaDaInerciaNoArremesso * (direcao * velocidade);
 
             Vector3[] pontos = carregador.PreverArremesso(carregador.carregado.GetComponent<Rigidbody>(), direcaoArremesso, carregador.forcaArremesso, velocidadeInicial);
+            if (pontos == null) return;
             for (int i = 0; i < pontos.Length - 1; i++) {
                 Gizmos.DrawLine(pontos[i], pontos[i + 1]);
             }

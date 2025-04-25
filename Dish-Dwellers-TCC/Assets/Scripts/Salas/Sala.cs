@@ -64,7 +64,7 @@ public class sala : MonoBehaviour{
         List<Player> players = GameManager.instance.jogadores;
 
         for( int i = 0; i < players.Count; i++){
-            players[i].transform.position = spawnPoints[i].position;
+            players[i].Teletransportar(spawnPoints[i].position);
             players[i].gameObject.SetActive(true);
         }
     }

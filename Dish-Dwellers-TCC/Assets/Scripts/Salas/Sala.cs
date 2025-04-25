@@ -6,13 +6,14 @@ public class sala : MonoBehaviour{
     
     [Space(10)][Header("<color=yellow>Referências manuais: </color>")][Space(10)]
     public Transform[] spawnPoints = new Transform[2];
+    public List<ControladorDeObjeto> objetosSensiveis = new List<ControladorDeObjeto>();
 
     [HideInInspector]public int nSala, nFase;
-
 
     private void Start(){
         GetNomeDaSala();
         PosicionarJogador();
+        SpawnObjetosSensiveis();
         GameManager.instance.SetSala(this);
     }
 
@@ -66,6 +67,15 @@ public class sala : MonoBehaviour{
         for( int i = 0; i < players.Count; i++){
             players[i].Teletransportar(spawnPoints[i].position);
             players[i].gameObject.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// Instancia os objetos de todos os controladores listados em objetosSensiveis.
+    /// </summary>
+    public void SpawnObjetosSensiveis(){
+        foreach(ControladorDeObjeto controlador in objetosSensiveis){
+            controlador.Spawn();
         }
     }
 

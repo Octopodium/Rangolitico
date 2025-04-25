@@ -25,11 +25,11 @@ public class PressurePlate : MonoBehaviour
         MudarCor(Color.black);
     }
     
-    private void OnCollisionStay(Collision other){
+    private void OnTriggerEnter(Collider other){
         ChecarAtivacao();
     }
 
-    private void OnCollisionExit(Collision other){
+    private void OnTriggerExit(Collider other){
         ChecarAtivacao();
     }
 

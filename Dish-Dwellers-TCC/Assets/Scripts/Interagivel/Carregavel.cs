@@ -66,12 +66,16 @@ public class Carregavel : MonoBehaviour, InteracaoCondicional {
         OnCarregado?.Invoke(carregador);
     }
 
+    bool tinhaGravidade = false;
+
     /// <summary>
     /// Chamado automaticamente pelo Carregador quando o objeto é carregado
     /// </summary>
     public void HandleSendoCarregado() {
         _sendoCarregado = true;
         rb.isKinematic = true;
+        tinhaGravidade = rb.useGravity;
+        rb.useGravity = false; // Desabilita a gravidade enquanto o objeto estiver sendo carregado
     }
 
     /// <summary>
@@ -83,6 +87,7 @@ public class Carregavel : MonoBehaviour, InteracaoCondicional {
 
         _sendoCarregado = false;
         rb.isKinematic = false;
+        rb.useGravity = tinhaGravidade; // Restaura a gravidade
         this.carregador = null;
     }
 }

@@ -187,6 +187,7 @@ public class GameManager : MonoBehaviour {
     public List<Player> jogadores = new List<Player>();
     private AsyncOperation cenaProx;
     private sala sala;
+    public sala salaAtual{ get{return sala;} }
 
     
     /// <summary>

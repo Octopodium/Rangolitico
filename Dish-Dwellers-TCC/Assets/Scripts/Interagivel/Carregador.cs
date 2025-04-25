@@ -109,9 +109,10 @@ public class Carregador: MonoBehaviour {
 
 
         Rigidbody cargaRigidbody = carregado.GetComponent<Rigidbody>();
+        carregado.HandleSolto();
 
         if (cargaRigidbody != null) {
-            carregado.HandleSolto();
+            cargaRigidbody.position = carregarTransform.position;
 
             if (movendo)
                 cargaRigidbody.linearVelocity = influenciaDaInerciaNoArremesso * (direcao * velocidade);
@@ -134,6 +135,8 @@ public class Carregador: MonoBehaviour {
     /// <param name="velocidadeInicial">Velocidade inicial do arremesso</param>
     /// <returns>Retorna um vetor de posições da trajetória, sem considerar posiveis colisões no caminho.</returns>
     public Vector3[] PreverArremesso(Rigidbody rigidbody, Vector3 direcao, float forca, Vector3 velocidadeInicial) {
+        if (rigidbody == null) return null;
+        
         int quantidadeMaxPontos = 20;
         float tempo = 10 * Time.fixedDeltaTime; // Intervalos de tempo
 

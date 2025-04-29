@@ -1,9 +1,8 @@
 using UnityEngine;
-using System.Collections;
 
 public class InimigoTorreta : Inimigo
 {
-    #region Declaration
+    #region Declarações de variáveis
 
     [Header("Referências de ação do inimigo")]
     [Space(10)]

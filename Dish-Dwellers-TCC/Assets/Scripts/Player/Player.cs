@@ -349,7 +349,7 @@ public class Player : NetworkBehaviour {
         if (!characterController.isGrounded && !sendoCarregado)
             movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
         
-        characterController.Move(movimentacaoEfetiva * Time.deltaTime);
+        characterController.Move(movimentacaoEfetiva * Time.fixedDeltaTime);
     }
 
     // Chamado automaticamente pelo método Movimentacao

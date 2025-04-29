@@ -74,6 +74,7 @@ public class Player : NetworkBehaviour {
     public bool estaNoChao = true;
     CharacterController characterController;
     Rigidbody rb; // Rigidbody do jogador (se houver)
+    Collider col;
 
 
 
@@ -82,6 +83,7 @@ public class Player : NetworkBehaviour {
         collidersInteragiveis = new Collider[maxInteragiveisEmRaio];
 
         rb = GetComponent<Rigidbody>();
+        col = GetComponent<CapsuleCollider>();
         characterController = GetComponent<CharacterController>();
         carregador = GetComponent<Carregador>();
         carregavel = GetComponent<Carregavel>();
@@ -128,8 +130,14 @@ public class Player : NetworkBehaviour {
         }
 
         estaNoChao = CheckEstaNoChao(); // Verifica se o jogador está no chão
-        if (estaNoChao) UsarCC(true); // Se o jogador está no chão, habilita o CharacterController (desabilita o Rigidbody)
-        else UsarRB(true); // Se o jogador não está no chão, desabilita o CharacterController (habilita o Rigidbody)
+        if (estaNoChao){ 
+            UsarCC(true); // Se o jogador está no chão, habilita o CharacterController (desabilita o Rigidbody)
+            UsarAtrito(true);
+        }
+        else{
+            UsarRB(true); // Se o jogador não está no chão, desabilita o CharacterController (habilita o Rigidbody)
+            UsarAtrito(false);
+        }
     }
 
     void OnEnable() {
@@ -309,6 +317,8 @@ public class Player : NetworkBehaviour {
         if (estaNoChao) MovimentacaoNoChao(permitidoMover);
         else MovimentacaoNoAr(permitidoMover);
 
+        UsarAtrito(estaNoChao);
+
         animacaoJogador.Mover(movimentacao);
     }
 
@@ -398,6 +408,26 @@ public class Player : NetworkBehaviour {
 
     public void Teletransportar(Transform posicao) {
         Teletransportar(posicao.position);
+    }
+
+    // CODIGO DO LIMA TA AQUI OH BRIGA COM ELE :
+
+    [SerializeField] private PhysicsMaterial matCAtrito, matSAtrito;
+    private bool atrito = true;
+    
+    private void UsarAtrito(bool val){
+        if(val == atrito) return;
+
+        if(val == true){
+            col.material = matCAtrito;
+            Debug.Log($"<color=blue> {name} está com atrito.");
+        }
+        else{
+            col.material = matSAtrito;
+            Debug.Log($"<color=blue> {name} está sem atrito.");
+        }
+
+        atrito = val;
     }
 
     #endregion

@@ -62,19 +62,22 @@ public class AnimatorTorreta : MonoBehaviour
     }
 
     // Metodo inutil que eu fiz pra pensar no trem de aggro da torreta. Não deve ser usado em lugar algum :
-    private void SphereDetection(){
-        // Dados arbitrarios :
-        float detectionRay = 5;
-        LayerMask playerLayer = 0;
-        Transform target = null;
 
-        // pega os colliders na area
-        Collider[] playersColliders = Physics.OverlapSphere(transform.position, detectionRay, playerLayer);
+    //Comentei pra testar outra coisa, Lima me desculpe ;-; 
 
-        // Se tem ao menos um collider na area, ele se torna o novo alvo
-        if(playersColliders.Length > 0 && target == null){
-            target = playersColliders[0].transform;
-        }
-    }
+    // private void SphereDetection(){
+    //     // Dados arbitrarios :
+    //     float detectionRay = 5;
+    //     LayerMask playerLayer = 0;
+    //     Transform target = null;
+
+    //     // pega os colliders na area
+    //     Collider[] playersColliders = Physics.OverlapSphere(transform.position, detectionRay, playerLayer);
+
+    //     // Se tem ao menos um collider na area, ele se torna o novo alvo
+    //     if(playersColliders.Length > 0 && target == null){
+    //         target = playersColliders[0].transform;
+    //     }
+    // }
 
 }

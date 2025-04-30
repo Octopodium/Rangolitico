@@ -7,7 +7,7 @@ public class ControladorDeObjeto : MonoBehaviour
     [SerializeField] private Transform respawnPos;
 
     [Space(15)][Header("Objeto controlado :")][Space(10)]
-    [SerializeField] private GameObject objeto;
+    private GameObject objeto;
 
 
     private void Start(){

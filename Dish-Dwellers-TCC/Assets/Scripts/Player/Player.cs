@@ -349,7 +349,7 @@ public class Player : NetworkBehaviour {
         if (!characterController.isGrounded && !sendoCarregado)
             movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
         
-        characterController.Move(movimentacaoEfetiva * Time.deltaTime);
+        characterController.Move(movimentacaoEfetiva * Time.fixedDeltaTime);
     }
 
     // Chamado automaticamente pelo método Movimentacao
@@ -420,11 +420,9 @@ public class Player : NetworkBehaviour {
 
         if(val == true){
             col.material = matCAtrito;
-            Debug.Log($"<color=blue> {name} está com atrito.");
         }
         else{
             col.material = matSAtrito;
-            Debug.Log($"<color=blue> {name} está sem atrito.");
         }
 
         atrito = val;

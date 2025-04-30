@@ -13,7 +13,6 @@ public class sala : MonoBehaviour{
     private void Start(){
         GetNomeDaSala();
         PosicionarJogador();
-        SpawnObjetosSensiveis();
         GameManager.instance.SetSala(this);
     }
 

@@ -60,6 +60,8 @@ namespace EpicTransport {
 
         private ulong authExpirationHandle;
 
+        public System.Action<string> OnCustomEventLoggedIn;
+
 
         private string authInterfaceLoginCredentialId = null;
         public static void SetAuthInterfaceLoginCredentialId(string credentialId) => Instance.authInterfaceLoginCredentialId = credentialId;
@@ -421,6 +423,13 @@ namespace EpicTransport {
 
                     localUserProductIdString = productIdString;
                     localUserProductId = loginCallbackInfo.LocalUserId;
+                    Debug.Log("eeee");
+                    Debug.Log(OnCustomEventLoggedIn);
+
+
+
+                    if (OnCustomEventLoggedIn != null)
+                        OnCustomEventLoggedIn.Invoke(productIdString);
                 }
 
                 initialized = true;

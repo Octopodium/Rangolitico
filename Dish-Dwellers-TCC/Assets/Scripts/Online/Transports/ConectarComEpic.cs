@@ -4,21 +4,36 @@ using System.Collections.Generic;
 using Mirror;
 using Epic.OnlineServices.Lobby;
 using Epic.OnlineServices.Auth;
+using EpicTransport;
 
 [RequireComponent(typeof(EOSLobby))]
 public class ConectarComEpic : ConectorDeTransport {
     NetworkManager networkManager;
     public EOSLobby eOSLobby;
+    public EOSSDKComponent eossdkComponent;
 
     public Text mostrarID;
     public InputField idInput;
 
-    void Start() {
+    bool vaiHostear = false, logado = false;
+
+    void Awake() {
         networkManager = NetworkManager.singleton;
         eOSLobby = GetComponent<EOSLobby>();
+        eossdkComponent.OnCustomEventLoggedIn += AoEntrar;
+    }
 
+    void Start() {
         // eOSLobby.CreateLobbySucceeded += OnHostearSucess;
         eOSLobby.CreateLobbyFailed += (error) => Debug.Log("Falha ao criar lobby: " + error);
+        Debug.Log("?????");
+    }
+
+    void AoEntrar(string id) {
+        Debug.Log("eeeee: " + id);
+        logado = true;
+        if (vaiHostear) Hostear();
+        vaiHostear = false;
     }
 
 
@@ -28,9 +43,16 @@ public class ConectarComEpic : ConectorDeTransport {
     }
 
     public override void Hostear() {
-        // networkManager.StartHost();
-        // eOSLobby.CreateLobby(2, LobbyPermissionLevel.Publicadvertised, true);
-        // Debug.Log("Tentando criar lobby...");
+        if (!logado) {
+            vaiHostear = true;
+            return;
+        }
+
+
+        if (networkManager == null) networkManager = NetworkManager.singleton;
+        networkManager.StartHost();
+        eOSLobby.CreateLobby(2, 0, true);
+        Debug.Log("Tentando criar lobby...");
     }
 /*
     void OnHostearSucess(List<Attribute> attributes) {
@@ -39,6 +61,8 @@ public class ConectarComEpic : ConectorDeTransport {
     }
 */
     public override void ConectarCliente() {
+        string id = idInput.text;
+        eOSLobby.JoinLobbyByID(id);
     }
 
     public override void EncerrarHost() {

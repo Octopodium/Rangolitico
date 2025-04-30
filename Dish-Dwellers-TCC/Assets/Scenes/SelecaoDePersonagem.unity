@@ -310,37 +310,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 91042533}
   m_CullTransparentMesh: 1
---- !u!1 &140984457
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 140984459}
-  m_Layer: 0
-  m_Name: EOSSDKComponent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &140984459
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 140984457}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.570729, y: 1.6058984, z: 5.194092}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &188026407
 GameObject:
   m_ObjectHideFlags: 0
@@ -1209,11 +1178,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   apiKeys: {fileID: 11400000, guid: 0efd4c3687a94a24f9fb68867853fae4, type: 2}
-  authInterfaceLogin: 1
-  authInterfaceCredentialType: 4
+  authInterfaceLogin: 0
+  authInterfaceCredentialType: 6
   devAuthToolPort: 7878
   devAuthToolCredentialName: Juan 1
-  connectInterfaceCredentialType: 0
+  connectInterfaceCredentialType: 10
   deviceModel: PC Windows 64bit
   displayName: User
   epicLoggerLevel: 200
@@ -5582,9 +5551,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b703ab474b622a04980dda030e361a44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eOSLobby: {fileID: 0}
-  mostrarID: {fileID: 0}
-  idInput: {fileID: 0}
+  eOSLobby: {fileID: 9096807382425419355}
+  eossdkComponent: {fileID: 595452229}
+  mostrarID: {fileID: 481440080}
+  idInput: {fileID: 1360276241}
 --- !u!114 &9096807382425419355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5606,5 +5576,4 @@ SceneRoots:
   - {fileID: 782079657}
   - {fileID: 2147322722}
   - {fileID: 1483239779}
-  - {fileID: 140984459}
   - {fileID: 595452225}

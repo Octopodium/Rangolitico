@@ -21,6 +21,11 @@ public class InimigoTorreta : Inimigo
     private float tempoRestanteDeFoco;
     private bool temAlvoFixo = false;
 
+    [Header("Configurações de Stun")]
+    [SerializeField] private float stunDuration = 3f;
+    private bool isStunned = false;
+    private float stunTimer = 0f;
+
     [SerializeField] private AnimatorTorreta animator;
 
     #endregion
@@ -41,6 +46,17 @@ public class InimigoTorreta : Inimigo
 
     void FixedUpdate()
     {
+        if (isStunned)
+        {
+            stunTimer -= Time.deltaTime;
+            if (stunTimer <= 0f)
+            {
+                isStunned = false;
+                animator.Atordoado(false);
+            }
+            return; // Pra não atacar enquanto estiver stunado, ta meio ruim eu sei, eu sei
+        }
+
         base.ChecagemDeZonas();
         AtualizarAlvo();
         Movimento();
@@ -59,7 +75,7 @@ public class InimigoTorreta : Inimigo
 
     public override void Atacar()
     {
-        if(_playerNaZonaDeAtaque && target != null && Time.time > nextFire)
+        if(!isStunned && _playerNaZonaDeAtaque && target != null && Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
 
@@ -118,6 +134,13 @@ public class InimigoTorreta : Inimigo
     bool PlayerNaZona(Transform jogador)
     {
         return Vector3.Distance(transform.position, jogador.position) <= zonaDeAtaque;
+    }
+
+    public void GetStunned()
+    {
+        isStunned = true;
+        stunTimer = stunDuration;
+        animator.Atordoado(true);
     }
 
     protected override void TomaDano(int valor)

@@ -47,20 +47,29 @@ public class Projectile : MonoBehaviour
             
             transform.rotation = Quaternion.LookRotation(reflectDirection);
         }
+
+        else if (isReflected && other.gameObject == owner)
+        {
+            Debug.Log("Colidiu");
+            //Quando acerta o proprietário do projetil(ou seja, a torreta) coloca o mesmo no estado de stunado
+            InimigoTorreta torreta = owner.GetComponent<InimigoTorreta>(); 
+            if (torreta != null)
+            {
+                torreta.GetStunned();
+            }
+            Destroy(gameObject);
+        }
+
         else if(other.CompareTag("Queimavel")){
             other.GetComponent<ParedeDeVinhas>().ReduzirIntegridade();
         }
-        //Se colidir com o inimigo após ser refletido
-        else if (isReflected && other.gameObject.CompareTag("Torreta"))
-        {
-            animator.Atordoado(true);
-            Destroy(gameObject);
-        }
+
         else if (other.gameObject.CompareTag("Player") && !isReflected)
         {
             player.MudarVida(-1);
             Debug.Log("deu dano");
         }
+
         //previsão pra caso houver colisão com outros obstáculos
         else
         {

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -8,13 +9,15 @@ public class CameraController : MonoBehaviour{
     ModoDeJogo modoDeJogoConfigurado = ModoDeJogo.INDEFINIDO;
     public bool ativo = true; // Substitui o modo "INATIVO" previamente implementado.
     [SerializeField] private CinemachineCamera[] cameras = new CinemachineCamera[2];
+    [SerializeField] private CinemachineCamera introCamera;
+    private float tempoDBlendNormal = 0.5f, tempoDBlendIntro = 2.0f;
+    private bool podeTrocarCamera = false;
 
-    const float distance = 10, height = 40, FOV = 75;
-
-    private void Awake(){
-    }
 
     private void Start(){
+        if(introCamera != null) FazerIntroducao();
+        else podeTrocarCamera = true;
+
         DeterminaModoDeCamera();
         ConfigurarCameras();
     }
@@ -58,6 +61,29 @@ public class CameraController : MonoBehaviour{
         }
     }
 
+    #region Camera de introdução
+
+    private void FazerIntroducao(){
+        StartCoroutine(Introducao());
+    }
+
+    IEnumerator Introducao(){
+        CinemachineBrain brain = Camera.main.GetComponent<CinemachineBrain>();
+        brain.DefaultBlend.Time = tempoDBlendIntro;
+
+        introCamera.Priority = 2;
+        yield return new WaitForSeconds(1.0f);
+
+        introCamera.Priority = 0;
+        cameras[0].Priority = 1;
+
+        yield return new WaitForSeconds(2.1f);
+        brain.DefaultBlend.Time = tempoDBlendNormal;
+
+        podeTrocarCamera = true;
+    }
+
+    #endregion
 
     #region Configuração inicial
 
@@ -87,6 +113,7 @@ public class CameraController : MonoBehaviour{
     }
 
     public void TrocarCamera1(){
+        if(!podeTrocarCamera) return;
         cameras[0].Priority = 1;
         cameras[1].Priority = 0;
     }
@@ -96,6 +123,7 @@ public class CameraController : MonoBehaviour{
     }
 
     public void TrocarCamera2(){
+        if(!podeTrocarCamera) return;
         cameras[1].Priority = 1;
         cameras[0].Priority = 0;
     }

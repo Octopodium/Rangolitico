@@ -420,11 +420,9 @@ public class Player : NetworkBehaviour {
 
         if(val == true){
             col.material = matCAtrito;
-            Debug.Log($"<color=blue> {name} está com atrito.");
         }
         else{
             col.material = matSAtrito;
-            Debug.Log($"<color=blue> {name} está sem atrito.");
         }
 
         atrito = val;

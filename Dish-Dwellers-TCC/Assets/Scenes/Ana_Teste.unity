@@ -784,7 +784,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1772340409
 Transform:
   m_ObjectHideFlags: 0
@@ -957,6 +957,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7184748271679852735, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
+      propertyPath: sceneId
+      value: 221093276
+      objectReference: {fileID: 0}
     - target: {fileID: 8982251984172959260, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
       propertyPath: ui
       value: 
@@ -982,7 +986,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2124111196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -996,7 +1000,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modoDeJogo: 0
+  controle: {fileID: 0}
+  primeiraFaseSceneName: 1-1
+  menuPrincipalSceneName: MainMenu
+  offlineAnglerPrefab: {fileID: 0}
+  offlineHeaterPrefab: {fileID: 0}
   jogadores: []
+  playerOnlineAtual: 0
 --- !u!4 &2124111197
 Transform:
   m_ObjectHideFlags: 0
@@ -1023,6 +1033,14 @@ PrefabInstance:
     - target: {fileID: 2733533816249224698, guid: 76039a181a7c5814ab06532b0ed26156, type: 3}
       propertyPath: m_Name
       value: Canvas HUD
+      objectReference: {fileID: 0}
+    - target: {fileID: 2733533816249224698, guid: 76039a181a7c5814ab06532b0ed26156, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7172609800048941386, guid: 76039a181a7c5814ab06532b0ed26156, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8373261064968550630, guid: 76039a181a7c5814ab06532b0ed26156, type: 3}
       propertyPath: m_Pivot.x
@@ -1201,10 +1219,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas Pause
       objectReference: {fileID: 0}
-    - target: {fileID: 5280468167043242953, guid: 0ca4867eb96f3d94a99fd89a28c0aea4, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1217,6 +1231,6 @@ SceneRoots:
   - {fileID: 1748292731}
   - {fileID: 1772340409}
   - {fileID: 1358130511}
-  - {fileID: 8900153183845130539}
   - {fileID: 4866865610208477164}
+  - {fileID: 8900153183845130539}
   - {fileID: 2124111197}

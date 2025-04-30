@@ -7,6 +7,7 @@ public class sala : MonoBehaviour{
     [Space(10)][Header("<color=yellow>Referências manuais: </color>")][Space(10)]
     public Transform[] spawnPoints = new Transform[2];
     public List<ControladorDeObjeto> objetosSensiveis = new List<ControladorDeObjeto>();
+    public List<OnTriggerEvent> triggers = new List<OnTriggerEvent>();
 
     [HideInInspector]public int nSala, nFase;
 
@@ -16,10 +17,24 @@ public class sala : MonoBehaviour{
         GameManager.instance.SetSala(this);
     }
 
+    /// <summary>
+    /// Reinicia a sala para suas condições iniciais.
+    /// </summary>
     public void ResetSala(){
+        // Reposiciona o jogador na sua posição inicial, e restaura sua vida.
         PosicionarJogador();
         foreach( var player in GameManager.instance.jogadores){
             player.MudarVida(3);
+        }
+
+        // Reseta todos os objetos sensiveis.
+        foreach(ControladorDeObjeto controlador in objetosSensiveis){
+            controlador.Reiniciar();
+        }
+
+        // Reativa todos os triggers da sala.
+        foreach(OnTriggerEvent trigger in triggers){
+            trigger.gameObject.SetActive(true);
         }
     }
 
@@ -72,7 +87,7 @@ public class sala : MonoBehaviour{
     /// <summary>
     /// Instancia os objetos de todos os controladores listados em objetosSensiveis.
     /// </summary>
-    public void SpawnObjetosSensiveis(){
+    public void SpawnTodosObjetosSensiveis(){
         foreach(ControladorDeObjeto controlador in objetosSensiveis){
             controlador.Spawn();
         }

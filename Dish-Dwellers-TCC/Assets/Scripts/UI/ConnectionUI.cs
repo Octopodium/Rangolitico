@@ -18,9 +18,8 @@ public class ConnectionUI : MonoBehaviour {
     public InputField anglerInput, heaterInput;
     public GameObject anglerReady, heaterReady;
     public Transform logsHolder;
-
     
-
+    ConectorDeTransport conectorDeTransport;
 
     void Awake() {
         instance = this;
@@ -28,6 +27,12 @@ public class ConnectionUI : MonoBehaviour {
 
     void Start() {
         networkManager = (DishNetworkManager)NetworkManager.singleton;
+        conectorDeTransport = GetComponent<ConectorDeTransport>();
+        if (conectorDeTransport == null) {
+            Debug.LogError("ConectorDeTransport não encontrado. Adicione um componente ConectorDeTransport ao GameObject ConnectionUI.");
+            return;
+        }
+
         UpdateNominhos();
 
         if (PartidaInfo.instance != null && PartidaInfo.instance.modo == PartidaInfo.Modo.Entrar) {
@@ -35,6 +40,14 @@ public class ConnectionUI : MonoBehaviour {
         } else {
             ComecarHostear();
         }
+    }
+
+    System.Action GeneralDebug(string frase) {
+        return () => Debug.Log(frase);
+    }
+
+    System.Action<int> GeneralDebugInt(string frase) {
+        return (num) => Debug.Log(num + " " + frase);
     }
 
 
@@ -156,25 +169,20 @@ public class ConnectionUI : MonoBehaviour {
 
     [Header("Entrar em Lobby")]
     public GameObject entrarLobbyPanel;
-    public InputField ipInputField, portInputField;
-
+    
     
     // Chamado quando o cliente tenta criar um lobby
     public void ComecarHostear() {
         entrarLobbyPanel.SetActive(false);
-        networkManager.StartHost();
+        conectorDeTransport.Hostear();
     }
 
     // Mostra modal para entrar em um lobby já criado
     public void PrepararPraEntrarLobby() {
         tentandoConectar.SetActive(false);
         entrarLobbyPanel.SetActive(true);
-        ipInputField.text = networkManager.networkAddress;
-
-        TelepathyTransport telepathyTransport = networkManager.gameObject.GetComponent<TelepathyTransport>();
-        if (telepathyTransport != null) {
-            portInputField.text = telepathyTransport.port.ToString();
-        }
+        
+        conectorDeTransport.Setup();
     }
 
     // Chamado quando um cliente tenta entrar em um lobby já criado
@@ -182,13 +190,7 @@ public class ConnectionUI : MonoBehaviour {
         entrarLobbyPanel.SetActive(false);
         tentandoConectar.SetActive(true);
 
-        networkManager.networkAddress = ipInputField.text;
-        TelepathyTransport telepathyTransport = networkManager.gameObject.GetComponent<TelepathyTransport>();
-        if (telepathyTransport != null) {
-            telepathyTransport.port = ushort.Parse(portInputField.text);
-        }
-
-        networkManager.StartClient();
+        conectorDeTransport.ConectarCliente();
     }
 
     // Chamado quando um cliente entra no lobby com sucesso (pelo LobbyPlayer)
@@ -199,16 +201,14 @@ public class ConnectionUI : MonoBehaviour {
     public void CancelarEntrada() {
         tentandoConectar.SetActive(false);
         entrarLobbyPanel.SetActive(true);
-        networkManager.StopClient();
+        conectorDeTransport.EncerrarCliente();
     }
 
     #endregion
 
 
     public void SairDoLobby() {
-        networkManager.StopHost();
-        networkManager.StopClient();
-        networkManager.StopServer();
+        conectorDeTransport.EncerrarHost();
 
         Destroy(networkManager.gameObject);
         if (GameManager.instance != null)  Destroy(GameManager.instance.gameObject);

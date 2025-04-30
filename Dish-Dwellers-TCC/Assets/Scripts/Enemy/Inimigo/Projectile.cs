@@ -7,6 +7,8 @@ public class Projectile : MonoBehaviour
     public Player player; 
     private Vector3 direction;
     private bool isReflected = false;
+    [SerializeField] private AnimatorTorreta animator;
+
 
     [Header("<color=green> Lima coisas :")]
     [SerializeField]private bool refletirNormal;
@@ -14,6 +16,7 @@ public class Projectile : MonoBehaviour
     void Awake()
     {
         player = GameObject.FindObjectOfType<Player>();
+        animator = GetComponentInChildren<AnimatorTorreta>();
     }
     
     void Start()
@@ -48,9 +51,9 @@ public class Projectile : MonoBehaviour
             other.GetComponent<ParedeDeVinhas>().ReduzirIntegridade();
         }
         //Se colidir com o inimigo após ser refletido
-        else if (isReflected && other.gameObject == owner)
+        else if (isReflected && other.gameObject.CompareTag("Torreta"))
         {
-            Destroy(other.gameObject); // Destrói o inimigo (ou aplica dano)
+            animator.Atordoado(true);
             Destroy(gameObject);
         }
         else if (other.gameObject.CompareTag("Player") && !isReflected)

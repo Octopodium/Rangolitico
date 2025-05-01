@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1738590348920556429}
-  - component: {fileID: 1742353176684564699}
+  - component: {fileID: 5927340053707188262}
   m_Layer: 0
   m_Name: BridgeCogs
   m_TagString: Untagged
@@ -35,28 +35,20 @@ Transform:
   - {fileID: 8185318399212063452}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &1742353176684564699
-Animator:
-  serializedVersion: 7
+--- !u!114 &5927340053707188262
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2698628900015585523}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6b190e12bf9b2eb449694b93acfc1ddb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0739ad890f110a44b57e2a887c74608, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotDesejada: {x: -0.37864146, y: -0.5971857, z: 0.37864146, w: 0.5971857}
+  duracao: 3
 --- !u!1001 &1685364756408245682
 PrefabInstance:
   m_ObjectHideFlags: 0

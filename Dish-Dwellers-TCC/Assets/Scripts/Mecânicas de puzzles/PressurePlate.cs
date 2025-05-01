@@ -8,7 +8,6 @@ public class PressurePlate : MonoBehaviour
     [SerializeField] private float pesoAtual = 0;
     [SerializeField] private bool ativado = false;
 
-
     [Space(10)][Header("<color=green> Configurações </color>")][Space(10)]
 
     [Tooltip("Peso minimo para que o evento de ativação ocorra")]
@@ -16,14 +15,9 @@ public class PressurePlate : MonoBehaviour
 
     [Tooltip("Meias proporções da hitbox do botão")]
     [SerializeField] private Vector3 boxHalfExtents;
+    [SerializeField] private Vector3 offset;
     public UnityEvent OnAtivado, OnDesativado;
 
-    //Gambiarra placeholder:
-    MaterialPropertyBlock mpb;
-
-    private void Start(){
-        MudarCor(Color.black);
-    }
     
     private void OnTriggerEnter(Collider other){
         ChecarAtivacao();
@@ -42,14 +36,12 @@ public class PressurePlate : MonoBehaviour
 
             Debug.Log("<color=green>Botão ativado.</color>");
             ativado = true;
-            MudarCor(Color.green);
 
             OnAtivado?.Invoke();
         }
         else if(ativado){
             Debug.Log("<color=red>Botão desativado.</color>");
             ativado = false;
-            MudarCor(Color.black);
 
             OnDesativado?.Invoke();
         }
@@ -60,7 +52,7 @@ public class PressurePlate : MonoBehaviour
     private float CalcularPeso(){
         float peso = 0;
 
-        int num = Physics.OverlapBoxNonAlloc(transform.position + Vector3.up * transform.localScale.y/2, boxHalfExtents, emCimaDaPlaca);
+        int num = Physics.OverlapBoxNonAlloc(transform.position + offset * transform.localScale.y/2, boxHalfExtents, emCimaDaPlaca);
 
         for(int i = 0; i < num ; i++){
             Rigidbody rb = emCimaDaPlaca[i].GetComponent<Rigidbody>(); 
@@ -73,20 +65,10 @@ public class PressurePlate : MonoBehaviour
         return peso;
     }
 
-    // Metodo que eu fiz so pra ter feedback visual por enquanto.
-    // deve ser substituido ou melhorado com animações ou coisas mais finalizadas depois.
-    private void MudarCor(Color cor){
-        Renderer renderer = GetComponent<Renderer>();
-        mpb = new MaterialPropertyBlock();
-
-        mpb.SetColor("_Color", cor);
-        renderer.SetPropertyBlock(mpb);
-    }
-
     // Só desenha a caixa responsavel por testar objetos com peso do CalcularPeso().
     private void OnDrawGizmosSelected() {
         Gizmos.color = Color.cyan;
-        Gizmos.DrawCube(transform.position + Vector3.up * transform.localScale.y/2, boxHalfExtents * 2);
+        Gizmos.DrawCube(transform.position + offset * transform.localScale.y/2, boxHalfExtents * 2);
     }
 
 }

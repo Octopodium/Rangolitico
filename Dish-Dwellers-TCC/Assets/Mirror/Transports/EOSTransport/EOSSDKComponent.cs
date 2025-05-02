@@ -335,6 +335,7 @@ namespace EpicTransport {
                     ScopeFlags = Epic.OnlineServices.Auth.AuthScopeFlags.BasicProfile | Epic.OnlineServices.Auth.AuthScopeFlags.FriendsList | Epic.OnlineServices.Auth.AuthScopeFlags.Presence
                 };
 
+                
                 EOS.GetAuthInterface().Login(ref loginOptions, null, OnAuthInterfaceLogin);
             } else {
                 // Login to Connect Interface
@@ -373,6 +374,8 @@ namespace EpicTransport {
             } else if (Epic.OnlineServices.Common.IsOperationComplete(loginCallbackInfo.ResultCode)) {
                 Debug.Log("Login returned " + loginCallbackInfo.ResultCode);
             }
+
+            Debug.Log("retornou algo com o valor: " + loginCallbackInfo.ResultCode);
         }
 
         private void OnCreateDeviceId(ref Epic.OnlineServices.Connect.CreateDeviceIdCallbackInfo createDeviceIdCallbackInfo) {
@@ -423,10 +426,6 @@ namespace EpicTransport {
 
                     localUserProductIdString = productIdString;
                     localUserProductId = loginCallbackInfo.LocalUserId;
-                    Debug.Log("eeee");
-                    Debug.Log(OnCustomEventLoggedIn);
-
-
 
                     if (OnCustomEventLoggedIn != null)
                         OnCustomEventLoggedIn.Invoke(productIdString);

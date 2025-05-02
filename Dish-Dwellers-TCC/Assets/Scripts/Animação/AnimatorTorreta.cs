@@ -34,7 +34,7 @@ public class AnimatorTorreta : MonoBehaviour
     }
 
     public void Atordoado(bool val){
-        animator.SetBool(atordoado, val);
+        animator.SetBool("Atordoado", val);
     }
 
     /// <summary>

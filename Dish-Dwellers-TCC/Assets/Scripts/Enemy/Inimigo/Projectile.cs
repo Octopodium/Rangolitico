@@ -15,7 +15,7 @@ public class Projectile : MonoBehaviour
 
     void Awake()
     {
-        player = GameObject.FindObjectOfType<Player>();
+        player = GameObject.FindFirstObjectByType<Player>();
         animator = GetComponentInChildren<AnimatorTorreta>();
     }
     
@@ -60,7 +60,13 @@ public class Projectile : MonoBehaviour
             Destroy(gameObject);
         }
 
-        else if(other.CompareTag("Queimavel")){
+        else if(other.gameObject.CompareTag("Torreta") && !isReflected)
+        {
+            return;
+        }
+
+        else if(other.CompareTag("Queimavel"))
+        {
             other.GetComponent<ParedeDeVinhas>().ReduzirIntegridade();
         }
 
@@ -68,6 +74,7 @@ public class Projectile : MonoBehaviour
         {
             player.MudarVida(-1);
             Debug.Log("deu dano");
+            Destroy(gameObject);
         }
 
         //previsão pra caso houver colisão com outros obstáculos

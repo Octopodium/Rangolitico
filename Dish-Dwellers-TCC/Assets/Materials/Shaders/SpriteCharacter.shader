@@ -26,6 +26,8 @@ Shader "Custom/SpriteCharacter"
             Comp Always
             Pass replace
         }
+        ZTest LEqual
+        ZWrite On
 
         CGPROGRAM
         #pragma surface surf Standard fullforwardshadows alphatest:_Cutoff addshadow

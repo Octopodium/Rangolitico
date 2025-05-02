@@ -5,7 +5,8 @@ public class PonteLevadica : MonoBehaviour
 {
     public Quaternion rotDesejada;
     private Quaternion rotInicial;
-    [SerializeField] private float duracao = 3.0f;
+    [SerializeField] private float duracao;
+    private Coroutine rotinaAnterior;
 
 
     private void Awake(){
@@ -14,24 +15,40 @@ public class PonteLevadica : MonoBehaviour
 
     private void Start()
     {
-        AbaixarPonte();   
+        //AbaixarPonte();   
     }
 
     public void AbaixarPonte(){
-        StartCoroutine(InterpolarRotação(rotInicial, rotDesejada));
+        if(rotinaAnterior != null){
+            StopCoroutine(rotinaAnterior);
+        }
+
+        rotinaAnterior = StartCoroutine(InterpolarRotação(rotDesejada));
     }
 
     public void LevantarPonte(){
-        StartCoroutine(InterpolarRotação(rotDesejada, rotInicial));
+        if(rotinaAnterior != null){
+            StopCoroutine(rotinaAnterior);
+        }
+
+        rotinaAnterior = StartCoroutine(InterpolarRotação(rotInicial));
     }
 
-    IEnumerator InterpolarRotação(Quaternion oRot, Quaternion fRot){
-        float t = 0.0f;
-        while(t < duracao){
-            t += Time.deltaTime;
-            transform.rotation = Quaternion.Lerp(oRot, fRot, t/duracao);
-            yield return null;
+    IEnumerator InterpolarRotação( Quaternion fRot){
+
+        float duracao = this.duracao;
+        float tempo = 0f;
+        Quaternion rotInicial = transform.rotation;
+
+        while (tempo < duracao)
+        {
+            tempo += Time.deltaTime;
+            float t = tempo / duracao;
+
+            transform.rotation = Quaternion.Lerp(rotInicial, fRot, t);
+            yield return new WaitForFixedUpdate();
         }
-        transform.rotation = rotDesejada;
+
+        transform.rotation = fRot;
     }
 }

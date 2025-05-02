@@ -5,6 +5,10 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using Mirror;
 
+// OBS: Por enquanto para rodar coisas do multiplayer é necessário ter um arquivo na pasta root do projeto (Dish-Dwellers-TCC)
+// Esse arquivo pode ser baixado no link: https://github.com/EOS-Contrib/eos_plugin_for_unity/releases/download/v4.0.0/com.playeveryware.eos-4.0.0.tgz 
+// Favor não renomear, e não mover o arquivo, pois o plugin não vai funcionar corretamente.
+
 [RequireComponent(typeof(EOSLobby))]
 public class ConectarComEpic : ConectorDeTransport {
     NetworkManager networkManager;
@@ -44,10 +48,14 @@ public class ConectarComEpic : ConectorDeTransport {
 
         eOSLobby.CreateLobbySucceeded += (lobbyAttrs) => {
             Debug.Log("Lobby criado com sucesso [" + eOSLobby.GetCurrentLobbyId() + "]");
+
+            networkManager.networkAddress = eOSLobby.GetCurrentLobbyId();
+            networkManager.StartHost();
         };
 
         eOSLobby.JoinLobbySucceeded += (lobbyAttrs) => {
             Debug.Log("Entrou no lobby [" + eOSLobby.GetCurrentLobbyId() + "]");
+            networkManager.networkAddress = eOSLobby.GetCurrentLobbyId();
             networkManager.StartClient();
         };
     }
@@ -75,7 +83,7 @@ public class ConectarComEpic : ConectorDeTransport {
         idInput.text = "";
         mostrarID.text = "";
     }
-    string globalID = "";
+
     public override void Hostear() {
         if (!logado) {
             vaiHostear = true;
@@ -84,10 +92,9 @@ public class ConectarComEpic : ConectorDeTransport {
 
 
         if (networkManager == null) networkManager = NetworkManager.singleton;
-        networkManager.StartHost();
+        
 
         string id = GerarID();
-        globalID = id;
         mostrarID.text = "ID: " + id;
         Debug.Log("ID gerado: " + id);
         eOSLobby.CreateLobby(2, 0, true, eOSLobby.CriarAtributos(id));

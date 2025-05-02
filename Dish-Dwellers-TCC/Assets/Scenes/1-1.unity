@@ -11331,11 +11331,23 @@ PrefabInstance:
       value: "PlacaDePress\xE3o"
       objectReference: {fileID: 0}
     - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: botaoSobe
+      value: 
+      objectReference: {fileID: 7400000, guid: 1297177f1a5bc9a408b37d7661a48527, type: 2}
+    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: botaoDesce
+      value: 
+      objectReference: {fileID: 7400000, guid: 884d3363890de3a45bb8fb7ab6cb9a85, type: 2}
+    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: OnAtivado.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1125802308}
+    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: OnAtivado.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 1125802308}
     - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnDesativado.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      propertyPath: OnDesativado.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 1125802308}
     - target: {fileID: 3420029047754408677, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
@@ -11378,21 +11390,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5891275666692182563, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: m_Size.y
-      value: 0.15695384
-      objectReference: {fileID: 0}
-    - target: {fileID: 5891275666692182563, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: m_Center.y
-      value: 0.04879962
-      objectReference: {fileID: 0}
     - target: {fileID: 7032596858282605056, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: m_Animation
       value: 
       objectReference: {fileID: 7400000, guid: 1297177f1a5bc9a408b37d7661a48527, type: 2}
     - target: {fileID: 7032596858282605056, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: m_PlayAutomatically
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7032596858282605056, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: m_Animations.Array.size

@@ -18,7 +18,16 @@ public class PressurePlate : MonoBehaviour
     [SerializeField] private Vector3 offset;
     public UnityEvent OnAtivado, OnDesativado;
 
-    
+    // Animação:
+    private Animator animator;
+    public static readonly int pressureID = Animator.StringToHash("Pressure");
+
+
+
+    private void Awake(){
+        animator = GetComponentInChildren<Animator>();
+    }
+
     private void OnTriggerEnter(Collider other){
         ChecarAtivacao();
     }
@@ -38,6 +47,7 @@ public class PressurePlate : MonoBehaviour
             ativado = true;
 
             OnAtivado?.Invoke();
+            
         }
         else if(ativado){
             Debug.Log("<color=red>Botão desativado.</color>");
@@ -45,6 +55,8 @@ public class PressurePlate : MonoBehaviour
 
             OnDesativado?.Invoke();
         }
+
+        animator.SetFloat(pressureID, pesoAtual/pesoDesejado);
     }
 
     // Para cada objeto com um rigidbody em cima do botão, adiciona o peso dele ao peso total.

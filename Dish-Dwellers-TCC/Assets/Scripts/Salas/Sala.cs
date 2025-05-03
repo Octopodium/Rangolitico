@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,6 +9,7 @@ public class sala : MonoBehaviour{
     public Transform[] spawnPoints = new Transform[2];
     public List<ControladorDeObjeto> objetosSensiveis = new List<ControladorDeObjeto>();
     public List<OnTriggerEvent> triggers = new List<OnTriggerEvent>();
+    public Action onResetSala;
 
     [HideInInspector]public int nSala, nFase;
 
@@ -36,6 +38,8 @@ public class sala : MonoBehaviour{
         foreach(OnTriggerEvent trigger in triggers){
             trigger.gameObject.SetActive(true);
         }
+
+        onResetSala?.Invoke();
     }
 
     // Separa o nome da cena para encontrar o numero da fase e da sala.

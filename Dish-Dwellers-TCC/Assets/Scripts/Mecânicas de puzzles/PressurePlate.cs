@@ -23,12 +23,21 @@ public class PressurePlate : MonoBehaviour
     public static readonly int pressureID = Animator.StringToHash("Pressure");
 
 
-
     private void Awake(){
         animator = GetComponentInChildren<Animator>();
     }
 
-    private void OnTriggerEnter(Collider other){
+    private void Start()
+    {
+        try{
+            GameManager.instance.salaAtual.onResetSala += ChecarAtivacao;
+        }
+        catch{
+            FindFirstObjectByType<sala>().onResetSala += ChecarAtivacao;
+        }
+    }
+
+    private void OnTriggerStay(Collider other){
         ChecarAtivacao();
     }
 

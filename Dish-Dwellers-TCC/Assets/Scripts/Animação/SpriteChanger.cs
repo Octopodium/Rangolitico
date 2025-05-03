@@ -26,7 +26,6 @@ public class SpriteChanger : MonoBehaviour{
     private void Awake(){
         render = GetComponentInChildren<Renderer>();
         keywords = render.material.enabledKeywords;
-        Debug.Log(render.sharedMaterial.shaderKeywords.Length);
     }
 
     private void FixedUpdate(){

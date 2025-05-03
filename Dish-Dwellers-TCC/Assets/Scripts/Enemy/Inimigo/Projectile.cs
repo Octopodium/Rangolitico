@@ -15,7 +15,6 @@ public class Projectile : MonoBehaviour
 
     void Awake()
     {
-        player = GameObject.FindFirstObjectByType<Player>();
         animator = GetComponentInChildren<AnimatorTorreta>();
     }
     
@@ -68,10 +67,12 @@ public class Projectile : MonoBehaviour
         else if(other.CompareTag("Queimavel"))
         {
             other.GetComponent<ParedeDeVinhas>().ReduzirIntegridade();
+            Destroy(gameObject);
         }
 
         else if (other.gameObject.CompareTag("Player") && !isReflected)
         {
+            player = other.GetComponent<Player>();
             player.MudarVida(-1);
             Debug.Log("deu dano");
             Destroy(gameObject);

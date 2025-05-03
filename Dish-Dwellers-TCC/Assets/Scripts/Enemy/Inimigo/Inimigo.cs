@@ -35,7 +35,6 @@ public abstract class Inimigo : MonoBehaviour
 
     #endregion
 
-    //Métodos estão protegidos para serem usados apenas das classes ques os herdarem
     protected virtual void ChecagemDeZonas()
     {
         //Checa se o player está no campo de visão ou na zona de ataque, para a tomada de ações...

@@ -31,7 +31,6 @@ public class InimigoTorreta : Inimigo
     #endregion
 
     private void Awake(){
-        cc = GetComponent<CharacterController>();
         animator = GetComponentInChildren<AnimatorTorreta>();
     }
 

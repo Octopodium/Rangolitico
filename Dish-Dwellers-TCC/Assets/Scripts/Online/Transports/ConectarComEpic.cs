@@ -35,7 +35,7 @@ public class ConectarComEpic : ConectorDeTransport {
     }
 
     public override void ConectarCliente() {
-        string id = idInput.text;
+        string id = idInput.text.Trim().ToUpper();
         beOSLobby.ConectarCliente(id);
     }
 

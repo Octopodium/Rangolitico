@@ -48,6 +48,7 @@ public class BetterEOSLobby : MonoBehaviour {
     void Start() {
         // Quando um lobby é criado com sucesso, iniciar o host
         eOSLobby.CreateLobbySucceeded += (lobbyAttrs) => {
+            Debug.Log("Lobby criado com sucesso: " + idLobby);
             OnLobbyCriado?.Invoke(idLobby);
             networkManager.StartHost();
         };

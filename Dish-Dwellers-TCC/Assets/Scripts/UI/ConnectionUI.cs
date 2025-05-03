@@ -37,10 +37,6 @@ public class ConnectionUI : MonoBehaviour {
         UpdateNominhos();
 
 
-
-        MostrarCarregamento("Logando...", SairDoLobby);
-        conectorDeTransport.LogarUsuario(sucesso => EsconderCarregamento());
-
         if (PartidaInfo.instance != null && PartidaInfo.instance.modo == PartidaInfo.Modo.Entrar) {
             PrepararPraEntrarLobby();
         } else {

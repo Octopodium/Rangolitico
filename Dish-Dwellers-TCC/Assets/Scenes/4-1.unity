@@ -11408,6 +11408,7 @@ MonoBehaviour:
   - {fileID: 999645399}
   - {fileID: 831223619}
   objetosSensiveis: []
+  triggers: []
   nSala: 0
   nFase: 0
 --- !u!4 &1166284913
@@ -14537,14 +14538,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 342846582466456573, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3346066248069131051, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3978844108890528751, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -14585,25 +14578,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4200341801274913988, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
-      propertyPath: qualPlayer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5160761576586478175, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
-      propertyPath: qualPlayer
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5370679958162542896, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: m_Name
       value: GameManager 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6033614400975183280, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8783033451288024843, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
-      propertyPath: qualPlayer
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

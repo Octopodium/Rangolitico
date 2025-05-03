@@ -3,11 +3,11 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed = 7f;
+    [SerializeField] private Player player; 
+    [SerializeField] private AnimatorTorreta animator;
     public GameObject owner;
-    public Player player; 
     private Vector3 direction;
     private bool isReflected = false;
-    [SerializeField] private AnimatorTorreta animator;
 
 
     [Header("<color=green> Lima coisas :")]

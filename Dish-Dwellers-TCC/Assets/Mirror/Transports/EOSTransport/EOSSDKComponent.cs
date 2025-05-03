@@ -60,9 +60,6 @@ namespace EpicTransport {
 
         private ulong authExpirationHandle;
 
-        public System.Action<string> OnCustomEventLoggedIn;
-
-
         private string authInterfaceLoginCredentialId = null;
         public static void SetAuthInterfaceLoginCredentialId(string credentialId) => Instance.authInterfaceLoginCredentialId = credentialId;
         private string authInterfaceCredentialToken = null;
@@ -415,6 +412,7 @@ namespace EpicTransport {
             EOS.GetConnectInterface().Login(ref loginOptions, null, OnConnectInterfaceLogin);
         }
 
+        public System.Action<string> OnCustomEventLoggedIn;
         private void OnConnectInterfaceLogin(ref Epic.OnlineServices.Connect.LoginCallbackInfo loginCallbackInfo) {
             if (loginCallbackInfo.ResultCode == Result.Success) {
                 Debug.Log("Connect Interface Login succeeded");
@@ -427,8 +425,7 @@ namespace EpicTransport {
                     localUserProductIdString = productIdString;
                     localUserProductId = loginCallbackInfo.LocalUserId;
 
-                    if (OnCustomEventLoggedIn != null)
-                        OnCustomEventLoggedIn.Invoke(productIdString);
+                    OnCustomEventLoggedIn?.Invoke(productIdString);
                 }
 
                 initialized = true;

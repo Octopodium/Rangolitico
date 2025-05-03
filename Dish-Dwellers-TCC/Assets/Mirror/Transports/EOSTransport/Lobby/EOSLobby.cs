@@ -508,41 +508,4 @@ public class EOSLobby : MonoBehaviour {
             }
         });
     }
-
-    // Função customizada para criar um atributo para o lobby
-    public AttributeData[] CriarAtributos(string id) {
-        AttributeData[] attributes = new AttributeData[1];
-        attributes[0] = new AttributeData { Key = "id_jogo", Value = id };
-        return attributes;
-    }
-
-    public LobbySearchSetParameterOptions[] CriarPesquisa(string id) {
-        LobbySearchSetParameterOptions[] options = new LobbySearchSetParameterOptions[1];
-        options[0] = new LobbySearchSetParameterOptions {
-            ComparisonOp = ComparisonOp.Equal,
-            Parameter = new AttributeData { Key = "id_jogo", Value = id }
-        };
-        return options;
-    }
-
-    public string GetIdFromInfo(LobbyDetails details) {
-        LobbyDetailsCopyInfoOptions options;
-        LobbyDetailsInfo? outLobbyDetailsInfo = null;
-
-        details.CopyInfo(ref options, out outLobbyDetailsInfo);
-
-        Debug.Log("ID do Lobby: " + outLobbyDetailsInfo?.LobbyId);
-        return outLobbyDetailsInfo?.LobbyId;
-    }
-
-    public string GetHostIDFromInfo(LobbyDetails details) {
-        LobbyDetailsCopyInfoOptions options;
-        LobbyDetailsInfo? outLobbyDetailsInfo = null;
-
-        details.CopyInfo(ref options, out outLobbyDetailsInfo);
-
-        Debug.Log("ID do Host: " + outLobbyDetailsInfo?.LobbyOwnerUserId);
-        return outLobbyDetailsInfo?.LobbyOwnerUserId.ToString();
-    }
-    
 }

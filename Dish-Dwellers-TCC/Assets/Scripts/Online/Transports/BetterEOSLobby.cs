@@ -1,21 +1,23 @@
 using EpicTransport;
 using Epic.OnlineServices.Lobby;
+using Epic.OnlineServices.Connect;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 
 
-// OBS: Por enquanto para rodar coisas do multiplayer é necessário ter um arquivo na pasta root do projeto (Dish-Dwellers-TCC)
-// Esse arquivo pode ser baixado no link: https://github.com/EOS-Contrib/eos_plugin_for_unity/releases/download/v4.0.0/com.playeveryware.eos-4.0.0.tgz 
-// Favor não renomear, e não mover o arquivo, pois o plugin não vai funcionar corretamente.
-
 [RequireComponent(typeof(EOSLobby))]
 public class BetterEOSLobby : MonoBehaviour {
-    // OBS: Além deste script, eu também fiz alterações no EOSLobby.cs, para que o mesmo funcione corretamente.
-    // Se você copiar este código, sugiro fortemente que copie também o EOSLobby.cs, para evitar bugs.
-    // EOSLobby.cs está na pasta: Assets/Mirror/Transports/EOSTransport/Lobby/EOSLobby.cs
-    // Nota: você vai precisar de acesso ao SDK da Epic de alguma forma, seja importanto diretamente ou com o plugin do EOS.
+    // OBS: Além deste script, eu também fiz uma pequena adição no EOSSKDComponent.cs, para que o mesmo funcione corretamente.
+    // Se você copiar este código, para quaisquer que sejam seus motivos, você deve fazer uma das duas opções:
+    // 1- Substituir o EOSSKDComponent pelo alterado, que está na pasta: Assets/Mirror/Transports/EOSTransport/EOSSKDComponent.cs
+    // 2- Manualmente adicionar a função OnCustomEventLoggedIn, que é chamada quando o jogador loga no EOS, e que chama a função AoLogar() deste script.
+    // 2.1 - Para isso, adicione a seguinte linha no EOSSDKComponent.cs, logo em cima da declaração da função OnConnectInterfaceLogin: (neste projeto está na linha 415)
+    //          public System.Action<string> OnCustomEventLoggedIn;
+    // 2.2 - E adicione a seguinte linha dentro do if que indica que o jogador logou com sucesso, na função OnConnectInterfaceLogin: (neste projeto está na linha 428)
+    //          OnCustomEventLoggedIn?.Invoke(productIdString);
 
     // Referências
     NetworkManager networkManager;
@@ -43,6 +45,16 @@ public class BetterEOSLobby : MonoBehaviour {
         if (eossdkComponent == null) eossdkComponent = GetComponent<EOSSDKComponent>();
 
         eossdkComponent.OnCustomEventLoggedIn += AoLogar;
+
+        /*
+        AddNotifyLoginStatusChangedOptions options = new AddNotifyLoginStatusChangedOptions();
+        object dado = new object();
+        EOSSDKComponent.GetConnectInterface().AddNotifyLoginStatusChanged(ref options, dado, (ref LoginStatusChangedCallbackInfo info) => {
+            if (info.CurrentStatus == Epic.OnlineServices.LoginStatus.LoggedIn) {
+                AoLogar(info.LocalUserId.ToString());
+            }
+        });
+        */
     }
 
     void Start() {
@@ -64,10 +76,10 @@ public class BetterEOSLobby : MonoBehaviour {
             string idCorreto = "";
 
             foreach (var lobby in foundLobbies) {
-                string id = eOSLobby.GetIdFromInfo(lobby);
+                string id = GetIdFromInfo(lobby);
                 if (id != null && id != "") {
                     idCorreto = id;
-                    idHost = eOSLobby.GetHostIDFromInfo(lobby);
+                    idHost = GetHostIDFromInfo(lobby);
                     break;
                 }
             }
@@ -95,6 +107,7 @@ public class BetterEOSLobby : MonoBehaviour {
             OnEntrarLobbyFalhou?.Invoke();
             Debug.LogError("Falha ao entrar no lobby: " + error);
         };
+        
     }
 
     void AoLogar(string id)  {
@@ -102,6 +115,8 @@ public class BetterEOSLobby : MonoBehaviour {
 
         if (pediuPraHostear) CriarHost();
         if (pediuPraEntrar) ConectarCliente(tentarEntrarNoLobby_Cache);
+
+        OnLogou?.Invoke();
 
         pediuPraHostear = false;
         pediuPraEntrar = false;
@@ -117,7 +132,7 @@ public class BetterEOSLobby : MonoBehaviour {
         if (networkManager == null) networkManager = NetworkManager.singleton;
 
         idLobby = GerarID();
-        eOSLobby.CreateLobby(2, 0, true, eOSLobby.CriarAtributos(idLobby));
+        eOSLobby.CreateLobby(2, 0, true, CriarAtributos(idLobby));
     }
 
     public void ConectarCliente(string id) {
@@ -126,7 +141,7 @@ public class BetterEOSLobby : MonoBehaviour {
             return;
         }
 
-        eOSLobby.FindLobbies(1, eOSLobby.CriarPesquisa(id));
+        eOSLobby.FindLobbies(1, CriarPesquisa(id));
     }
 
     public void DesconectarHost() {
@@ -151,4 +166,45 @@ public class BetterEOSLobby : MonoBehaviour {
         }
         return new string(stringChars);
     }
+
+
+    #region Utilidades
+
+    // Função customizada para criar um atributo para o lobby
+    AttributeData[] CriarAtributos(string id) {
+        AttributeData[] attributes = new AttributeData[1];
+        attributes[0] = new AttributeData { Key = "id_jogo", Value = id };
+        return attributes;
+    }
+
+    LobbySearchSetParameterOptions[] CriarPesquisa(string id) {
+        LobbySearchSetParameterOptions[] options = new LobbySearchSetParameterOptions[1];
+        options[0] = new LobbySearchSetParameterOptions {
+            ComparisonOp = Epic.OnlineServices.ComparisonOp.Equal,
+            Parameter = new AttributeData { Key = "id_jogo", Value = id }
+        };
+        return options;
+    }
+
+    string GetIdFromInfo(LobbyDetails details) {
+        LobbyDetailsCopyInfoOptions options;
+        LobbyDetailsInfo? outLobbyDetailsInfo = null;
+
+        details.CopyInfo(ref options, out outLobbyDetailsInfo);
+
+        Debug.Log("ID do Lobby: " + outLobbyDetailsInfo?.LobbyId);
+        return outLobbyDetailsInfo?.LobbyId;
+    }
+
+    string GetHostIDFromInfo(LobbyDetails details) {
+        LobbyDetailsCopyInfoOptions options;
+        LobbyDetailsInfo? outLobbyDetailsInfo = null;
+
+        details.CopyInfo(ref options, out outLobbyDetailsInfo);
+
+        Debug.Log("ID do Host: " + outLobbyDetailsInfo?.LobbyOwnerUserId);
+        return outLobbyDetailsInfo?.LobbyOwnerUserId.ToString();
+    }
+
+    #endregion
 }

@@ -8,6 +8,7 @@ public class Portal : MonoBehaviour{
     [SerializeField] private GameObject canvasFinalDaDemo;
 
     List<Player> playersNoPortal = new List<Player>();
+    [SerializeField] private Transform SpawnDeSaida;
 
     private void OnTriggerEnter(Collider other){
         if(other.CompareTag("Player")){
@@ -26,6 +27,14 @@ public class Portal : MonoBehaviour{
             }
 
             Debug.Log("Players no portal : " + playersNoPortal.Count);
+        }
+    }
+
+    private void SairDoPortal(){
+        if(playersNoPortal.Count == 1){
+            Player player = playersNoPortal[0];
+            player.transform.position = SpawnDeSaida.position;
+            
         }
     }
 

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PonteLevadica : IResetavel
 {
-    public Quaternion rotDesejada;
+    public Quaternion rotDesejada = new Quaternion();
     private Quaternion rotInicial;
     [SerializeField] private float duracao;
     private Coroutine rotinaAnterior;

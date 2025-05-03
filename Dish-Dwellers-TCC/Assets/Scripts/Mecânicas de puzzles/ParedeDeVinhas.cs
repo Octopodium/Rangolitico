@@ -6,17 +6,10 @@ public class ParedeDeVinhas : MonoBehaviour
     [SerializeField] private Color[] cores;
     private MaterialPropertyBlock mpb;
 
-    private void Start(){
-        SetarCor(integridade);
-    }
-
     public void ReduzirIntegridade(){
         if(--integridade <= 0 ){
             Destroy(gameObject);
         }
-
-        try{SetarCor(integridade);}
-        catch{}
     }
 
     private void SetarCor(int integridade){

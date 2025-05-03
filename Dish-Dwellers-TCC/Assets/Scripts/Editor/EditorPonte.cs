@@ -15,14 +15,13 @@ public class EditorPonte : Editor
 
 
     private void OnEnable() {
-        rotDesejada = serializedObject.FindProperty("rotDesejada");
         duracao = serializedObject.FindProperty("duracao");
+        rotDesejada = serializedObject.FindProperty("rotDesejada");
     }
 
     public override void OnInspectorGUI(){
         serializedObject.Update();
-
-        PonteLevadica ponte = (PonteLevadica)target;
+        PonteLevadica ponte = target as PonteLevadica;
 
         EditorGUILayout.PropertyField(duracao);
 
@@ -36,6 +35,8 @@ public class EditorPonte : Editor
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
 
+        EditorUtility.SetDirty(target);
+        
         serializedObject.ApplyModifiedProperties();
     }
 

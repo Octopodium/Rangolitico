@@ -14,7 +14,8 @@ public class ConnectionUI : MonoBehaviour {
 
     [Header("UI")]
     public GameObject esperandoJogador;
-    public GameObject tentandoConectar;
+    public GameObject telaCarregamento;
+    public Text telaCarregamentoTexto;
     public InputField anglerInput, heaterInput;
     public GameObject anglerReady, heaterReady;
     public Transform logsHolder;
@@ -35,21 +36,17 @@ public class ConnectionUI : MonoBehaviour {
 
         UpdateNominhos();
 
+
+
+        MostrarCarregamento("Logando...", SairDoLobby);
+        conectorDeTransport.LogarUsuario(sucesso => EsconderCarregamento());
+
         if (PartidaInfo.instance != null && PartidaInfo.instance.modo == PartidaInfo.Modo.Entrar) {
             PrepararPraEntrarLobby();
         } else {
             ComecarHostear();
         }
     }
-
-    System.Action GeneralDebug(string frase) {
-        return () => Debug.Log(frase);
-    }
-
-    System.Action<int> GeneralDebugInt(string frase) {
-        return (num) => Debug.Log(num + " " + frase);
-    }
-
 
 
     #region Lobby 
@@ -179,7 +176,6 @@ public class ConnectionUI : MonoBehaviour {
 
     // Mostra modal para entrar em um lobby já criado
     public void PrepararPraEntrarLobby() {
-        tentandoConectar.SetActive(false);
         entrarLobbyPanel.SetActive(true);
         
         conectorDeTransport.Setup();
@@ -188,20 +184,36 @@ public class ConnectionUI : MonoBehaviour {
     // Chamado quando um cliente tenta entrar em um lobby já criado
     public void EntrarNoLobby() {
         entrarLobbyPanel.SetActive(false);
-        tentandoConectar.SetActive(true);
 
+        MostrarCarregamento("Tentando conectar...", CancelarEntrada);
         conectorDeTransport.ConectarCliente();
     }
 
     // Chamado quando um cliente entra no lobby com sucesso (pelo LobbyPlayer)
     public void EntrouNoLobby() {
-        tentandoConectar.SetActive(false);
+        EsconderCarregamento();
     }
 
     public void CancelarEntrada() {
-        tentandoConectar.SetActive(false);
+        EsconderCarregamento();
         entrarLobbyPanel.SetActive(true);
         conectorDeTransport.EncerrarCliente();
+    }
+
+    System.Action OnCancelarCarregamento = null;
+    public void HandleCancelarCarregamento() {
+        if (OnCancelarCarregamento != null) OnCancelarCarregamento.Invoke();
+        OnCancelarCarregamento = null;
+    }
+
+    public void MostrarCarregamento(string texto, System.Action onCancelar = null) {
+        telaCarregamento.SetActive(true);
+        telaCarregamentoTexto.text = texto;
+        OnCancelarCarregamento = onCancelar;
+    }
+
+    public void EsconderCarregamento() {
+        telaCarregamento.SetActive(false);
     }
 
     #endregion

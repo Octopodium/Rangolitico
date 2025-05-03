@@ -1145,7 +1145,8 @@ Transform:
   m_LocalPosition: {x: 897.53864, y: 578.2148, z: 766.1375}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1777460797}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &595452228
@@ -2124,7 +2125,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 9096807382425419352}
         m_TargetAssemblyTypeName: ConnectionUI, Assembly-CSharp
-        m_MethodName: CancelarEntrada
+        m_MethodName: HandleCancelarCarregamento
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2496,7 +2497,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'ID: 12316546545'
+  m_Text: 'ID: ?????'
 --- !u!222 &1237398958
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3170,6 +3171,65 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1677504836}
   m_CullTransparentMesh: 1
+--- !u!1 &1777460796
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1777460797}
+  - component: {fileID: 1777460799}
+  - component: {fileID: 1777460798}
+  m_Layer: 0
+  m_Name: Lobby
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1777460797
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777460796}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 595452225}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1777460798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777460796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3b782653e18a474d87cd18873932f9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eOSLobby: {fileID: 1777460799}
+  eossdkComponent: {fileID: 595452229}
+--- !u!114 &1777460799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777460796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe875c761de36584ebe057dfddc7f360, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1821022766
 GameObject:
   m_ObjectHideFlags: 0
@@ -5507,7 +5567,6 @@ GameObject:
   - component: {fileID: 6795398611526235476}
   - component: {fileID: 9096807382425419352}
   - component: {fileID: 9096807382425419354}
-  - component: {fileID: 9096807382425419355}
   m_Layer: 5
   m_Name: Tudo
   m_TagString: Untagged
@@ -5532,7 +5591,8 @@ MonoBehaviour:
   p1: {fileID: 0}
   p2: {fileID: 0}
   esperandoJogador: {fileID: 2414091}
-  tentandoConectar: {fileID: 1015866546}
+  telaCarregamento: {fileID: 1015866546}
+  telaCarregamentoTexto: {fileID: 2017068256}
   anglerInput: {fileID: 1976658401}
   heaterInput: {fileID: 225780464}
   anglerReady: {fileID: 383250617}
@@ -5551,22 +5611,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b703ab474b622a04980dda030e361a44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eOSLobby: {fileID: 9096807382425419355}
-  eossdkComponent: {fileID: 595452229}
   mostrarID: {fileID: 1237398957}
   idInput: {fileID: 1360276241}
---- !u!114 &9096807382425419355
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9096807382425419351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe875c761de36584ebe057dfddc7f360, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  beOSLobby: {fileID: 1777460798}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -15,6 +15,10 @@ public class ConectorOnlineIP : ConectorDeTransport {
         telepathyTransport = (TelepathyTransport)networkManager.transport;
     }
 
+    public override void LogarUsuario(System.Action<bool> callback = null) {
+        if (callback != null) callback.Invoke(true);
+    }
+
     public override void Setup() {
         ipInputField.text = networkManager.networkAddress;
         portInputField.text = telepathyTransport.port.ToString();

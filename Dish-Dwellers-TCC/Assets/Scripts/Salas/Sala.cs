@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,9 +8,20 @@ public class sala : MonoBehaviour{
     
     [Space(10)][Header("<color=yellow>Referências manuais: </color>")][Space(10)]
     public Transform[] spawnPoints = new Transform[2];
-    public List<ControladorDeObjeto> objetosSensiveis = new List<ControladorDeObjeto>();
+    public List<OnTriggerEvent> triggers = new List<OnTriggerEvent>();
+    private List<IResetavel> resetaveis = new List<IResetavel>();
+    public Action onResetSala;
 
     [HideInInspector]public int nSala, nFase;
+
+    private void Awake()
+    {
+        resetaveis = FindObjectsByType<IResetavel>(FindObjectsSortMode.None).ToList();
+        
+        foreach(var data in resetaveis){
+            Debug.Log($"<color=blue>{data.name}");
+        }
+    }
 
     private void Start(){
         GetNomeDaSala();
@@ -16,11 +29,25 @@ public class sala : MonoBehaviour{
         GameManager.instance.SetSala(this);
     }
 
+    /// <summary>
+    /// Reinicia a sala para suas condições iniciais.
+    /// </summary>
     public void ResetSala(){
+
+        // Reposiciona o jogador na sua posição inicial, e restaura sua vida.
         PosicionarJogador();
         foreach( var player in GameManager.instance.jogadores){
             player.MudarVida(3);
         }
+
+        // Reativa todos os triggers da sala.
+        foreach(OnTriggerEvent trigger in triggers){
+            trigger.gameObject.SetActive(true);
+        }
+
+        onResetSala?.Invoke();
+        foreach(var data in resetaveis) data.OnReset();
+        
     }
 
     // Separa o nome da cena para encontrar o numero da fase e da sala.
@@ -66,15 +93,6 @@ public class sala : MonoBehaviour{
         for( int i = 0; i < players.Count; i++){
             players[i].Teletransportar(spawnPoints[i].position);
             players[i].gameObject.SetActive(true);
-        }
-    }
-
-    /// <summary>
-    /// Instancia os objetos de todos os controladores listados em objetosSensiveis.
-    /// </summary>
-    public void SpawnObjetosSensiveis(){
-        foreach(ControladorDeObjeto controlador in objetosSensiveis){
-            controlador.Spawn();
         }
     }
 

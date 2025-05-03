@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
+using System;
 
 public enum ModoDeJogo {SINGLEPLAYER, MULTIPLAYER_LOCAL, MULTIPLAYER_ONLINE, INDEFINIDO}; // Indefinido: substituto para NULL (de quando não foi definido ainda)
 
@@ -190,7 +191,7 @@ public class GameManager : MonoBehaviour {
     #region Sistema de salas
     public List<Player> jogadores = new List<Player>();
     private AsyncOperation cenaProx;
-    private sala sala;
+    private sala sala = null;
     public sala salaAtual{ get{return sala;} }
 
     

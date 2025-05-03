@@ -3,11 +3,11 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed = 7f;
+    [SerializeField] private Player player; 
+    [SerializeField] private AnimatorTorreta animator;
     public GameObject owner;
-    public Player player; 
     private Vector3 direction;
     private bool isReflected = false;
-    [SerializeField] private AnimatorTorreta animator;
 
 
     [Header("<color=green> Lima coisas :")]
@@ -15,7 +15,6 @@ public class Projectile : MonoBehaviour
 
     void Awake()
     {
-        player = GameObject.FindObjectOfType<Player>();
         animator = GetComponentInChildren<AnimatorTorreta>();
     }
     
@@ -47,20 +46,38 @@ public class Projectile : MonoBehaviour
             
             transform.rotation = Quaternion.LookRotation(reflectDirection);
         }
-        else if(other.CompareTag("Queimavel")){
-            other.GetComponent<ParedeDeVinhas>().ReduzirIntegridade();
-        }
-        //Se colidir com o inimigo após ser refletido
-        else if (isReflected && other.gameObject.CompareTag("Torreta"))
+
+        else if (isReflected && other.gameObject == owner)
         {
-            animator.Atordoado(true);
+            Debug.Log("Colidiu");
+            //Quando acerta o proprietário do projetil(ou seja, a torreta) coloca o mesmo no estado de stunado
+            InimigoTorreta torreta = owner.GetComponent<InimigoTorreta>(); 
+            if (torreta != null)
+            {
+                torreta.GetStunned();
+            }
             Destroy(gameObject);
         }
+
+        else if(other.gameObject.CompareTag("Torreta") && !isReflected)
+        {
+            return;
+        }
+
+        else if(other.CompareTag("Queimavel"))
+        {
+            other.GetComponent<ParedeDeVinhas>().ReduzirIntegridade();
+            Destroy(gameObject);
+        }
+
         else if (other.gameObject.CompareTag("Player") && !isReflected)
         {
+            player = other.GetComponent<Player>();
             player.MudarVida(-1);
             Debug.Log("deu dano");
+            Destroy(gameObject);
         }
+
         //previsão pra caso houver colisão com outros obstáculos
         else
         {

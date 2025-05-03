@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 2861978197551215180}
   - component: {fileID: 4025250094709489376}
   - component: {fileID: 8230915783406910418}
+  - component: {fileID: 5749396601122766899}
   - component: {fileID: 7344758756180509263}
   - component: {fileID: 990389122100505254}
-  - component: {fileID: 5749396601122766899}
+  - component: {fileID: 3944860350377869047}
   m_Layer: 7
   m_Name: Chave
   m_TagString: Chave
@@ -71,6 +72,27 @@ MonoBehaviour:
   onSolto:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5749396601122766899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1742485915137094490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06f593ff6c786d248aaf34045c1fab3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onGanchado:
+    m_PersistentCalls:
+      m_Calls: []
+  onDesganchado:
+    m_PersistentCalls:
+      m_Calls: []
+  onPuxado:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &7344758756180509263
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -119,7 +141,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &5749396601122766899
+--- !u!114 &3944860350377869047
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -128,16 +150,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1742485915137094490}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06f593ff6c786d248aaf34045c1fab3b, type: 3}
+  m_Script: {fileID: 11500000, guid: 3cc12de86cbc7a44a9012552b3c44c6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onGanchado:
-    m_PersistentCalls:
-      m_Calls: []
-  onDesganchado:
-    m_PersistentCalls:
-      m_Calls: []
-  onPuxado:
+  OnDestruido:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &4169866908731545692

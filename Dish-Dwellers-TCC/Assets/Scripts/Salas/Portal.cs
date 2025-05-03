@@ -1,18 +1,26 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Collider))]
-public class Portal : MonoBehaviour{
+public class Portal : IResetavel{
 
     [SerializeField] private bool finalDaDemo;
     [SerializeField] private GameObject canvasFinalDaDemo;
 
     List<Player> playersNoPortal = new List<Player>();
+    [SerializeField] private Transform spawnDeSaida;
+
+
+    public override void OnReset(){
+        playersNoPortal.Clear();
+    }
 
     private void OnTriggerEnter(Collider other){
         if(other.CompareTag("Player")){
             Player player = other.GetComponent<Player>();
             if(player == null) return; // Se não for um player, não faz nada.
+            player.inputActionMap["Cancelar"].performed += SairDoPortal;
             
             other.gameObject.SetActive(false);
 
@@ -26,6 +34,20 @@ public class Portal : MonoBehaviour{
             }
 
             Debug.Log("Players no portal : " + playersNoPortal.Count);
+        }
+    }
+
+    private void SairDoPortal(InputAction.CallbackContext context){
+        if(playersNoPortal.Count == 1){
+            Player player = playersNoPortal[0];
+
+            player.transform.position = spawnDeSaida.position;
+            player.gameObject.SetActive(true);
+            playersNoPortal.Remove(player);
+
+            Debug.Log("<color=red>Saiu do portal.");
+
+            player.inputActionMap["Cancelar"].performed -= SairDoPortal;
         }
     }
 

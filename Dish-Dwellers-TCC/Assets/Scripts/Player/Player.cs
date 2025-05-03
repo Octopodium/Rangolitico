@@ -58,6 +58,7 @@ public class Player : NetworkBehaviour {
 
     // Titizim:
     [Header("Config do Escudo")]
+    public bool escudo;
     public bool escudoAtivo {get; set;}
     public float velocidadeComEscudo = 4f;
 
@@ -295,6 +296,7 @@ public class Player : NetworkBehaviour {
     /// <param name="mostrar">Se irá mostrar ou não</param>
     public void MostrarDirecional(bool mostrar) {
         visualizarDirecao.SetActive(mostrar);
+        if(personagem == QualPersonagem.Heater) return;
         podeMovimentar = !mostrar;
     }
 
@@ -339,6 +341,7 @@ public class Player : NetworkBehaviour {
 
     // Chamado automaticamente pelo método Movimentacao
     void MovimentacaoNoChao(bool permitidoMover) {
+        
         UsarCC();
 
         Vector3 movimentacaoEfetiva = Vector3.zero; 
@@ -358,10 +361,9 @@ public class Player : NetworkBehaviour {
 
         if (!permitidoMover || sendoCarregado || !podeMovimentar || movimentacao.magnitude == 0)  return;
 
-        Vector3 movimentacaoEfetiva = Vector3.zero;
+        rb.AddForce(movimentacao.normalized * velocidadeRB , ForceMode.Force);
 
-        rb.AddForce(movimentacao * velocidadeRB * 10f, ForceMode.Force);
-
+        /*
         Vector3 velocity = rb.linearVelocity;
         velocity.y = 0; // Mantém a velocidade vertical do Rigidbody
         if (velocity.magnitude > velocidadeRB) {
@@ -369,6 +371,7 @@ public class Player : NetworkBehaviour {
             velocity.y = rb.linearVelocity.y;
             rb.linearVelocity = velocity.normalized * velocidadeRB; // Limita a velocidade do jogador
         }
+        */
     }
 
     
@@ -376,6 +379,7 @@ public class Player : NetworkBehaviour {
     public void UsarRB(bool ignorarChecagem = false) {
         if (!ignorarChecagem && usandoRb) return; // Se já está usando o Rigidbody, não faz nada
 
+        col.enabled = true;
         characterController.enabled = false; // Desabilita o CharacterController para evitar colisões
         rb.isKinematic = false; // Habilita o Rigidbody para permitir a física
 
@@ -388,6 +392,7 @@ public class Player : NetworkBehaviour {
     public void UsarCC(bool ignorarChecagem = false) {
         if (!ignorarChecagem && !usandoRb) return; // Se não está usando o Rigidbody, não faz nada
 
+        col.enabled = false;
         characterController.enabled = true; // Habilita o CharacterController novamente
         rb.linearVelocity = Vector3.zero; // Zera a velocidade do Rigidbody
         rb.isKinematic = true; // Desabilita o Rigidbody para evitar a física

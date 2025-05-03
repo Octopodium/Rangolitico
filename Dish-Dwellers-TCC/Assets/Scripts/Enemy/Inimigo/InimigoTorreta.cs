@@ -21,16 +21,22 @@ public class InimigoTorreta : Inimigo
     private float tempoRestanteDeFoco;
     private bool temAlvoFixo = false;
 
+    [Header("Configurações de Stun")]
+    [SerializeField] private float stunDuration = 3f;
+    private bool isStunned = false;
+    private float stunTimer = 0f;
+
     [SerializeField] private AnimatorTorreta animator;
 
     #endregion
 
-    private void Awake(){
-        cc = GetComponent<CharacterController>();
+    private void Awake()
+    {
         animator = GetComponentInChildren<AnimatorTorreta>();
     }
 
-    void Start(){
+    private void Start()
+    {
         target = EncontrarPlayerMaisProximo();
         if (target != null)
         {
@@ -39,8 +45,19 @@ public class InimigoTorreta : Inimigo
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
+        if (isStunned)
+        {
+            stunTimer -= Time.deltaTime;
+            if (stunTimer <= 0f)
+            {
+                isStunned = false;
+                animator.Atordoado(false);
+            }
+            return; // Pra não atacar enquanto estiver stunado, ta meio ruim eu sei, eu sei...
+        }
+
         base.ChecagemDeZonas();
         AtualizarAlvo();
         Movimento();
@@ -59,7 +76,7 @@ public class InimigoTorreta : Inimigo
 
     public override void Atacar()
     {
-        if(_playerNaZonaDeAtaque && target != null && Time.time > nextFire)
+        if(!isStunned && _playerNaZonaDeAtaque && target != null && Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
 
@@ -70,7 +87,35 @@ public class InimigoTorreta : Inimigo
         }
     }
 
-    void AtualizarAlvo()
+     /// <summary>
+    /// Método para checar transform mais próximo dentro da zona de percepção da torreta
+    /// faz o calculo do player que está em menor distancia baseado na interação com as zonas de 
+    /// percepção, retornar o player mais próximo na área para poder focar nele por um periodo de tempo.
+    /// </summary>
+    /// <returns></returns>
+    private Transform EncontrarPlayerMaisProximo()
+    {
+        Transform maisProximo = null;
+        float menorDistancia = Mathf.Infinity;
+
+        foreach (var jogador in GameManager.instance.jogadores)
+        {
+            float distancia = Vector3.Distance(transform.position, jogador.transform.position);
+            if (distancia <= zonaDeAtaque && distancia < menorDistancia)
+            {
+                menorDistancia = distancia;
+                maisProximo = jogador.transform;
+            }
+        }
+
+        return maisProximo;
+    }
+
+    /// <summary>
+    /// Método reponsável por fazer a troca de target entre os players, quando o tempo de foco 
+    /// do inimigo termina, ele procura um novo target dentro da sua zona de percepção ou ataque.
+    /// </summary>
+    private void AtualizarAlvo()
     {
         if (temAlvoFixo)
         {
@@ -97,27 +142,20 @@ public class InimigoTorreta : Inimigo
         }
     }
 
-    Transform EncontrarPlayerMaisProximo()
-    {
-        Transform maisProximo = null;
-        float menorDistancia = Mathf.Infinity;
-
-        foreach (var jogador in GameManager.instance.jogadores)
-        {
-            float distancia = Vector3.Distance(transform.position, jogador.transform.position);
-            if (distancia <= zonaDeAtaque && distancia < menorDistancia)
-            {
-                menorDistancia = distancia;
-                maisProximo = jogador.transform;
-            }
-        }
-
-        return maisProximo;
-    }
-
-    bool PlayerNaZona(Transform jogador)
+    private bool PlayerNaZona(Transform jogador)
     {
         return Vector3.Distance(transform.position, jogador.position) <= zonaDeAtaque;
+    }
+
+    /// <summary>
+    /// Chamada do animator da torreta que coloca o inimigo no estado de stun
+    /// assim que ele for atingido por um projetil refletido.
+    /// </summary>
+    public void GetStunned()
+    {
+        isStunned = true;
+        stunTimer = stunDuration;
+        animator.Atordoado(true);
     }
 
     protected override void TomaDano(int valor)
@@ -125,6 +163,9 @@ public class InimigoTorreta : Inimigo
         base.TomaDano(valor);
     }
 
+    /// <summary>
+    /// Só pra visualização das zonas de percepção e ataque do inimigo na cena.
+    /// </summary>
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;

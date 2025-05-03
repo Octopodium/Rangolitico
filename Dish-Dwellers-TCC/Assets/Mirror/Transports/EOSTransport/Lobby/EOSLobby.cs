@@ -531,7 +531,18 @@ public class EOSLobby : MonoBehaviour {
 
         details.CopyInfo(ref options, out outLobbyDetailsInfo);
 
-        Debug.Log(outLobbyDetailsInfo + " - " + outLobbyDetailsInfo?.LobbyId);
+        Debug.Log("ID do Lobby: " + outLobbyDetailsInfo?.LobbyId);
         return outLobbyDetailsInfo?.LobbyId;
     }
+
+    public string GetHostIDFromInfo(LobbyDetails details) {
+        LobbyDetailsCopyInfoOptions options;
+        LobbyDetailsInfo? outLobbyDetailsInfo = null;
+
+        details.CopyInfo(ref options, out outLobbyDetailsInfo);
+
+        Debug.Log("ID do Host: " + outLobbyDetailsInfo?.LobbyOwnerUserId);
+        return outLobbyDetailsInfo?.LobbyOwnerUserId.ToString();
+    }
+    
 }

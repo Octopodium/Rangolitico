@@ -47,6 +47,10 @@ public class GameManager : MonoBehaviour {
     public GameObject offlineAnglerPrefab;
     public GameObject offlineHeaterPrefab;
 
+    public void AAAa(string teste){
+        Debug.Log("aaa: " + teste);
+    }
+
 
     void Awake() {
         if (instance == null) {

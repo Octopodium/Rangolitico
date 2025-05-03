@@ -14,13 +14,13 @@ public class ConnectionUI : MonoBehaviour {
 
     [Header("UI")]
     public GameObject esperandoJogador;
-    public GameObject tentandoConectar;
+    public GameObject telaCarregamento;
+    public Text telaCarregamentoTexto;
     public InputField anglerInput, heaterInput;
     public GameObject anglerReady, heaterReady;
     public Transform logsHolder;
-
     
-
+    ConectorDeTransport conectorDeTransport;
 
     void Awake() {
         instance = this;
@@ -28,7 +28,14 @@ public class ConnectionUI : MonoBehaviour {
 
     void Start() {
         networkManager = (DishNetworkManager)NetworkManager.singleton;
+        conectorDeTransport = GetComponent<ConectorDeTransport>();
+        if (conectorDeTransport == null) {
+            Debug.LogError("ConectorDeTransport não encontrado. Adicione um componente ConectorDeTransport ao GameObject ConnectionUI.");
+            return;
+        }
+
         UpdateNominhos();
+
 
         if (PartidaInfo.instance != null && PartidaInfo.instance.modo == PartidaInfo.Modo.Entrar) {
             PrepararPraEntrarLobby();
@@ -36,7 +43,6 @@ public class ConnectionUI : MonoBehaviour {
             ComecarHostear();
         }
     }
-
 
 
     #region Lobby 
@@ -156,59 +162,63 @@ public class ConnectionUI : MonoBehaviour {
 
     [Header("Entrar em Lobby")]
     public GameObject entrarLobbyPanel;
-    public InputField ipInputField, portInputField;
-
+    
     
     // Chamado quando o cliente tenta criar um lobby
     public void ComecarHostear() {
         entrarLobbyPanel.SetActive(false);
-        networkManager.StartHost();
+
+        MostrarCarregamento("Criando lobby...", SairDoLobby);
+        conectorDeTransport.Hostear(status => EsconderCarregamento());
     }
 
     // Mostra modal para entrar em um lobby já criado
     public void PrepararPraEntrarLobby() {
-        tentandoConectar.SetActive(false);
         entrarLobbyPanel.SetActive(true);
-        ipInputField.text = networkManager.networkAddress;
-
-        TelepathyTransport telepathyTransport = networkManager.gameObject.GetComponent<TelepathyTransport>();
-        if (telepathyTransport != null) {
-            portInputField.text = telepathyTransport.port.ToString();
-        }
+        
+        conectorDeTransport.Setup();
     }
 
     // Chamado quando um cliente tenta entrar em um lobby já criado
     public void EntrarNoLobby() {
         entrarLobbyPanel.SetActive(false);
-        tentandoConectar.SetActive(true);
 
-        networkManager.networkAddress = ipInputField.text;
-        TelepathyTransport telepathyTransport = networkManager.gameObject.GetComponent<TelepathyTransport>();
-        if (telepathyTransport != null) {
-            telepathyTransport.port = ushort.Parse(portInputField.text);
-        }
-
-        networkManager.StartClient();
+        MostrarCarregamento("Tentando conectar...", CancelarEntrada);
+        conectorDeTransport.ConectarCliente();
     }
 
     // Chamado quando um cliente entra no lobby com sucesso (pelo LobbyPlayer)
     public void EntrouNoLobby() {
-        tentandoConectar.SetActive(false);
+        EsconderCarregamento();
     }
 
     public void CancelarEntrada() {
-        tentandoConectar.SetActive(false);
+        EsconderCarregamento();
         entrarLobbyPanel.SetActive(true);
-        networkManager.StopClient();
+        conectorDeTransport.EncerrarCliente();
+    }
+
+    System.Action OnCancelarCarregamento = null;
+    public void HandleCancelarCarregamento() {
+        if (OnCancelarCarregamento != null) OnCancelarCarregamento.Invoke();
+        OnCancelarCarregamento = null;
+    }
+
+    public void MostrarCarregamento(string texto, System.Action onCancelar = null) {
+        telaCarregamento.SetActive(true);
+        telaCarregamentoTexto.text = texto;
+        OnCancelarCarregamento = onCancelar;
+    }
+
+    public void EsconderCarregamento() {
+        telaCarregamento.SetActive(false);
     }
 
     #endregion
 
 
     public void SairDoLobby() {
-        networkManager.StopHost();
-        networkManager.StopClient();
-        networkManager.StopServer();
+        conectorDeTransport.EncerrarHost();
 
         Destroy(networkManager.gameObject);
         if (GameManager.instance != null)  Destroy(GameManager.instance.gameObject);

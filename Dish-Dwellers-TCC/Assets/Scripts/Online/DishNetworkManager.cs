@@ -20,7 +20,6 @@ public class DishNetworkManager : NetworkManager {
         NetworkServer.RegisterHandler<RequestPassaDeSalaMessage>(OnRequestedPassaDeSala);
     }
 
-
     // Chamado quando um player se conecta ao servidor
     public override void OnServerAddPlayer(NetworkConnectionToClient conn) {
         if (lobbyPlayers.Length == 0) {

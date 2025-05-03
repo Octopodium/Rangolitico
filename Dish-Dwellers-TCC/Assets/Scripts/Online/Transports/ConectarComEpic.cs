@@ -26,6 +26,8 @@ public class ConectarComEpic : ConectorDeTransport {
         eossdkComponent.OnCustomEventLoggedIn += AoEntrar;
     }
 
+    string idHost = null;
+
     void Start() {
         // eOSLobby.CreateLobbySucceeded += OnHostearSucess;
         eOSLobby.CreateLobbyFailed += (error) => Debug.Log("Falha ao criar lobby: " + error);
@@ -38,24 +40,27 @@ public class ConectarComEpic : ConectorDeTransport {
                 string id = eOSLobby.GetIdFromInfo(lobby);
                 if (id != null && id != "") {
                     idCorreto = id;
+                    idHost = eOSLobby.GetHostIDFromInfo(lobby);
                     break;
                 }
             }
 
             Debug.Log("ID encontrado: " + idCorreto);
+            Debug.Log("Host ID: " + idHost);
             eOSLobby.JoinLobbyByID(idCorreto);
         };
 
         eOSLobby.CreateLobbySucceeded += (lobbyAttrs) => {
+            Debug.Log(lobbyAttrs + " " + lobbyAttrs.GetType());
             Debug.Log("Lobby criado com sucesso [" + eOSLobby.GetCurrentLobbyId() + "]");
 
-            networkManager.networkAddress = eOSLobby.GetCurrentLobbyId();
+            // networkManager.networkAddress = eOSLobby.GetCurrentLobbyId();
             networkManager.StartHost();
         };
 
         eOSLobby.JoinLobbySucceeded += (lobbyAttrs) => {
             Debug.Log("Entrou no lobby [" + eOSLobby.GetCurrentLobbyId() + "]");
-            networkManager.networkAddress = eOSLobby.GetCurrentLobbyId();
+            networkManager.networkAddress = idHost;
             networkManager.StartClient();
         };
     }

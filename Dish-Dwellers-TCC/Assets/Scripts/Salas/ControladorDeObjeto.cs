@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ControladorDeObjeto : MonoBehaviour
+public class ControladorDeObjeto : IResetavel
 {
     [Header("<color=green>Componentes : </color>")][Space(10)]
     [SerializeField] private GameObject prefab;
@@ -14,14 +14,12 @@ public class ControladorDeObjeto : MonoBehaviour
 
 
     private void Start(){
-        sala salaAtual = GameObject.FindWithTag("Sala").GetComponent<sala>();
-        salaAtual.onResetSala += Reiniciar;
-        if(!salaAtual.objetosSensiveis.Contains(this)){
-            GameManager.instance.salaAtual.objetosSensiveis.Add(this);
-        }
-
         if(spawnNoInicio) 
             Spawn();
+    }
+
+    public override void OnReset(){   
+        Reiniciar();
     }
 
     /// <summary>

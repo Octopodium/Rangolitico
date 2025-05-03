@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class PonteLevadica : MonoBehaviour
+public class PonteLevadica : IResetavel
 {
     public Quaternion rotDesejada;
     private Quaternion rotInicial;
@@ -13,9 +13,9 @@ public class PonteLevadica : MonoBehaviour
         rotInicial = transform.rotation;
     }
 
-    private void Start()
-    {
-        //AbaixarPonte();   
+    public override void OnReset(){
+        StopAllCoroutines();
+        transform.rotation = rotInicial;
     }
 
     public void AbaixarPonte(){

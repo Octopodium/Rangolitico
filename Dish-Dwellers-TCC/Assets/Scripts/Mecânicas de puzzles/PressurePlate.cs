@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PressurePlate : MonoBehaviour
+public class PressurePlate : IResetavel
 {
     [Space(10)][Header("<color=green> Info </color>")][Space(10)]
     [SerializeField] private Collider[] emCimaDaPlaca = new Collider[5];
@@ -27,16 +27,12 @@ public class PressurePlate : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
     }
 
-    private void Start()
-    {
-        try{
-            GameManager.instance.salaAtual.onResetSala += ChecarAtivacao;
-        }
-        catch{
-            FindFirstObjectByType<sala>().onResetSala += ChecarAtivacao;
-        }
+    public override void OnReset(){
+        // Faz a checagem pra desativar o botão depois que a sala reseta.
+        ChecarAtivacao();
     }
 
+    //Precisa ser onTriggerStay pra caso algum objeto com peso caia em cima do player, sem passar pelo colisor
     private void OnTriggerStay(Collider other){
         ChecarAtivacao();
     }

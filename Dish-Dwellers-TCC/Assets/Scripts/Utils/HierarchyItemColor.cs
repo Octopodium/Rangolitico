@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEditor;
-/* 
+
 [InitializeOnLoad]
 ///<sumary>
 /// Codigo adaptado do video: https://youtu.be/H8j4CbnVTfQ?si=oilnJdqfuS9lf0yy
@@ -31,4 +31,3 @@ public static class HierarchyItemColor
         }
     }
 }
-*/

@@ -74,6 +74,7 @@ public class BetterEOSLobby : MonoBehaviour {
 
             if (idCorreto == "") {
                 Debug.LogError("Nenhum lobby encontrado com o ID fornecido.");
+                OnEntrarLobbyFalhou?.Invoke();
                 return;
             }
 

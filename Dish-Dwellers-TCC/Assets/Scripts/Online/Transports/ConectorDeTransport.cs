@@ -4,9 +4,8 @@ using Mirror;
 
 public abstract class ConectorDeTransport: MonoBehaviour {
     public abstract void Setup();
-    public abstract void LogarUsuario(System.Action<bool> callback = null);
-    public abstract void Hostear();
-    public abstract void ConectarCliente();
+    public abstract void Hostear(System.Action<bool> callback = null);
+    public abstract void ConectarCliente(System.Action<bool> callback = null);
     public abstract void EncerrarHost();
     public abstract void EncerrarCliente();
 }

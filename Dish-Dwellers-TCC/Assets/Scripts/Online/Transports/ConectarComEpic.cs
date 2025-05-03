@@ -16,7 +16,15 @@ public class ConectarComEpic : ConectorDeTransport {
 
     void Start() {
         beOSLobby.OnLobbyEncontrado += idLobby => mostrarID.text = "ID: " + idLobby;
-        beOSLobby.OnLobbyCriado += idLobby => mostrarID.text = "ID: " + idLobby;
+        beOSLobby.OnLobbyCriado += idLobby => { 
+            mostrarID.text = "ID: " + idLobby;
+            callbackHostear?.Invoke(true);
+            callbackHostear = null;
+        };
+        beOSLobby.OnCriarLobbyFalhou += () => { callbackHostear?.Invoke(false); callbackHostear = null; };
+
+        beOSLobby.OnEntrouLobby += () => { callbackConectarCliente?.Invoke(true); callbackConectarCliente = null; };
+        beOSLobby.OnEntrarLobbyFalhou += () => { callbackConectarCliente?.Invoke(false); callbackConectarCliente = null; };
     }
 
     public override void Setup() {
@@ -24,17 +32,16 @@ public class ConectarComEpic : ConectorDeTransport {
         mostrarID.text = "";
     }
 
-    public override void LogarUsuario(System.Action<bool> callback = null) {
-        beOSLobby.OnLogou += () => {
-            if (callback != null) callback.Invoke(true);
-        };
-    }
+    System.Action<bool> callbackHostear, callbackConectarCliente;
+    public override void Hostear(System.Action<bool> callback = null) {
+        callbackHostear = callback;
 
-    public override void Hostear() {
         beOSLobby.CriarHost();
     }
 
-    public override void ConectarCliente() {
+    public override void ConectarCliente(System.Action<bool> callback = null) {
+        callbackConectarCliente = callback;
+
         string id = idInput.text.Trim().ToUpper();
         beOSLobby.ConectarCliente(id);
     }

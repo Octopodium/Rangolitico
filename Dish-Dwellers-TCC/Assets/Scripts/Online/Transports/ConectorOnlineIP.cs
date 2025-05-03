@@ -15,23 +15,21 @@ public class ConectorOnlineIP : ConectorDeTransport {
         telepathyTransport = (TelepathyTransport)networkManager.transport;
     }
 
-    public override void LogarUsuario(System.Action<bool> callback = null) {
-        if (callback != null) callback.Invoke(true);
-    }
-
     public override void Setup() {
         ipInputField.text = networkManager.networkAddress;
         portInputField.text = telepathyTransport.port.ToString();
     }
 
-    public override void Hostear() {
+    public override void Hostear(System.Action<bool> callback = null) {
         networkManager.StartHost();
+        callback?.Invoke(true);
     }
 
-    public override void ConectarCliente() {
+    public override void ConectarCliente(System.Action<bool> callback = null) {
         networkManager.networkAddress = ipInputField.text;
         telepathyTransport.port = ushort.Parse(portInputField.text);
         networkManager.StartClient();
+        callback?.Invoke(true);
     }
 
     public override void EncerrarHost() {

@@ -167,7 +167,9 @@ public class ConnectionUI : MonoBehaviour {
     // Chamado quando o cliente tenta criar um lobby
     public void ComecarHostear() {
         entrarLobbyPanel.SetActive(false);
-        conectorDeTransport.Hostear();
+
+        MostrarCarregamento("Criando lobby...", SairDoLobby);
+        conectorDeTransport.Hostear(status => EsconderCarregamento());
     }
 
     // Mostra modal para entrar em um lobby já criado

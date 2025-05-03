@@ -15,7 +15,7 @@ public class ControladorDeObjeto : MonoBehaviour
 
     private void Start(){
         sala salaAtual = GameObject.FindWithTag("Sala").GetComponent<sala>();
-
+        salaAtual.onResetSala += Reiniciar;
         if(!salaAtual.objetosSensiveis.Contains(this)){
             GameManager.instance.salaAtual.objetosSensiveis.Add(this);
         }

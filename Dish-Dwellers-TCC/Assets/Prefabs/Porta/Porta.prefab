@@ -34,6 +34,7 @@ Transform:
   m_Children:
   - {fileID: 4393320930731290712}
   - {fileID: 7358997991960224019}
+  - {fileID: 3615267698338618392}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &8361628725726289686
@@ -69,7 +70,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 460b25a6d8ae3ef499faf7410e41ca4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  indicadorPrefab: {fileID: 2452886219556310934, guid: c0bbace7bfeeef84883f72b9b3761e13, type: 3}
+  indicador: {fileID: 0}
   offsetIndicador: {x: -1, y: 1, z: 0}
 --- !u!114 &3119353026472110044
 MonoBehaviour:
@@ -156,6 +157,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   finalDaDemo: 0
   canvasFinalDaDemo: {fileID: 0}
+  spawnDeSaida: {fileID: 0}
+--- !u!1 &5514292207776615922
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3615267698338618392}
+  m_Layer: 7
+  m_Name: SpawnDeSaida
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3615267698338618392
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5514292207776615922}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: -0, y: -1.996, z: -2.776}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 790667066968104578}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &7405655120112204991
 GameObject:
   m_ObjectHideFlags: 0

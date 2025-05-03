@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,9 +10,19 @@ public class sala : MonoBehaviour{
     public Transform[] spawnPoints = new Transform[2];
     public List<ControladorDeObjeto> objetosSensiveis = new List<ControladorDeObjeto>();
     public List<OnTriggerEvent> triggers = new List<OnTriggerEvent>();
+    private List<IResetavel> resetaveis = new List<IResetavel>();
     public Action onResetSala;
 
     [HideInInspector]public int nSala, nFase;
+
+    private void Awake()
+    {
+        resetaveis = FindObjectsByType<IResetavel>(FindObjectsSortMode.None).ToList();
+        
+        foreach(var data in resetaveis){
+            Debug.Log($"<color=blue>{data.name}");
+        }
+    }
 
     private void Start(){
         GetNomeDaSala();
@@ -40,6 +51,7 @@ public class sala : MonoBehaviour{
         }
 
         onResetSala?.Invoke();
+        foreach(var data in resetaveis) data.OnReset();
     }
 
     // Separa o nome da cena para encontrar o numero da fase e da sala.

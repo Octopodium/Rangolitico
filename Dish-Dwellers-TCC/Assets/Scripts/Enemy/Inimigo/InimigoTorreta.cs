@@ -79,7 +79,7 @@ public class InimigoTorreta : Inimigo
         if(!isStunned && _playerNaZonaDeAtaque && target != null && Time.time > nextFire)
         {
             nextFire = Time.time + fireRate;
-
+            animator.Cospe();
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             GameObject newProjectile = Instantiate(projectile, fireAction.transform.position, targetRotation);
             newProjectile.GetComponent<Projectile>().owner = this.gameObject;

@@ -7,10 +7,10 @@ public class AnimatorTorreta : MonoBehaviour
 
     #region Parâmetros do animator
     
-    public static readonly int cospe = Animator.StringToHash(nameof(cospe));
-    public static readonly int morre = Animator.StringToHash(nameof(morre));
-    public static readonly int atordoado = Animator.StringToHash(nameof(atordoado));
-    public static readonly int agarrado = Animator.StringToHash(nameof(agarrado));
+    public static readonly int cospe = Animator.StringToHash("Cospe");
+    public static readonly int morre = Animator.StringToHash("Morre");
+    public static readonly int atordoado = Animator.StringToHash("Atordoado");
+    public static readonly int agarrado = Animator.StringToHash("Agarrado");
 
     #endregion
 
@@ -34,7 +34,7 @@ public class AnimatorTorreta : MonoBehaviour
     }
 
     public void Atordoado(bool val){
-        animator.SetBool("Atordoado", val);
+        animator.SetBool(atordoado, val);
     }
 
     /// <summary>

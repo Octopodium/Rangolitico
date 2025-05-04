@@ -20,7 +20,7 @@ Shader "Cutout/XRayVIsion"
             Pass Keep
         }
 
-        ZTest Off
+        ZTest Greater
         AlphaToMask On
 
         Pass

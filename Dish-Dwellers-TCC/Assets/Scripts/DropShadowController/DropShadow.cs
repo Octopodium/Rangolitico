@@ -32,6 +32,7 @@ public class DropShadow : MonoBehaviour{
             Vector3 novaPos = playerTransform.position;
             novaPos.y = hitInfo.point.y + offset;
             transform.position = novaPos;
+            transform.up = hitInfo.normal;
         }
     }
 

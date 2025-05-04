@@ -56,7 +56,7 @@ MonoBehaviour:
   ativado: 0
   pesoDesejado: 1
   boxHalfExtents: {x: 0.9, y: 0.1, z: 0.9}
-  offset: {x: 0, y: 0.28, z: 0}
+  offset: {x: 0, y: 0.33, z: 0}
   OnAtivado:
     m_PersistentCalls:
       m_Calls:
@@ -130,8 +130,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.90344346, y: 0.1772367, z: 0.9100024}
-  m_Center: {x: 0, y: 0.21, z: 0}
+  m_Size: {x: 0.90344346, y: 0.1277678, z: 0.9100024}
+  m_Center: {x: 0, y: 0.19, z: 0}
 --- !u!1001 &3104843997873636961
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -143,6 +143,10 @@ PrefabInstance:
     - target: {fileID: -3567359287731210455, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
       propertyPath: m_Controller
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 649958663238660825, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1500079848897797196, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
       propertyPath: m_LocalPosition.x
@@ -187,6 +191,10 @@ PrefabInstance:
     - target: {fileID: 2277284295719913206, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
       propertyPath: m_Name
       value: PressurePlate
+      objectReference: {fileID: 0}
+    - target: {fileID: 2277284295719913206, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5372322387573701729, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
@@ -249,8 +257,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.90344346, y: 0.07516518, z: 0.9100024}
-  m_Center: {x: 0, y: -0.037108824, z: 0}
+  m_Size: {x: 0.90344346, y: 0.1277188, z: 0.9100024}
+  m_Center: {x: 0, y: -0.010832012, z: 0}
 --- !u!1 &3786424657426841751 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2277284295719913206, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}

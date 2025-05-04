@@ -57,10 +57,17 @@ public class Player : NetworkBehaviour {
 
 
     // Titizim:
-    [Header("Config do Escudo")]
+    [Header("Config do Escudo")] [Space(10)]
     public bool escudo;
     public bool escudoAtivo {get; set;}
     public float velocidadeComEscudo = 4f;
+
+
+    [Header("Config de Mira")] [Space(10)]
+    public bool estaMirando = false;
+    private Vector2 inputMira;
+    public float deadzoneMira = 0.1f; // Zona morta para evitar mira acidental
+
 
 
 
@@ -124,10 +131,14 @@ public class Player : NetworkBehaviour {
             inputActionMap["Interact"].performed += Interagir;
             inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
             inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
+            inputActionMap["Aim"].performed += cnt => Mira();
+            inputActionMap["Aim"].canceled += cnt => Mira();
         } else if (isLocalPlayer) {
             inputActionMap["Interact"].performed += ctx => InteragirOnlineCmd();
             inputActionMap["Attack"].performed += ctx => AcionarFerramentaOnlineCmd();
             inputActionMap["Attack"].canceled += ctx => SoltarFerramentaOnlineCmd();
+            inputActionMap["Aim"].performed += cnt => Mira();
+            inputActionMap["Aim"].canceled += cnt => Mira();
         }
 
         estaNoChao = CheckEstaNoChao(); // Verifica se o jogador está no chão
@@ -325,17 +336,20 @@ public class Player : NetworkBehaviour {
     }
 
     void CalcularDirecao() {
+
         Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
         float x = input.x;
         float z = input.y;
 
         movimentacao = (transform.right * x + transform.forward * z).normalized;
 
-        if (movimentacao.magnitude > 0) {
+        if (!estaMirando && movimentacao.magnitude > 0) 
+        {
             direcao = movimentacao;
             visualizarDirecao.transform.forward = direcao;
 
-            if (GameManager.instance.isOnline && isLocalPlayer) AtualizarDirecaoCmd(direcao);
+        if (GameManager.instance.isOnline && isLocalPlayer) 
+            AtualizarDirecaoCmd(direcao);
         }
     }
 
@@ -374,7 +388,25 @@ public class Player : NetworkBehaviour {
         */
     }
 
-    
+    // Código para fazer o player mirar a direção do escudo e gancho de forma separada da movimentação 
+    void Mira()
+    {
+        inputMira = inputActionMap["Aim"].ReadValue<Vector2>();
+        
+        estaMirando = inputMira.magnitude > deadzoneMira;
+        
+        if (estaMirando)
+        {
+            Vector3 novaDirecao = new Vector3(inputMira.x, 0, inputMira.y).normalized;
+            
+            direcao = novaDirecao;
+            visualizarDirecao.transform.forward = direcao;
+            
+            if (GameManager.instance.isOnline && isLocalPlayer)
+                AtualizarDirecaoCmd(direcao);
+        }
+    }
+
     bool usandoRb = true;
     public void UsarRB(bool ignorarChecagem = false) {
         if (!ignorarChecagem && usandoRb) return; // Se já está usando o Rigidbody, não faz nada

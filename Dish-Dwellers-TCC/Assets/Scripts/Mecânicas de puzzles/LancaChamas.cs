@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class LancaChamas : MonoBehaviour
 {
-    private RaycastHit[] colisores = new RaycastHit[2];
     [SerializeField] private float maxComprimento = 8.0f;
     [SerializeField] private LayerMask layers;
     private Ray ray;
+    private RaycastHit hitInfo;
 
 
     private void FixedUpdate()
@@ -16,15 +16,21 @@ public class LancaChamas : MonoBehaviour
     private void CastColisao(){
         ray = new Ray(transform.position , transform.forward);
 
-        if(Physics.SphereCast(ray, 1.0f, out RaycastHit hitInfo, maxComprimento,  layers)){
+        if(Physics.SphereCast(transform.position, 1.0f, transform.forward, out hitInfo, maxComprimento,  layers)){
             
             Debug.Log(hitInfo.transform.name);
             if(hitInfo.transform.CompareTag("Player")){
                 hitInfo.transform.GetComponent<Player>().MudarVida(-1);
-                Debug.Log("player acertado.");
-                Debug.Log(hitInfo.distance);
             }
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.matrix = transform.localToWorldMatrix;
+        float distance = hitInfo.distance;
+        Gizmos.DrawWireCube(Vector3.zero + Vector3.forward * (distance/2 + 0.5f), new Vector3(1, 1, distance + 1));
     }
 
 }

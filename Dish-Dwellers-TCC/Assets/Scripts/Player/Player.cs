@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement; // Titi: Adição temporaria pra reset de sala
 using System.Collections.Generic;
+using System.Collections;
 using Mirror;
 
 public enum QualPlayer { Player1, Player2, Desativado }
@@ -332,8 +333,8 @@ public class Player : NetworkBehaviour {
 
         estaNoChao = CheckEstaNoChao();
 
-        if (estaNoChao && !estaGanchado) MovimentacaoNoChao(permitidoMover);
-        else if(estaGanchado)MovimentacaoNoAr(permitidoMover);
+        if(estaGanchado || !estaNoChao) MovimentacaoNoAr(permitidoMover);
+        else MovimentacaoNoChao(permitidoMover);
 
         UsarAtrito(estaNoChao);
 
@@ -616,7 +617,14 @@ public class Player : NetworkBehaviour {
 
     #endregion
 
-
+    // IEnumerator pra desativar o ganchado so depois que puxar
+    public void FalsearGanchado(){
+        StartCoroutine("WaitForDesganchado");
+    }
+    IEnumerator WaitForDesganchado(){
+        yield return new WaitForSeconds(0.1f);
+        estaGanchado = false;
+    }
     
     void OnDrawGizmos() {
         Gizmos.color = Color.green;

@@ -27,6 +27,7 @@ public class EditorPonte : Editor
 
         if(GUILayout.Button("Definir rotação desejada")){
             ponte.rotDesejada = ponte.transform.rotation;
+            EditorUtility.SetDirty(target);
         }
 
         showRotation = EditorGUILayout.BeginFoldoutHeaderGroup(showRotation, "Rotação");
@@ -35,7 +36,6 @@ public class EditorPonte : Editor
         }
         EditorGUILayout.EndFoldoutHeaderGroup();
 
-        EditorUtility.SetDirty(target);
         
         serializedObject.ApplyModifiedProperties();
     }

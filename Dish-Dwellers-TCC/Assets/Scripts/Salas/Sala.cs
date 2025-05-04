@@ -17,10 +17,6 @@ public class sala : MonoBehaviour{
     private void Awake()
     {
         resetaveis = FindObjectsByType<IResetavel>(FindObjectsSortMode.None).ToList();
-        
-        foreach(var data in resetaveis){
-            Debug.Log($"<color=blue>{data.name}");
-        }
     }
 
     private void Start(){

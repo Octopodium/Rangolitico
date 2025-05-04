@@ -402,7 +402,7 @@ public class Player : NetworkBehaviour {
             direcao = novaDirecao;
             visualizarDirecao.transform.forward = direcao;
             
-            if (GameManager.instance.isOnline && isLocalPlayer)
+            if (GameManager.instance.isOnline && isLocalPlayer) // Pelo que eu vi as coisas do Juan ACHO que é só fazer isso aqui mesmo pro online, se der merda tem que mudar aqui 
                 AtualizarDirecaoCmd(direcao);
         }
     }

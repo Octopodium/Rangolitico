@@ -171,6 +171,15 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Aim"",
+                    ""type"": ""Value"",
+                    ""id"": ""5977ca99-531a-4230-a29d-79bec96f5e56"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -481,6 +490,72 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""action"": ""Cancelar"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""30c5d047-b0a6-4f9e-8a3d-45536e1b0f3e"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""96c855eb-ecdc-42fb-a31a-a60a5c7551ad"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""857b986b-5e6f-4e0b-b0b1-a6e0fe9fd0d9"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""010c256d-eb2f-4c04-bbe9-f8b6c05b0ded"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""d8e456d9-fbb0-4e8f-8d31-77bb6a593c57"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e880669-cf14-42e2-9b36-7dcd14ce5461"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -568,6 +643,15 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Aim"",
+                    ""type"": ""Value"",
+                    ""id"": ""32310e43-ca0b-4e02-ad58-2d74dc20c64a"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -876,6 +960,72 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""9150b598-3c49-4904-8d25-fb6c1da1f5fd"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""40cf9cf4-0084-4ba0-9d69-132f10f464dd"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""c3674b0a-022f-4d7e-b2d8-4c6437609426"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""a8a08f2f-701a-472e-89f1-88e44a8a7125"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""29ad9086-669e-42ee-8a3d-730ceb9a0ee5"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""106a2efa-9efb-45c3-a072-19eb23c03862"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1542,6 +1692,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Cancelar = m_Player.FindAction("Cancelar", throwIfNotFound: true);
+        m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
         // Player2
         m_Player2 = asset.FindActionMap("Player2", throwIfNotFound: true);
         m_Player2_Move = m_Player2.FindAction("Move", throwIfNotFound: true);
@@ -1553,6 +1704,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         m_Player2_Next = m_Player2.FindAction("Next", throwIfNotFound: true);
         m_Player2_Sprint = m_Player2.FindAction("Sprint", throwIfNotFound: true);
         m_Player2_Cancelar = m_Player2.FindAction("Cancelar", throwIfNotFound: true);
+        m_Player2_Aim = m_Player2.FindAction("Aim", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1661,6 +1813,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Next;
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Cancelar;
+    private readonly InputAction m_Player_Aim;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1708,6 +1861,10 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Cancelar".
         /// </summary>
         public InputAction @Cancelar => m_Wrapper.m_Player_Cancelar;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Aim".
+        /// </summary>
+        public InputAction @Aim => m_Wrapper.m_Player_Aim;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1761,6 +1918,9 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Cancelar.started += instance.OnCancelar;
             @Cancelar.performed += instance.OnCancelar;
             @Cancelar.canceled += instance.OnCancelar;
+            @Aim.started += instance.OnAim;
+            @Aim.performed += instance.OnAim;
+            @Aim.canceled += instance.OnAim;
         }
 
         /// <summary>
@@ -1799,6 +1959,9 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Cancelar.started -= instance.OnCancelar;
             @Cancelar.performed -= instance.OnCancelar;
             @Cancelar.canceled -= instance.OnCancelar;
+            @Aim.started -= instance.OnAim;
+            @Aim.performed -= instance.OnAim;
+            @Aim.canceled -= instance.OnAim;
         }
 
         /// <summary>
@@ -1845,6 +2008,7 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player2_Next;
     private readonly InputAction m_Player2_Sprint;
     private readonly InputAction m_Player2_Cancelar;
+    private readonly InputAction m_Player2_Aim;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player2".
     /// </summary>
@@ -1892,6 +2056,10 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player2/Cancelar".
         /// </summary>
         public InputAction @Cancelar => m_Wrapper.m_Player2_Cancelar;
+        /// <summary>
+        /// Provides access to the underlying input action "Player2/Aim".
+        /// </summary>
+        public InputAction @Aim => m_Wrapper.m_Player2_Aim;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1945,6 +2113,9 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Cancelar.started += instance.OnCancelar;
             @Cancelar.performed += instance.OnCancelar;
             @Cancelar.canceled += instance.OnCancelar;
+            @Aim.started += instance.OnAim;
+            @Aim.performed += instance.OnAim;
+            @Aim.canceled += instance.OnAim;
         }
 
         /// <summary>
@@ -1983,6 +2154,9 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @Cancelar.started -= instance.OnCancelar;
             @Cancelar.performed -= instance.OnCancelar;
             @Cancelar.canceled -= instance.OnCancelar;
+            @Aim.started -= instance.OnAim;
+            @Aim.performed -= instance.OnAim;
+            @Aim.canceled -= instance.OnAim;
         }
 
         /// <summary>
@@ -2453,6 +2627,13 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCancelar(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Aim" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAim(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Player2" which allows adding and removing callbacks.
@@ -2524,6 +2705,13 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCancelar(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Aim" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAim(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

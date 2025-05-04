@@ -243,18 +243,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onGanchado:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6029386811319232399}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: set_estaGanchado
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   onDesganchado:
     m_PersistentCalls:
       m_Calls: []
   onPuxado:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6029386811319232399}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: set_estaGanchado
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &2414328040528346660 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1047820585503170487, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
   m_PrefabInstance: {fileID: 3390068998467412371}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6029386811319232399 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8982251984172959260, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
+  m_PrefabInstance: {fileID: 3390068998467412371}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597836957717888915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3875a36d754286047a82cc2717ccd290, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6610878326472485762 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8409767539425298961, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}

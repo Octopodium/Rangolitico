@@ -62,7 +62,6 @@ public class Player : NetworkBehaviour {
     public bool escudoAtivo {get; set;}
     public float velocidadeComEscudo = 4f;
 
-
     [Header("Config de Mira")] [Space(10)]
     public bool estaMirando = false;
     private Vector2 inputMira;
@@ -84,6 +83,7 @@ public class Player : NetworkBehaviour {
     Rigidbody rb; // Rigidbody do jogador (se houver)
     Collider col;
 
+    public bool estaGanchado {get; set;}
 
 
     // Awake: trata de referências/configurações internas
@@ -327,8 +327,8 @@ public class Player : NetworkBehaviour {
 
         estaNoChao = CheckEstaNoChao();
 
-        if (estaNoChao) MovimentacaoNoChao(permitidoMover);
-        else MovimentacaoNoAr(permitidoMover);
+        if (estaNoChao && !estaGanchado) MovimentacaoNoChao(permitidoMover);
+        else if(estaGanchado)MovimentacaoNoAr(permitidoMover);
 
         UsarAtrito(estaNoChao);
 

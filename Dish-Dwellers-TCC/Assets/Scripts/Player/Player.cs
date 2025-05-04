@@ -224,6 +224,11 @@ public class Player : NetworkBehaviour {
         }
     }
 
+    public override void OnStopClient (){
+        base.OnStopClient();
+        GameManager.instance.VoltarParaMenu();
+    }
+
 
     [Command]
     void AtualizarDirecaoCmd(Vector3 valor) {

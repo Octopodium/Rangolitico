@@ -6,16 +6,23 @@ public class ConectarComEpic : ConectorDeTransport {
     public Text mostrarID;
     public InputField idInput;
 
-    public BetterEOSLobby beOSLobby;
-
-
-    void Awake() {
-        if (beOSLobby == null) beOSLobby = GetComponent<BetterEOSLobby>();
+    private BetterEOSLobby _beOSLobby;
+    public BetterEOSLobby beOSLobby {
+        get {
+            if (_beOSLobby == null) {
+                _beOSLobby = FindFirstObjectByType<BetterEOSLobby>();
+            }
+            return _beOSLobby;
+        }
     }
 
 
-    void Start() {
-        beOSLobby.OnLobbyEncontrado += idLobby => mostrarID.text = "ID: " + idLobby;
+    public override void Setup() {
+        idInput.text = "";
+        mostrarID.text = "";
+        mostrarID.gameObject.SetActive(true);
+
+        beOSLobby.OnLobbyEncontrado += idLobby => mostrarID.text = "ID: " + idLobby;;
         beOSLobby.OnLobbyCriado += idLobby => { 
             mostrarID.text = "ID: " + idLobby;
             callbackHostear?.Invoke(true);
@@ -25,11 +32,6 @@ public class ConectarComEpic : ConectorDeTransport {
 
         beOSLobby.OnEntrouLobby += () => { callbackConectarCliente?.Invoke(true); callbackConectarCliente = null; };
         beOSLobby.OnEntrarLobbyFalhou += () => { callbackConectarCliente?.Invoke(false); callbackConectarCliente = null; };
-    }
-
-    public override void Setup() {
-        idInput.text = "";
-        mostrarID.text = "";
     }
 
     System.Action<bool> callbackHostear, callbackConectarCliente;

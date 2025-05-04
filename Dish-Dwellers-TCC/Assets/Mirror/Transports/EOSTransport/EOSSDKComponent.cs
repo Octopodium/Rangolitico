@@ -412,7 +412,6 @@ namespace EpicTransport {
             EOS.GetConnectInterface().Login(ref loginOptions, null, OnConnectInterfaceLogin);
         }
 
-        public System.Action<string> OnCustomEventLoggedIn;
         private void OnConnectInterfaceLogin(ref Epic.OnlineServices.Connect.LoginCallbackInfo loginCallbackInfo) {
             if (loginCallbackInfo.ResultCode == Result.Success) {
                 Debug.Log("Connect Interface Login succeeded");
@@ -424,8 +423,6 @@ namespace EpicTransport {
 
                     localUserProductIdString = productIdString;
                     localUserProductId = loginCallbackInfo.LocalUserId;
-
-                    OnCustomEventLoggedIn?.Invoke(productIdString);
                 }
 
                 initialized = true;

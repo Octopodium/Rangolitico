@@ -9,13 +9,10 @@ public class ConectorOnlineIP : ConectorDeTransport {
 
     public InputField ipInputField, portInputField;
 
-    
-    void Start() {
+    public override void Setup() {
         networkManager = NetworkManager.singleton;
         telepathyTransport = (TelepathyTransport)networkManager.transport;
-    }
 
-    public override void Setup() {
         ipInputField.text = networkManager.networkAddress;
         portInputField.text = telepathyTransport.port.ToString();
     }

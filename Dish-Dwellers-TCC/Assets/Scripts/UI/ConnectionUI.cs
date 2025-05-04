@@ -3,12 +3,20 @@ using UnityEngine.UI;
 using Mirror;
 using UnityEngine.SceneManagement;
 
+public enum TipoDeTransport { IP, Epic }
+
 public class ConnectionUI : MonoBehaviour {
     public static ConnectionUI instance;
 
     public string menuInicialScene = "MenuInicial";
-
     public DishNetworkManager networkManager;
+
+
+    [Header("Configuração de Conexão")]
+    public TipoDeTransport tipoDeTransport = TipoDeTransport.IP;
+    public GameObject ipPrefab, epicPrefab;
+    public GameObject ipPanel, epicPanel;
+
     [HideInInspector] public LobbyPlayer p1, p2;
 
 
@@ -17,6 +25,7 @@ public class ConnectionUI : MonoBehaviour {
     public GameObject telaCarregamento;
     public Text telaCarregamentoTexto;
     public InputField anglerInput, heaterInput;
+    public Text pingAngler, pingHeater;
     public GameObject anglerReady, heaterReady;
     public Transform logsHolder;
     
@@ -24,15 +33,29 @@ public class ConnectionUI : MonoBehaviour {
 
     void Awake() {
         instance = this;
+
+        GameObject prefab = null;
+        switch (tipoDeTransport) {
+            case TipoDeTransport.IP:
+                ipPanel.SetActive(true);
+                epicPanel.SetActive(false);
+                prefab = ipPrefab;
+                conectorDeTransport = GetComponent<ConectorOnlineIP>();
+                break;
+            case TipoDeTransport.Epic:
+                ipPanel.SetActive(false);
+                epicPanel.SetActive(true);
+                prefab = epicPrefab;
+                conectorDeTransport = GetComponent<ConectarComEpic>();
+                break;
+        }
+
+        GameObject managerInstancia = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+        networkManager = managerInstancia.GetComponent<DishNetworkManager>();
     }
 
     void Start() {
-        networkManager = (DishNetworkManager)NetworkManager.singleton;
-        conectorDeTransport = GetComponent<ConectorDeTransport>();
-        if (conectorDeTransport == null) {
-            Debug.LogError("ConectorDeTransport não encontrado. Adicione um componente ConectorDeTransport ao GameObject ConnectionUI.");
-            return;
-        }
+        conectorDeTransport.Setup();
 
         UpdateNominhos();
 
@@ -138,6 +161,11 @@ public class ConnectionUI : MonoBehaviour {
         if (p2.isLocalPlayer) {
             //prontoButton.GetComponentInChildren<Text>().text = (val) ? "Cancelar" : "Pronto";
         }
+    }
+
+    public void UpdatePingUI(int ping, bool isAngler) {
+        if (isAngler) pingAngler.text = ping.ToString() + "ms";
+        else pingHeater.text = ping.ToString() + "ms";
     }
 
 

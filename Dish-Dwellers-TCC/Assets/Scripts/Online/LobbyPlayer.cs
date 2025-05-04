@@ -1,5 +1,6 @@
 using UnityEngine;
 using Mirror;
+using System.Collections;
 
 /// <summary>
 /// Classe que representa um jogador no lobby (antes de entrar no jogo)
@@ -8,6 +9,7 @@ public class LobbyPlayer : NetworkBehaviour {
 
     [SyncVar] public bool isPlayerOne = false;
     [SyncVar(hook = nameof(UpdateNomeUI))] public string nome;
+    [SyncVar(hook = nameof(UpdatePingUI))] public int ping;
     [SyncVar(hook = nameof(UpdatePersonagemUI))] public DishNetworkManager.Personagem personagem;
     [SyncVar(hook = nameof(UpdateSetProntoUI))] public bool pronto = false;
 
@@ -21,7 +23,19 @@ public class LobbyPlayer : NetworkBehaviour {
         if (ConnectionUI.instance != null) {
             ConnectionUI.instance.EntrouNoLobby();
         }
+
+        if (isLocalPlayer) {
+            StartCoroutine(PingCoroutine());
+        }
     }
+
+    IEnumerator PingCoroutine() {
+        while (true) {
+            ping = (int)NetworkTime.rtt * 1000; // RTT em milissegundos
+            yield return new WaitForSeconds(1f); // Espera 1 segundo antes de atualizar o ping novamente
+        }
+    }
+
 
     // Definir que o jogador está pronto
     public void SetPronto(bool pronto) {
@@ -97,6 +111,10 @@ public class LobbyPlayer : NetworkBehaviour {
 
     void UpdateNomeUI(string oldValue, string newValue) {
         ConnectionUI.instance.UpdateNominhos();
+    }
+
+    void UpdatePingUI(int oldValue, int newValue) {
+        ConnectionUI.instance.UpdatePingUI(newValue, personagem == DishNetworkManager.Personagem.Angler);
     }
 
     public void FoiDesconectado() {

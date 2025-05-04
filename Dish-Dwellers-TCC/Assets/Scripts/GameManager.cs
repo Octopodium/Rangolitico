@@ -394,6 +394,8 @@ public class GameManager : MonoBehaviour {
             }
         }
 
+        gameObject.SetActive(true);
+
         if (cenaProx != null) {
             cenaProx.allowSceneActivation = true;
             cenaProx = null;
@@ -403,15 +405,18 @@ public class GameManager : MonoBehaviour {
     }
 
     IEnumerator VoltarParaMenuAsync() {
-        AsyncOperation op = SceneManager.LoadSceneAsync(menuPrincipalSceneName, LoadSceneMode.Single);
-        op.allowSceneActivation = true;
-        yield return new WaitUntil(() => op.isDone);
-        
         Time.timeScale = 1;
+
+        AsyncOperation op = SceneManager.LoadSceneAsync(menuPrincipalSceneName, LoadSceneMode.Single);
+        if (op != null) {
+            op.allowSceneActivation = true;
+            yield return new WaitUntil(() => op.isDone);
+        }
+        
         voltandoParaMenu = false;
 
         input.Disable();
-        input2_singleplayer.Disable();
+        if (input2_singleplayer != null) input2_singleplayer.Disable();
 
         instance = null;
         Destroy(gameObject);

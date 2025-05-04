@@ -77,6 +77,7 @@ public class Gancho : MonoBehaviour, Ferramenta {
     public void SetarGanchado(Ganchavel ganchavel) {
         ganchado = ganchavel;
         gancho.transform.SetParent(ganchavel.transform);
+        ganchado.HandleGanchado();
     }
 
     /// <summary>

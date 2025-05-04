@@ -35,12 +35,23 @@ public class DishNetworkManager : NetworkManager {
         lobbyPlayer.isPlayerOne = lobbyPlayers[0] == null;
         lobbyPlayer.personagem = GetPersonagemNaoUsado();
 
+        GameObject startPos = GetStartPosition(lobbyPlayer.isPlayerOne);
+        if (startPos != null) {
+            player.transform.position = startPos.transform.position;
+            player.transform.rotation = startPos.transform.rotation;
+        }
+
         if (lobbyPlayer.isPlayerOne) lobbyPlayers[0] = lobbyPlayer;
         else lobbyPlayers[1] = lobbyPlayer;
 
         lobbyPlayer.nome = (lobbyPlayer.isPlayerOne) ? "Player 1" : "Player 2";
         player.name = $"[connId={conn.connectionId}]";
         NetworkServer.AddPlayerForConnection(conn, player);
+    }
+
+    GameObject GetStartPosition(bool isPlayerOne) {
+        GameObject startPos = GameObject.Find("SpawnPoint " + (isPlayerOne ? "1" : "2"));
+        return startPos;
     }
 
     // Retorna um personagem que não está sendo usado por nenhum jogador
@@ -130,7 +141,7 @@ public class DishNetworkManager : NetworkManager {
             // Pega o prefab do personagem correto
             GameObject playerPrefab = (lobbyPlayer.personagem == Personagem.Heater) ? heaterPrefab : anglerPrefab;
 
-            GameObject player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            GameObject player = Instantiate(playerPrefab, lobbyPlayer.transform.position, lobbyPlayer.transform.rotation);
             player.name = $"{lobbyPlayer.nome} [connId={lobbyPlayer.connectionToClient.connectionId}]";
 
             // Substitui o player atual (LobbyPlayer) do cliente pelo novo player (Player)

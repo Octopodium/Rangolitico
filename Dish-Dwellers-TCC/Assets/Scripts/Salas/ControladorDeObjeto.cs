@@ -48,6 +48,7 @@ public class ControladorDeObjeto : IResetavel
     /// </summary>
     public void Reiniciar(){
         Destroy(objeto);
+        objeto = null;
 
         if(spawnNoInicio) 
             Spawn();

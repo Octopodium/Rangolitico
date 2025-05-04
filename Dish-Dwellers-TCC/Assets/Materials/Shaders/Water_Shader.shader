@@ -65,8 +65,8 @@ Shader "Custom/Water_Shader"
             o.Smoothness = _Glossiness;
             o.Alpha = c.a;
 
-            float normalUVX = IN.uv_NormalTex.x + sin(_Time) * 5;
-            float normalUVY = IN.uv_NormalTex.y + sin(_Time) * 5;
+            float normalUVX = IN.uv_NormalTex.x + frac(_Time) * 5;
+            float normalUVY = IN.uv_NormalTex.y + frac(_Time) * 5;
 
             float2 normalUV1 = float2(normalUVX, IN.uv_NormalTex.y);
             float2 normalUV2 = float2(IN.uv_NormalTex.x, normalUVY);

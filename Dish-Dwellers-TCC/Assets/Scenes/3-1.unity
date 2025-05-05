@@ -258,7 +258,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 979076075396349012, guid: 2a399477fa5e1bf4088e95db8e2053a5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.041999817
+      value: 0.17
       objectReference: {fileID: 0}
     - target: {fileID: 979076075396349012, guid: 2a399477fa5e1bf4088e95db8e2053a5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8049,6 +8049,9 @@ MonoBehaviour:
   - {fileID: 999645399}
   - {fileID: 831223619}
   triggers: []
+  onResetSala:
+    m_PersistentCalls:
+      m_Calls: []
   nSala: 0
   nFase: 0
 --- !u!4 &1166284913

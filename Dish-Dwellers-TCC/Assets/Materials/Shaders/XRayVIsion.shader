@@ -10,7 +10,7 @@ Shader "Cutout/XRayVIsion"
     {
         Tags {
             "RenderType"="Opaque" 
-            "Queue" = "Geometry"
+            "Queue" = "Geometry+1"
             "PreviewType" = "Plane"
         }
 

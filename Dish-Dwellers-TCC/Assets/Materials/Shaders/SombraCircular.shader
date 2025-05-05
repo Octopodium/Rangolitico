@@ -9,7 +9,7 @@ Shader "Hidden/SombraCircular"
     SubShader
     {
         Cull Back
-        ZWrite On
+        ZWrite Off
         Tags{
             "RenderType" = "Overlay"
             "Queue" = "Overlay"

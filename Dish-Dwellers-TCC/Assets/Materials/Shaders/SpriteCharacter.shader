@@ -16,7 +16,6 @@ Shader "Custom/SpriteCharacter"
     {
         Tags {
             "Queue"="Geometry"
-            "IgnoreProjector"="True"
             "RenderType"="Opaque"
             "PreviewType"="Plane"
         }

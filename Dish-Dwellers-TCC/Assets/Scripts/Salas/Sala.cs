@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 public class sala : MonoBehaviour{
@@ -10,16 +11,13 @@ public class sala : MonoBehaviour{
     public Transform[] spawnPoints = new Transform[2];
     public List<OnTriggerEvent> triggers = new List<OnTriggerEvent>();
     private List<IResetavel> resetaveis = new List<IResetavel>();
-    public Action onResetSala;
+    public UnityEvent onResetSala;
 
     [HideInInspector]public int nSala, nFase;
 
-    private void Awake()
-    {
-        resetaveis = FindObjectsByType<IResetavel>(FindObjectsSortMode.None).ToList();
-    }
-
     private void Start(){
+        resetaveis = FindObjectsByType<IResetavel>(FindObjectsSortMode.None).ToList();
+
         GetNomeDaSala();
         PosicionarJogador();
         GameManager.instance.SetSala(this);
@@ -42,7 +40,14 @@ public class sala : MonoBehaviour{
         }
 
         onResetSala?.Invoke();
-        foreach(var data in resetaveis) data.OnReset();
+        foreach(var data in resetaveis){ 
+            try{
+                data.OnReset();
+            }
+            catch{
+                
+            }
+        }
         
     }
 
@@ -90,6 +95,12 @@ public class sala : MonoBehaviour{
             players[i].Teletransportar(spawnPoints[i].position);
             players[i].gameObject.SetActive(true);
         }
+    }
+
+    private void Osable()
+    {
+        onResetSala = null;
+        resetaveis.Clear();
     }
 
 }

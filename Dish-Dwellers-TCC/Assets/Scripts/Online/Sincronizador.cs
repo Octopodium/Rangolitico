@@ -6,6 +6,11 @@ using System.Collections.Generic;
 
 public class Sincronizador : NetworkBehaviour {
     public static Sincronizador instance { get; private set; }
+    public static System.Action onInstanciaCriada;
+
+    public static System.Type[] tiposSuportados = new System.Type[] { typeof(int), typeof(GameObject) };
+
+    protected Dictionary<string, Sincronizavel> sincronizaveis = new Dictionary<string, Sincronizavel>();
     protected Dictionary<string, List<System.Action>> triggers = new Dictionary<string, List<System.Action>>();
     protected Dictionary<string, List<System.Action<object>>> triggersComParametro = new Dictionary<string, List<System.Action<object>>>();
 
@@ -27,11 +32,11 @@ public class Sincronizador : NetworkBehaviour {
             this.valor = valor;
         }
     }
-    public struct SincronizarBoolTriggerMessage : NetworkMessage {
+    public struct SincronizarStringTriggerMessage : NetworkMessage {
         public string trigger;
-        public bool valor;
+        public string valor;
 
-        public SincronizarBoolTriggerMessage(string trigger, bool valor) {
+        public SincronizarStringTriggerMessage(string trigger, string valor) {
             this.trigger = trigger;
             this.valor = valor;
         }
@@ -49,21 +54,10 @@ public class Sincronizador : NetworkBehaviour {
 
         NetworkServer.RegisterHandler<SincronizarTriggerMessage>(ServerOnSetTrigger);
         NetworkServer.RegisterHandler<SincronizarIntTriggerMessage>(ServerOnSetTrigger);
-    }
+        NetworkServer.RegisterHandler<SincronizarStringTriggerMessage>(ServerOnSetTrigger);
 
-
-
-
-    public void SetTrigger(string triggerName) {
-        if (isOnCallback) return;
-
-        NetworkClient.Send(new SincronizarTriggerMessage(triggerName));
-    }
-
-    public void SetTrigger(string triggerName, int valor) {
-        if (isOnCallback) return;
-
-        NetworkClient.Send(new SincronizarIntTriggerMessage(triggerName, valor));
+        onInstanciaCriada?.Invoke();
+        onInstanciaCriada = null;
     }
 
     void ForeachConnection(System.Action<NetworkConnectionToClient> action, NetworkConnectionToClient except = null) {
@@ -72,6 +66,34 @@ public class Sincronizador : NetworkBehaviour {
             if (conexao == null || conexao == except) continue;
             action.Invoke(conexao);
         }
+    }
+
+    public bool CadastrarSincronizavel(Sincronizavel obj) {
+        string id = obj.GetID();
+
+        if (sincronizaveis.ContainsKey(id)) {
+            Debug.LogWarning("Sincronizavel de ID ["+id+"] não foi cadastrado pois já havia um com o mesmo ID!");
+            return false;
+        }
+
+        sincronizaveis[id] = obj;
+        return true;
+    }
+
+    public void DescadastrarSincronizavel(Sincronizavel obj) {
+        string id = obj.GetID();
+
+        if (sincronizaveis.ContainsKey(id)) 
+            sincronizaveis.Remove(id);
+    }
+
+
+    #region Sincronização sem parametros
+
+    public void SetTrigger(string triggerName) {
+        if (!CanSetTrigger(triggerName)) return;
+
+        NetworkClient.Send(new SincronizarTriggerMessage(triggerName));
     }
 
     [Server]
@@ -93,6 +115,16 @@ public class Sincronizador : NetworkBehaviour {
         }
 
         isOnCallback = false;
+    }
+
+    #endregion
+    
+    #region Sincronização com parametro <INT>
+    
+    public void SetTrigger(string triggerName, int valor) {
+        if (!CanSetTrigger(triggerName)) return;
+
+        NetworkClient.Send(new SincronizarIntTriggerMessage(triggerName, valor));
     }
 
     [Server]
@@ -117,10 +149,57 @@ public class Sincronizador : NetworkBehaviour {
         isOnCallback = false;
     }
 
+    #endregion
+
+    #region Sincronização com parametro <GAMEOBJECT> (nota: Deve possuir o componente Sincronizavel)
+    
+    public void SetTrigger(string triggerName, GameObject obj) {
+        if (!CanSetTrigger(triggerName)) return;
+
+        Sincronizavel sincronizavel = obj.GetComponent<Sincronizavel>();
+        if (sincronizavel == null && sincronizavel.GetID().Trim() == "") {
+            Debug.LogError("Para sincronizar um parâmetro <GameObject>, é necessário que este possua o componente <Sincronizavel> com um id único.");
+            return;
+        }
+
+        string id = sincronizavel.GetID();
+        NetworkClient.Send(new SincronizarStringTriggerMessage(triggerName, id));
+    }
+
+    [Server]
+    private void ServerOnSetTrigger(NetworkConnectionToClient quemChamou, SincronizarStringTriggerMessage triggerMessage) {
+        string triggerName = triggerMessage.trigger;
+
+        ForeachConnection((conexao) => {
+            TargetSetTrigger(conexao, triggerName, triggerMessage.valor);
+        }, quemChamou);
+    }
+
+    [TargetRpc]
+    private void TargetSetTrigger(NetworkConnectionToClient target, string triggerName, string valor) {
+        isOnCallback = true;
+
+        if (triggersComParametro.ContainsKey(triggerName)) {
+            Sincronizavel sincronizavel = sincronizaveis.ContainsKey(valor) ? sincronizaveis[valor] : null;
+            if (sincronizavel != null) {
+                GameObject obj = sincronizavel.gameObject;
+
+                foreach (var action in triggersComParametro[triggerName]) {
+                    action.Invoke(obj);
+                }
+            }
+        }
+
+        isOnCallback = false;
+    }
+
+    #endregion
 
     
 
     public void OnTrigger(string triggerName, System.Action action) {
+        if (!CanSetOnTrigger(triggerName)) return;
+
         if (!triggers.ContainsKey(triggerName)) {
             triggers[triggerName] = new List<System.Action>();
         }
@@ -128,6 +207,8 @@ public class Sincronizador : NetworkBehaviour {
     }
 
     public void OnTrigger(string triggerName, System.Action<object> action) {
+        if (!CanSetOnTrigger(triggerName)) return;
+
         if (!triggersComParametro.ContainsKey(triggerName)) {
             triggersComParametro[triggerName] = new List<System.Action<object>>();
         }
@@ -136,14 +217,55 @@ public class Sincronizador : NetworkBehaviour {
     }
 
     public void OffTrigger(string triggerName, System.Action action) {
+        if (!CanSetOnTrigger(triggerName)) return;
+
         if (triggers.ContainsKey(triggerName)) {
             triggers[triggerName].Remove(action);
         }
     }
 
     public void OffTrigger(string triggerName, System.Action<object> action) {
+        if (!CanSetOnTrigger(triggerName)) return;
+
         if (triggersComParametro.ContainsKey(triggerName)) {
             triggersComParametro[triggerName].Remove(action);
         }
     }
+
+    public bool CanSetTrigger(string triggerName) {
+        return !isOnCallback && GameManager.instance != null && GameManager.instance.isOnline && triggerName != null;
+    }
+
+    public bool CanSetOnTrigger(string triggerName) {
+        return GameManager.instance != null && GameManager.instance.isOnline && triggerName != null;
+    }
+
+    #region Conversores
+
+    public System.Action<object> WrapActionObject(System.Action action) {
+        if (action == null) return null;
+        return (obj) => {
+            action.Invoke();
+        };
+    }
+
+    public System.Action<object> WrapActionObject(System.Action<int> action) {
+        if (action == null) return null;
+        return (obj) => {
+            if (obj is int valor) action.Invoke(valor);
+            else Debug.LogError("O objeto passado não é um inteiro.");
+        };
+    }
+
+    public System.Action<object> WrapActionObject(System.Action<GameObject> action) {
+        if (action == null) return null;
+        return (obj) => {
+            if (obj is GameObject gameObject) action.Invoke(gameObject);
+            else Debug.LogError("O objeto passado não é um GameObject.");
+        };
+    }
+
+
+    #endregion
+    
 }

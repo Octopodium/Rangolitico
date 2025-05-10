@@ -402,7 +402,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   menuInicialScene: MainMenu
   networkManager: {fileID: 0}
-  tipoDeTransport: 1
+  tipoDeTransport: 0
   ipPrefab: {fileID: 4755543426943370121, guid: 8b0e2859af65f794ba3b26e52fcd1316, type: 3}
   epicPrefab: {fileID: 9117796602290980629, guid: e9ca32a4db49c3e458735df93b580a56, type: 3}
   ipPanel: {fileID: 1176404042}
@@ -1949,28 +1949,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 953253852}
   m_CullTransparentMesh: 1
---- !u!1 &1000023055 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5370679958162542896, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
-  m_PrefabInstance: {fileID: 1483239779}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1000023058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000023055}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 3677638929
-  _assetId: 2338466158
-  serverOnly: 0
-  visibility: 0
-  hasSpawned: 0
 --- !u!1 &1015866546
 GameObject:
   m_ObjectHideFlags: 0
@@ -2883,6 +2861,10 @@ PrefabInstance:
       propertyPath: sceneId
       value: 532189522
       objectReference: {fileID: 0}
+    - target: {fileID: 3478595826324028241, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: sceneId
+      value: 3935016300
+      objectReference: {fileID: 0}
     - target: {fileID: 3978844108890528751, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.9894395
@@ -2948,10 +2930,7 @@ PrefabInstance:
     - {fileID: 7350430592904948287, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
     - {fileID: 2051930144027204163, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5370679958162542896, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1000023058}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
 --- !u!1 &1663398327
 GameObject:

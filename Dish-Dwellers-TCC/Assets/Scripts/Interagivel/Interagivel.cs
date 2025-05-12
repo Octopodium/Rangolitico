@@ -11,6 +11,11 @@ public class Interagivel : MonoBehaviour {
     void Start() {
         GameManager.instance.controle.OnIndicadorChange += OnIndicadorChange;
         indicador = GameManager.instance.controle.indicadorAtual;
+
+        Sincronizavel sinc = gameObject.GetComponent<Sincronizavel>();
+        if (sinc == null) {
+            sinc = gameObject.AddComponent<Sincronizavel>();
+        }
     }
 
     void OnDestroy() {

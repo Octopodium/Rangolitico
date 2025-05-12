@@ -18,11 +18,22 @@ public interface SincronizadorDeTipo<T> {
 }
 */
 
+
+public interface SincronizadorComTipo {
+    public void Setup(Sincronizador sinc);
+    public System.Type GetTipo();
+    public void SetTrigger(string triggerName, object valor);
+}
+
+
 public class Sincronizador : NetworkBehaviour {
     public static Sincronizador instance { get; private set; }
     public static System.Action onInstanciaCriada;
 
     public static System.Type[] tiposSuportados = new System.Type[] { typeof(int), typeof(GameObject) };
+
+    Dictionary<System.Type, SincronizadorComTipo> sincronizadores = new Dictionary<System.Type, SincronizadorComTipo>();
+    SincronizadorComTipo sincronizadorSemParametro = null;
 
 
     protected Dictionary<string, Sincronizavel> sincronizaveis = new Dictionary<string, Sincronizavel>();
@@ -30,35 +41,6 @@ public class Sincronizador : NetworkBehaviour {
     protected Dictionary<string, List<System.Action<object>>> triggersComParametro = new Dictionary<string, List<System.Action<object>>>();
 
     bool isOnCallback = false;
-
-    public struct SincronizarTriggerMessage : NetworkMessage {
-        public string trigger;
-
-        public SincronizarTriggerMessage(string trigger) {
-            this.trigger = trigger;
-        }
-    }
-
-    public struct SincronizarIntTriggerMessage : NetworkMessage {
-        public string trigger;
-        public int valor;
-
-        public SincronizarIntTriggerMessage(string trigger, int valor) {
-            this.trigger = trigger;
-            this.valor = valor;
-        }
-    }
-
-    public struct SincronizarStringTriggerMessage : NetworkMessage {
-        public string trigger;
-        public string valor;
-
-        public SincronizarStringTriggerMessage(string trigger, string valor) {
-            this.trigger = trigger;
-            this.valor = valor;
-        }
-    }
-
 
     private void Awake() {
         if (instance == null) {
@@ -69,14 +51,26 @@ public class Sincronizador : NetworkBehaviour {
             return;
         }
 
+        SincronizadorComTipo[] sincronizadores = GetComponentsInChildren<SincronizadorComTipo>();
+        foreach (var sincronizador in sincronizadores) {
+            if (sincronizador == null) continue;
+            System.Type tipo = sincronizador.GetTipo();
 
-        NetworkServer.RegisterHandler<SincronizarTriggerMessage>(ServerOnSetTrigger);
-        NetworkServer.RegisterHandler<SincronizarIntTriggerMessage>(ServerOnSetTrigger);
-        NetworkServer.RegisterHandler<SincronizarStringTriggerMessage>(ServerOnSetTrigger);
+            if (tipo == null && sincronizadorSemParametro == null) {
+                sincronizadorSemParametro = sincronizador;
+                sincronizadorSemParametro.Setup(this);
+            } else if (!this.sincronizadores.ContainsKey(tipo)) {
+                this.sincronizadores[tipo] = sincronizador;
+                sincronizador.Setup(this);
+            }
+        }
   
         onInstanciaCriada?.Invoke();
         onInstanciaCriada = null;
     }
+
+
+    #region Utils
 
     public void ForeachConnection(System.Action<NetworkConnectionToClient> action, NetworkConnectionToClient except = null) {
         foreach (var conn in NetworkServer.connections) {
@@ -98,6 +92,23 @@ public class Sincronizador : NetworkBehaviour {
         isOnCallback = false;
     }
 
+    public void ForeachTriggerSemParametro(string triggerName, System.Action<System.Action> action) {
+        isOnCallback = true;
+
+        if (triggersComParametro.ContainsKey(triggerName)) {
+            foreach (var acao in triggers[triggerName]) {
+                action.Invoke(acao);
+            }
+        }
+
+        isOnCallback = false;
+    }
+
+    #endregion
+
+
+
+    #region Cadastro de Sincronizaveis
 
     /// <summary>
     /// Chame essa função para ter certeza que o ID do objeto sincronizável é único.
@@ -145,7 +156,11 @@ public class Sincronizador : NetworkBehaviour {
         }
     }
 
-    #region Set e Unset de Trigger
+    #endregion
+
+
+
+    #region Set e Unset de Evento de Trigger
 
     public void OnTrigger(string triggerName, System.Action action) {
         if (!CanSetOnTrigger(triggerName)) return;
@@ -192,110 +207,21 @@ public class Sincronizador : NetworkBehaviour {
     }
 
     #endregion
-
-
-    // Sincronização de triggers
-
-    #region Sincronização sem parametros
+    
+    // Sincronização de triggers com parametro 
+    public void SetTrigger<T>(string triggerName, T value) {
+        System.Type tipo = typeof(T);
+        if (this.sincronizadores.ContainsKey(tipo)) {
+            this.sincronizadores[tipo].SetTrigger(triggerName, value);
+        }
+    }
 
     public void SetTrigger(string triggerName) {
-        if (!CanSetTrigger(triggerName)) return;
-
-        NetworkClient.Send(new SincronizarTriggerMessage(triggerName));
-    }
-
-    [Server]
-    public void ServerOnSetTrigger(NetworkConnectionToClient quemChamou, SincronizarTriggerMessage triggerMessage) {
-        string triggerName = triggerMessage.trigger;
-        ForeachConnection((conexao) => {
-            TargetSetTrigger(conexao, triggerName);
-        }, quemChamou);
-    }
-
-    [TargetRpc]
-    public void TargetSetTrigger(NetworkConnectionToClient target, string triggerName) {
-        isOnCallback = true;
-
-        if (triggers.ContainsKey(triggerName)) {
-            foreach (var action in triggers[triggerName]) {
-                action.Invoke();
-            }
-        }
-
-        isOnCallback = false;
-    }
-
-    #endregion
-    
-    #region Sincronização com parametro <INT>
-
-    public void SetTrigger(string triggerName, int valor) {
-        if (!CanSetTrigger(triggerName)) return;
-
-        NetworkClient.Send(new SincronizarIntTriggerMessage(triggerName, valor));
-    }
-
-    [Server]
-    private void ServerOnSetTrigger(NetworkConnectionToClient quemChamou, SincronizarIntTriggerMessage triggerMessage) {
-        string triggerName = triggerMessage.trigger;
-
-        ForeachConnection((conexao) => {
-            TargetSetTrigger(conexao, triggerName, triggerMessage.valor);
-        }, quemChamou);
-    }
-
-    [TargetRpc]
-    private void TargetSetTrigger(NetworkConnectionToClient target, string triggerName, int valor) {
-        ForeachTriggerComParametro(triggerName, (action) => {
-            action.Invoke(valor);
-        });
-    }
-
-    #endregion
-
-    #region Sincronização com parametro <GAMEOBJECT> (nota: Deve possuir o componente Sincronizavel)
-    
-    public void SetTrigger(string triggerName, GameObject obj) {
-        if (!CanSetTrigger(triggerName)) return;
-
-        Sincronizavel sincronizavel = obj.GetComponent<Sincronizavel>();
-        if (sincronizavel == null && sincronizavel.GetID().Trim() == "") {
-            Debug.LogError("Para sincronizar um parâmetro <GameObject>, é necessário que este possua o componente <Sincronizavel> com um id único.");
-            return;
-        }
-
-        string id = sincronizavel.GetID();
-        NetworkClient.Send(new SincronizarStringTriggerMessage(triggerName, id));
-    }
-
-    [Server]
-    private void ServerOnSetTrigger(NetworkConnectionToClient quemChamou, SincronizarStringTriggerMessage triggerMessage) {
-        string triggerName = triggerMessage.trigger;
-
-        ForeachConnection((conexao) => {
-            TargetSetTrigger(conexao, triggerName, triggerMessage.valor);
-        }, quemChamou);
-    }
-
-    [TargetRpc]
-    private void TargetSetTrigger(NetworkConnectionToClient target, string triggerName, string valor) {
-
-        if (triggersComParametro.ContainsKey(triggerName)) {
-            Sincronizavel sincronizavel = sincronizaveis.ContainsKey(valor) ? sincronizaveis[valor] : null;
-            if (sincronizavel != null) {
-                GameObject obj = sincronizavel.gameObject;
-                ForeachTriggerComParametro(triggerName, (action) => {
-                    action.Invoke(obj);
-                });
-            }
+        if (this.sincronizadorSemParametro != null) {
+            this.sincronizadorSemParametro.SetTrigger(triggerName, null);
         }
     }
-
-    #endregion
-
     
-
-    #region Conversores
 
     public System.Action WrapActionObjectSemParametro(System.Action action, bool debugLog = false) {
         if (action == null) return null;
@@ -308,38 +234,16 @@ public class Sincronizador : NetworkBehaviour {
         };
     }
 
-    public System.Action<object> WrapActionObject(System.Action action) {
-        if (action == null) return null;
-        return (obj) => {
-            action.Invoke();
-        };
-    }
-
-    public System.Action<object> WrapActionObject(System.Action<int> action, bool debugLog = false) {
+    public System.Action<object> WrapActionObject<T>(System.Action<T> action, bool debugLog = false) {
         if (action == null) return null;
         return (obj) => {
             if (debugLog) Debug.Log("[Sync - Inicio]");
 
-            if (obj is int valor) action.Invoke(valor);
-            else Debug.LogError("O objeto passado não é um inteiro.");
+            if (obj is T valor) action.Invoke(valor);
+            else Debug.LogError("O objeto passado não é um " + nameof(T) + ".");
 
             if (debugLog) Debug.Log("[Sync - Fim]");
         };
     }
-
-    public System.Action<object> WrapActionObject(System.Action<GameObject> action, bool debugLog = false) {
-        if (action == null) return null;
-        return (obj) => {
-            if (debugLog) Debug.Log("[Sync - Inicio]");
-
-            if (obj is GameObject gameObject) action.Invoke(gameObject);
-            else Debug.LogError("O objeto passado não é um GameObject.");
-
-            if (debugLog) Debug.Log("[Sync - Fim]");
-        };
-    }
-
-
-    #endregion
     
 }

@@ -90,13 +90,13 @@ public static class SincronizavelExtensions {
     public static void Sincronizar(this GameObject obj, string triggerName, int valor) {
         if (obj == null) return;
 
-        Sincronizador.instance.SetTrigger(GetTriggerDeFato(obj, triggerName), valor);
+        Sincronizador.instance.SetTrigger<int>(GetTriggerDeFato(obj, triggerName), valor);
     }
 
     public static void Sincronizar(this GameObject obj, string triggerName, GameObject valor) {
         if (obj == null) return;
 
-        Sincronizador.instance.SetTrigger(GetTriggerDeFato(obj, triggerName), valor);
+        Sincronizador.instance.SetTrigger<GameObject>(GetTriggerDeFato(obj, triggerName), valor);
     }
 }
 
@@ -147,6 +147,8 @@ public class Sincronizavel : MonoBehaviour {
 
     [Tooltip("Caso positivo, inclui o nome da sala no ID. Deve ser utilizado em todos os objetos que não são mantidos entre as salas (a maioria).")]
     public bool exclusivoDaSala = true;
+    
+    public bool autoIDSeVazio = true;
 
     private List<(string, System.Action<object>)> metodosSincronizados = new List<(string, System.Action<object>)>();
     private List<(string, System.Action)> metodosSincronizadosSemParametro = new List<(string, System.Action)>();
@@ -166,9 +168,23 @@ public class Sincronizavel : MonoBehaviour {
 
     void Setup() {
         if (cadastrarNoInicio && !cadastrouUmaVez) {
+            GerarIDAuto();
             CadastrarSincronizavel();
             CadastrarMetodos();
         }
+    }
+
+    public void LateSetup() {
+        if (jaCadastrado) return;
+
+        GerarIDAuto();
+        CadastrarSincronizavel();
+        CadastrarMetodos();
+    }
+
+    void GerarIDAuto() {
+        if (!autoIDSeVazio || idObjetoSincronizado != null && idObjetoSincronizado.Trim() != "") return;
+        idObjetoSincronizado = gameObject.name;
     }
 
     void CadastrarSincronizavel() {
@@ -180,13 +196,6 @@ public class Sincronizavel : MonoBehaviour {
 
     void DescadastrarSincronizavel() {
         Sincronizador.instance.DescadastrarSincronizavel(this);
-    }
-
-    public void LateSetup() {
-        if (jaCadastrado) return;
-
-        CadastrarSincronizavel();
-        CadastrarMetodos();
     }
 
     public string GetTriggerDeFato(string trigger) {

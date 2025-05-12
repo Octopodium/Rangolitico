@@ -288,12 +288,14 @@ public class BetterEOSLobby : MonoBehaviour {
     }
 
     AttributeData[] CriarAtributos(string id, AttributeData[] atributos) {
-        List<AttributeData> atributosList = new List<AttributeData>(atributos);
+        List<AttributeData> atributosList = atributos == null ? new List<AttributeData>() : new List<AttributeData>(atributos);
 
-        foreach (var atributo in atributos) {
-            if (atributo.Key == "id_jogo") {
-                atributosList.Remove(atributo);
-                break;
+        if (atributos != null) {
+            foreach (var atributo in atributos) {
+                if (atributo.Key == "id_jogo") {
+                    atributosList.Remove(atributo);
+                    break;
+                }
             }
         }
 

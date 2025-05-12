@@ -137,6 +137,11 @@ public class ConnectionUI : MonoBehaviour {
         lobbyPlayer.SetPronto(!lobbyPlayer.pronto);
     }
 
+    public void UpdateProntoUI() {
+        if (p1 != null) UpdateP1ProntoUI(p1.pronto);
+        if (p2 != null) UpdateP2ProntoUI(p2.pronto);
+    }
+
 
     // Atualiza a UI a partir do valor do LobbyPlayer 1
     public void UpdateP1ProntoUI(bool val) {
@@ -218,6 +223,7 @@ public class ConnectionUI : MonoBehaviour {
     // Chamado quando um cliente entra no lobby com sucesso (pelo LobbyPlayer)
     public void EntrouNoLobby() {
         EsconderCarregamento();
+        UpdateProntoUI();
     }
 
     public void CancelarEntrada() {

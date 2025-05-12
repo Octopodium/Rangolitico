@@ -136,7 +136,6 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
             inputActionMap["Aim"].canceled += cnt => Mira();
         } else if (isLocalPlayer) {
             inputActionMap["Interact"].performed += ctx => InteragirOnlineCmd();
-            inputActionMap["Interact"].performed += ctx => Teste(3);
             inputActionMap["Attack"].performed += ctx => AcionarFerramentaOnlineCmd();
             inputActionMap["Attack"].canceled += ctx => SoltarFerramentaOnlineCmd();
             inputActionMap["Aim"].performed += cnt => Mira();
@@ -152,12 +151,6 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
             UsarRB(true); // Se o jogador não está no chão, desabilita o CharacterController (habilita o Rigidbody)
             UsarAtrito(false);
         }
-    }
-
-    [Sincronizar("teste")]
-    public void Teste(int valor){
-        gameObject.Sincronizar("teste", valor);
-        Debug.Log("Teste: " + valor);
     }
 
     void OnEnable() {
@@ -234,7 +227,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
 
     public override void OnStopClient (){
         base.OnStopClient();
-        GameManager.instance.VoltarParaMenu();
+        GameManager.instance?.VoltarParaMenu();
     }
 
 
@@ -622,7 +615,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
         Interagir();
     }
 
-    [Sincronizar("interagir", debugLog=true)]
+    [Sincronizar("interagir")]
     public void InteragirCom(GameObject interagivelObj) {
         Interagivel interagivel = interagivelObj.GetComponent<Interagivel>();
         if (interagivel == null) return;

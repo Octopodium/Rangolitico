@@ -103,4 +103,11 @@ public class sala : MonoBehaviour{
         resetaveis.Clear();
     }
 
+    /// <summary>
+    /// Retorna o nome da sala atual, no formato "sala-fase".
+    /// </summary>
+    public string GetNome() {
+        return $"{nSala}-{nFase}";
+    }
+
 }

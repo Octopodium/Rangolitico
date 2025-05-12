@@ -10,7 +10,7 @@ public enum QualPlayer { Player1, Player2, Desativado }
 public enum QualPersonagem { Heater, Angler }
 
 [RequireComponent(typeof(Carregador)), RequireComponent(typeof(Carregavel))]
-public class Player : NetworkBehaviour {
+public class Player : NetworkBehaviour, SincronizaMetodo {
     public QualPersonagem personagem = QualPersonagem.Heater;
     public QualPlayer qualPlayer = QualPlayer.Player1;
     public InputActionMap inputActionMap {get; protected set;}
@@ -136,6 +136,7 @@ public class Player : NetworkBehaviour {
             inputActionMap["Aim"].canceled += cnt => Mira();
         } else if (isLocalPlayer) {
             inputActionMap["Interact"].performed += ctx => InteragirOnlineCmd();
+            inputActionMap["Interact"].performed += ctx => Teste(3);
             inputActionMap["Attack"].performed += ctx => AcionarFerramentaOnlineCmd();
             inputActionMap["Attack"].canceled += ctx => SoltarFerramentaOnlineCmd();
             inputActionMap["Aim"].performed += cnt => Mira();
@@ -151,6 +152,12 @@ public class Player : NetworkBehaviour {
             UsarRB(true); // Se o jogador não está no chão, desabilita o CharacterController (habilita o Rigidbody)
             UsarAtrito(false);
         }
+    }
+
+    [Sincronizar("teste")]
+    public void Teste(int valor){
+        gameObject.Sincronizar("teste", valor);
+        Debug.Log("Teste: " + valor);
     }
 
     void OnEnable() {
@@ -607,12 +614,30 @@ public class Player : NetworkBehaviour {
     /// </summary>
     void Interagir() {
         // Prioriza interações ao invés de soltar o que carrega (caso a interação necessite de um objeto carregado)
-        if (ultimoInteragivel != null) ultimoInteragivel.Interagir(this);
-        else if (carregador.estaCarregando) carregador.Soltar(direcao, velocidade, movimentacao.magnitude > 0);
+        if (ultimoInteragivel != null) InteragirCom(ultimoInteragivel.gameObject);
+        else if (carregador.estaCarregando) SoltarCarregando();
     }
 
     void Interagir(InputAction.CallbackContext ctx){
         Interagir();
+    }
+
+    [Sincronizar("interagir", debugLog=true)]
+    public void InteragirCom(GameObject interagivelObj) {
+        Interagivel interagivel = interagivelObj.GetComponent<Interagivel>();
+        if (interagivel == null) return;
+        gameObject.Sincronizar("interagir", interagivelObj);
+
+        ultimoInteragivel = interagivel;
+        interagivel.Interagir(this);
+    }
+
+    [Sincronizar("soltar-carregando")]
+    public void SoltarCarregando() {
+        if (!carregador.estaCarregando) return;
+        gameObject.Sincronizar("soltar-carregando");
+
+        carregador.Soltar(direcao, velocidade, movimentacao.magnitude > 0);
     }
 
     #endregion

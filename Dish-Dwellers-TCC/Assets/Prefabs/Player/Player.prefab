@@ -64,6 +64,7 @@ GameObject:
   - component: {fileID: -1192823285401150831}
   - component: {fileID: -1283205929378889320}
   - component: {fileID: 1671230026197402833}
+  - component: {fileID: -6773236473951336124}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -127,6 +128,8 @@ MonoBehaviour:
   visualizarDirecao: {fileID: 5890127384661449939}
   escudo: 0
   velocidadeComEscudo: 4
+  estaMirando: 0
+  deadzoneMira: 0.1
   carregador: {fileID: 0}
   estaNoChao: 1
   conectado: 0
@@ -311,6 +314,21 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &-6773236473951336124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2828260846703549952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 
+  cadastrarNoInicio: 1
+  exclusivoDaSala: 0
 --- !u!1 &3965158462078731169
 GameObject:
   m_ObjectHideFlags: 0

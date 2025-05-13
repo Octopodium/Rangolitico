@@ -204,6 +204,7 @@ public class GameManager : MonoBehaviour {
     }
 
     private void PassaDeSalaOffline() {
+        sala.enabled = false;
         cenaProx.allowSceneActivation = true;
 
         OnMudaDeSala?.Invoke();

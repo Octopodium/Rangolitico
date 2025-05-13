@@ -10,17 +10,17 @@ public class sala : MonoBehaviour{
     [Space(10)][Header("<color=yellow>Referências manuais: </color>")][Space(10)]
     public Transform[] spawnPoints = new Transform[2];
     public List<OnTriggerEvent> triggers = new List<OnTriggerEvent>();
-    private List<IResetavel> resetaveis = new List<IResetavel>();
+    public List<IResetavel> resetaveis = new List<IResetavel>();
     public UnityEvent onResetSala;
 
     [HideInInspector]public int nSala, nFase;
 
     private void Start(){
-        resetaveis = FindObjectsByType<IResetavel>(FindObjectsSortMode.None).ToList();
 
         GetNomeDaSala();
         PosicionarJogador();
         GameManager.instance.SetSala(this);
+        Debug.Log("Lista formada");
     }
 
     /// <summary>
@@ -41,12 +41,7 @@ public class sala : MonoBehaviour{
 
         onResetSala?.Invoke();
         foreach(var data in resetaveis){ 
-            try{
-                data.OnReset();
-            }
-            catch{
-                
-            }
+            data.OnReset();
         }
         
     }
@@ -95,19 +90,6 @@ public class sala : MonoBehaviour{
             players[i].Teletransportar(spawnPoints[i].position);
             players[i].gameObject.SetActive(true);
         }
-    }
-
-    private void Osable()
-    {
-        onResetSala = null;
-        resetaveis.Clear();
-    }
-
-    /// <summary>
-    /// Retorna o nome da sala atual, no formato "sala-fase".
-    /// </summary>
-    public string GetNome() {
-        return $"{nSala}-{nFase}";
     }
 
 }

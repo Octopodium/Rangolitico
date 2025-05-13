@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 ///<summary>
@@ -72,5 +73,14 @@ public abstract class Inimigo : MonoBehaviour
     protected void Morte()
     {
         Destroy(gameObject);
+    }
+
+    private void Start()
+    {
+        SceneManager.activeSceneChanged += SeiLaEu;   
+    }
+
+    private void SeiLaEu(Scene s0, Scene s1){
+        Debug.Log(s0.name + s1.name);
     }
 }

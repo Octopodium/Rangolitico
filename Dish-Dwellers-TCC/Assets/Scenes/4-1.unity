@@ -11777,6 +11777,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 790667066968104578, guid: 2f629186421c60d4ea5d4f65c526f6a2, type: 3}
   m_PrefabInstance: {fileID: 985220500}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &985220502 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1848410773920016530, guid: 2f629186421c60d4ea5d4f65c526f6a2, type: 3}
+  m_PrefabInstance: {fileID: 985220500}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a66dfffd3dab5418d06b3200a15a04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &985220503 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3119353026472110044, guid: 2f629186421c60d4ea5d4f65c526f6a2, type: 3}
+  m_PrefabInstance: {fileID: 985220500}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22f72cf4349dc0446a7d6d4e79ac085f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &995018352
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13539,6 +13561,10 @@ MonoBehaviour:
   - {fileID: 999645399}
   - {fileID: 831223619}
   triggers: []
+  resetaveis:
+  - {fileID: 985220503}
+  - {fileID: 985220502}
+  - {fileID: 1634572225}
   onResetSala:
     m_PersistentCalls:
       m_Calls: []
@@ -19569,6 +19595,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6dadb8b38dbe2c4d8fb5a39325c24a8, type: 3}
+--- !u!114 &1634572225 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4933428752690304307, guid: b6dadb8b38dbe2c4d8fb5a39325c24a8, type: 3}
+  m_PrefabInstance: {fileID: 1634572224}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54130edec7e63424495bf6b8e26714c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1635065897
 GameObject:
   m_ObjectHideFlags: 0

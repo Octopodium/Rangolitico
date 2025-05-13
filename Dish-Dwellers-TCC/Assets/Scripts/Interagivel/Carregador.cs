@@ -62,7 +62,13 @@ public class Carregador: MonoBehaviour {
 
         if (carregavelProximo == null) return;
 
-        carregavelProximo.Carregar(this);
+        CarregarNoAutomatico(carregavelProximo);
+    }
+
+    [Sincronizar]
+    public void CarregarNoAutomatico(Carregavel carregavel) {
+        gameObject.Sincronizar();
+        carregavel.Carregar(this);
     }
 
     /// <summary>

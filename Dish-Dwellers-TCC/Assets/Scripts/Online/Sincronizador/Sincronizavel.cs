@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine.SceneManagement;
+using System.Runtime.CompilerServices;
 
 /*
     COMO UTILIZAR A SINCRONIZAÇÃO POR ATRIBUTO:
@@ -81,19 +82,19 @@ public static class SincronizavelExtensions {
     }
     
 
-    public static void Sincronizar(this GameObject obj, string triggerName) {
+    public static void Sincronizar(this GameObject obj, [CallerMemberName] string triggerName = "") {
         if (obj == null) return;
-    
+
         Sincronizador.instance.SetTrigger(GetTriggerDeFato(obj, triggerName));
     }
 
-    public static void Sincronizar(this GameObject obj, string triggerName, int valor) {
+    public static void Sincronizar(this GameObject obj, int valor, [CallerMemberName] string triggerName = "") {
         if (obj == null) return;
 
         Sincronizador.instance.SetTrigger<int>(GetTriggerDeFato(obj, triggerName), valor);
     }
 
-    public static void Sincronizar(this GameObject obj, string triggerName, GameObject valor) {
+    public static void Sincronizar(this GameObject obj, GameObject valor, [CallerMemberName] string triggerName = "") {
         if (obj == null) return;
 
         Sincronizador.instance.SetTrigger<GameObject>(GetTriggerDeFato(obj, triggerName), valor);
@@ -103,10 +104,8 @@ public static class SincronizavelExtensions {
 
 [System.AttributeUsage(System.AttributeTargets.Method)]
 public class SincronizarAttribute : System.Attribute {
-    public string triggerName;
     public bool debugLog = false;
-    public SincronizarAttribute(string triggerName, bool debugLog = false) {
-        this.triggerName = triggerName;
+    public SincronizarAttribute(bool debugLog = false) {
         this.debugLog = debugLog;
     }
 }
@@ -229,7 +228,7 @@ public class Sincronizavel : MonoBehaviour {
             SincronizarAttribute atributo = (SincronizarAttribute)atributos[0];
             
             bool debugLog = atributo.debugLog;
-            string trigger = atributo.triggerName;
+            string trigger = metodo.Name;
             string triggerDeFato = GetTriggerDeFato(trigger);
             if (string.IsNullOrEmpty(trigger)) {
                 Debug.LogError("O método " + metodo.Name + " não possui um trigger definido. Não é possível sincronizar.");

@@ -95,7 +95,7 @@ public class Sincronizador : NetworkBehaviour {
     public void ForeachTriggerSemParametro(string triggerName, System.Action<System.Action> action) {
         isOnCallback = true;
 
-        if (triggersComParametro.ContainsKey(triggerName)) {
+        if (triggers.ContainsKey(triggerName)) {
             foreach (var acao in triggers[triggerName]) {
                 action.Invoke(acao);
             }

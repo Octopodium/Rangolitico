@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ControladorDeObjeto : IResetavel
+public class ControladorDeObjeto : IResetavel, SincronizaMetodo
 {
     [Header("<color=green>Componentes : </color>")][Space(10)]
     [SerializeField] private GameObject prefab;
@@ -25,7 +25,9 @@ public class ControladorDeObjeto : IResetavel
     /// <summary>
     /// Caso não exista nenhum objeto atribuido ao campo do objeto controlado, instancia um novo objeto com base no prefab.
     /// </summary>
+    [Sincronizar(debugLog=true)]
     public void Spawn(){
+        gameObject.Sincronizar();
         if(objeto == null) objeto = Instantiate(prefab, respawnPos.position, transform.rotation);
 
         Destrutivel destrutivel = objeto.GetComponent<Destrutivel>();
@@ -36,7 +38,9 @@ public class ControladorDeObjeto : IResetavel
     /// <summary>
     /// Transporta o objeto controlado para o ponto de respawn atribuido no componente e ativa ele.
     /// </summary>
+    [Sincronizar()]
     public void Respawn(){
+        gameObject.Sincronizar();
         objeto.transform.position = respawnPos.position;
 
         if(!objeto.activeInHierarchy)
@@ -46,7 +50,9 @@ public class ControladorDeObjeto : IResetavel
     /// <summary>
     /// Destroi o objeto controlado e reinicia o sistema
     /// </summary>
+    [Sincronizar()]
     public void Reiniciar(){
+        gameObject.Sincronizar();
         Destroy(objeto);
         objeto = null;
 

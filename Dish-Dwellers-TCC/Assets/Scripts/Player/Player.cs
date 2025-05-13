@@ -615,20 +615,20 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
         Interagir();
     }
 
-    [Sincronizar("interagir")]
+    [Sincronizar]
     public void InteragirCom(GameObject interagivelObj) {
         Interagivel interagivel = interagivelObj.GetComponent<Interagivel>();
         if (interagivel == null) return;
-        gameObject.Sincronizar("interagir", interagivelObj);
+        gameObject.Sincronizar(interagivelObj);
 
         ultimoInteragivel = interagivel;
         interagivel.Interagir(this);
     }
 
-    [Sincronizar("soltar-carregando")]
+    [Sincronizar()]
     public void SoltarCarregando() {
         if (!carregador.estaCarregando) return;
-        gameObject.Sincronizar("soltar-carregando");
+        gameObject.Sincronizar();
 
         carregador.Soltar(direcao, velocidade, movimentacao.magnitude > 0);
     }

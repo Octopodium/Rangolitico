@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6698215070288709935}
   - component: {fileID: 4933428752690304307}
+  - component: {fileID: 3059736729251123674}
   m_Layer: 7
   m_Name: ControladorChave
   m_TagString: Untagged
@@ -79,3 +80,19 @@ MonoBehaviour:
   prefab: {fileID: 1742485915137094490, guid: a51b9169f1f3bbf4cb8a63d7da4086e0, type: 3}
   respawnPos: {fileID: 1949009520377102282}
   spawnNoInicio: 0
+--- !u!114 &3059736729251123674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4475424614925952166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: ControladorChave
+  cadastrarNoInicio: 1
+  exclusivoDaSala: 1
+  autoIDSeVazio: 1

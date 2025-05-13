@@ -26,12 +26,12 @@ public class Portal : IResetavel, SincronizaMetodo {
         }
     }
 
-    [Sincronizar("entra-portal")]
+    [Sincronizar()]
     public void PlayerEntra(GameObject playerObj) {
         Player player = playerObj.GetComponent<Player>();
         if(player == null) return; // Se não for um player, não faz nada.
 
-        gameObject.Sincronizar("entra-portal", playerObj);
+        gameObject.Sincronizar(playerObj);
 
         player.inputActionMap["Cancelar"].performed += SairDoPortal;
         
@@ -54,10 +54,10 @@ public class Portal : IResetavel, SincronizaMetodo {
         SairDoPortal();
     }
 
-    [Sincronizar("sair-portal")]
+    [Sincronizar()]
     public void SairDoPortal(){
         if(playersNoPortal.Count == 1){
-            gameObject.Sincronizar("sair-portal");
+            gameObject.Sincronizar();
             
 
             Player player = playersNoPortal[0];

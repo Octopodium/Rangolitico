@@ -180,25 +180,29 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
         }
     }
 
-    void FixedUpdate() {
-        bool estaJogando = true;
-
-        if (GameManager.instance.isOnline && !isLocalPlayer) {
-            estaJogando = false; // Não atualiza a movimentação do jogador se não for o jogador local
+    public bool ehJogadorAtual { get { 
+            switch (GameManager.instance.modoDeJogo) {
+                case ModoDeJogo.SINGLEPLAYER:
+                    return inputActionMap.enabled;
+                case ModoDeJogo.MULTIPLAYER_ONLINE:
+                    return isLocalPlayer;
+                default:
+                    return true;
+            }
         }
+    }
 
+    void FixedUpdate() {
         // No modo singleplayer, caso este jogador não seja o atual, não faz nada
         if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && !inputActionMap.enabled) {
             if (ultimoInteragivel != null) {
                 ultimoInteragivel.MostarIndicador(false);
                 ultimoInteragivel = null;
             }
-
-            estaJogando = false; // Não atualiza a movimentação do jogador se não for o jogador local
         }
 
-        if (estaJogando) ChecarInteragiveis();
-        Movimentacao(estaJogando);
+        if (ehJogadorAtual) ChecarInteragiveis();
+        Movimentacao();
     }
 
 
@@ -328,13 +332,13 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     /// </summary>
     
     //Titi: Fiz algumas alterações aqui na movimentação pro escudo ok :3
-    void Movimentacao(bool permitidoMover) {
+    void Movimentacao() {
         CalcularDirecao();
 
         estaNoChao = CheckEstaNoChao();
 
-        if(estaGanchado || !estaNoChao) MovimentacaoNoAr(permitidoMover);
-        else MovimentacaoNoChao(permitidoMover);
+        if(estaGanchado || !estaNoChao) MovimentacaoNoAr();
+        else MovimentacaoNoChao();
 
         UsarAtrito(estaNoChao);
 
@@ -349,54 +353,46 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
 
         movimentacao = (transform.right * x + transform.forward * z).normalized;
 
-        if (!estaMirando && movimentacao.magnitude > 0) 
-        {
+        if (!estaMirando && movimentacao.magnitude > 0) {
             direcao = movimentacao;
             visualizarDirecao.transform.forward = direcao;
 
-        if (GameManager.instance.isOnline && isLocalPlayer) 
-            AtualizarDirecaoCmd(direcao);
+            if (GameManager.instance.isOnline && isLocalPlayer) 
+                AtualizarDirecaoCmd(direcao);
         }
     }
 
     // Chamado automaticamente pelo método Movimentacao
-    void MovimentacaoNoChao(bool permitidoMover) {
-        
+    void MovimentacaoNoChao() {
         UsarCC();
 
         Vector3 movimentacaoEfetiva = Vector3.zero; 
 
-        if (permitidoMover && !sendoCarregado && podeMovimentar && movimentacao.magnitude > 0) 
+        if (ehJogadorAtual && !sendoCarregado && podeMovimentar && movimentacao.magnitude > 0) 
             movimentacaoEfetiva += movimentacao * velocidade;
         
         if (!characterController.isGrounded && !sendoCarregado)
             movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
         
-        characterController.Move(movimentacaoEfetiva * Time.fixedDeltaTime);
+        if (movimentacaoEfetiva != Vector3.zero) {
+            characterController.Move(movimentacaoEfetiva * Time.fixedDeltaTime);
+        }
     }
 
     // Chamado automaticamente pelo método Movimentacao
-    void MovimentacaoNoAr(bool permitidoMover) {
+    void MovimentacaoNoAr() {
         UsarRB();
 
-        if (!permitidoMover || sendoCarregado || !podeMovimentar || movimentacao.magnitude == 0)  return;
+        if (!ehJogadorAtual || sendoCarregado || !podeMovimentar || movimentacao.magnitude == 0)  return;
 
         rb.AddForce(movimentacao.normalized * velocidadeRB , ForceMode.Force);
-
-        /*
-        Vector3 velocity = rb.linearVelocity;
-        velocity.y = 0; // Mantém a velocidade vertical do Rigidbody
-        if (velocity.magnitude > velocidadeRB) {
-            velocity = velocity.normalized * velocidadeRB;
-            velocity.y = rb.linearVelocity.y;
-            rb.linearVelocity = velocity.normalized * velocidadeRB; // Limita a velocidade do jogador
-        }
-        */
     }
 
     // Código para fazer o player mirar a direção do escudo e gancho de forma separada da movimentação 
     void Mira()
     {
+        if (GameManager.instance.modoDeJogo == ModoDeJogo.MULTIPLAYER_LOCAL) return; // No multiplayer local, as setinhas são utilizadas como controle do segundo jogador
+
         inputMira = inputActionMap["Aim"].ReadValue<Vector2>();
         
         estaMirando = inputMira.magnitude > deadzoneMira;

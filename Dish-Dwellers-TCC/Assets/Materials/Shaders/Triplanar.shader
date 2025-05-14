@@ -1,5 +1,6 @@
 Shader "Custom/Triplanar"
 {
+    /*
     Properties
     {
         [Header(Color Configuration)][Space(10)]
@@ -26,7 +27,7 @@ Shader "Custom/Triplanar"
         Tags { "RenderType"="Opaque" }
         LOD 200
 
-        CGPROGRAM
+        HLSLPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
         #pragma surface surf Standard fullforwardshadows
 
@@ -48,7 +49,7 @@ Shader "Custom/Triplanar"
 
         half _Glossiness;
         half _Metallic;
-        fixed4 _Color;
+        half4 _Color;
         float4 _Scale;
 
         UNITY_INSTANCING_BUFFER_START(Props)
@@ -97,7 +98,8 @@ Shader "Custom/Triplanar"
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
         }
-        ENDCG
+        ENDHLSL
     }
     FallBack "Diffuse"
+    */
 }

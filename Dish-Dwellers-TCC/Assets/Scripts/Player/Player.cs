@@ -45,6 +45,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     public int maxInteragiveisEmRaio = 8;
     public float raioInteracao = 1f;
     public LayerMask layerInteragivel;
+    public float velocidadeCarregandoMult = 0.85f;
     Interagivel ultimoInteragivel;
     Collider[] collidersInteragiveis;
     public List<Collider> collidersIgnoraveis = new List<Collider>(); // Lista de colisores que o jogador não pode interagir
@@ -61,7 +62,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     [Header("Config do Escudo")] [Space(10)]
     public bool escudo;
     public bool escudoAtivo {get; set;}
-    public float velocidadeComEscudo = 4f;
+    public float velocidadeComEscudoMult = 0.65f;
 
     [Header("Config de Mira")] [Space(10)]
     public bool estaMirando = false;
@@ -236,16 +237,38 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
 
 
     [Command]
-    void AtualizarDirecaoCmd(Vector3 valor) {
-        AtualizarDirecaoClientRpc(valor);
+    void AtualizarDirecaoCmd(Vector3 valor, bool isMira) {
+        AtualizarDirecaoClientRpc(valor, isMira);
     }
 
     [ClientRpc]
-    void AtualizarDirecaoClientRpc(Vector3 valor) {
+    void AtualizarDirecaoClientRpc(Vector3 valor, bool isMira) {
         if (isLocalPlayer) return; // Não atualiza a direção do jogador local
 
         direcao = valor;
         visualizarDirecao.transform.forward = direcao;
+
+        if (!isMira)
+            animacaoJogador.Mover(direcao);
+    }
+
+    [Command]
+    void AtualizarMovimentoCmd(Vector3 movimento) {
+        AtualizarMovimentoClientRpc(movimento);
+    }
+
+    [ClientRpc]
+    void AtualizarMovimentoClientRpc(Vector3 movimento) {
+        if (isLocalPlayer) return; // Não atualiza a direção do jogador local
+
+        movimentacao = movimento;
+
+        if (!estaMirando && movimentacao.magnitude > 0) {
+            direcao = movimentacao;
+            visualizarDirecao.transform.forward = direcao;
+        }
+
+        animacaoJogador.Mover(movimentacao);
     }
 
 
@@ -333,7 +356,8 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     
     //Titi: Fiz algumas alterações aqui na movimentação pro escudo ok :3
     void Movimentacao() {
-        CalcularDirecao();
+        if (!GameManager.instance.isOnline || isLocalPlayer)
+            CalcularDirecao();
 
         estaNoChao = CheckEstaNoChao();
 
@@ -342,24 +366,34 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
 
         UsarAtrito(estaNoChao);
 
-        animacaoJogador.Mover(movimentacao);
+        if (!GameManager.instance.isOnline || isLocalPlayer)
+            animacaoJogador.Mover(movimentacao);
     }
 
     void CalcularDirecao() {
-
         Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
         float x = input.x;
         float z = input.y;
 
+        Vector3 ultimaMovimentacao = movimentacao;
         movimentacao = (transform.right * x + transform.forward * z).normalized;
 
         if (!estaMirando && movimentacao.magnitude > 0) {
             direcao = movimentacao;
             visualizarDirecao.transform.forward = direcao;
-
-            if (GameManager.instance.isOnline && isLocalPlayer) 
-                AtualizarDirecaoCmd(direcao);
         }
+
+        if (ultimaMovimentacao != movimentacao && GameManager.instance.isOnline && isLocalPlayer)
+            AtualizarMovimentoCmd(movimentacao);
+    }
+
+    float GetVelocidade(bool isRb = false) {
+        float v = isRb ? velocidadeRB : velocidade;
+
+        if (escudoAtivo) v *= velocidadeComEscudoMult;
+        if (carregando) v*= velocidadeCarregandoMult;
+
+        return v;
     }
 
     // Chamado automaticamente pelo método Movimentacao
@@ -369,10 +403,12 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
         Vector3 movimentacaoEfetiva = Vector3.zero; 
 
         if (ehJogadorAtual && !sendoCarregado && podeMovimentar && movimentacao.magnitude > 0) 
-            movimentacaoEfetiva += movimentacao * velocidade;
+            movimentacaoEfetiva += movimentacao * GetVelocidade();
         
-        if (!characterController.isGrounded && !sendoCarregado)
+        if (!characterController.isGrounded && !sendoCarregado) {
             movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
+        }
+            
         
         if (movimentacaoEfetiva != Vector3.zero) {
             characterController.Move(movimentacaoEfetiva * Time.fixedDeltaTime);
@@ -385,7 +421,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
 
         if (!ehJogadorAtual || sendoCarregado || !podeMovimentar || movimentacao.magnitude == 0)  return;
 
-        rb.AddForce(movimentacao.normalized * velocidadeRB , ForceMode.Force);
+        rb.AddForce(movimentacao.normalized * GetVelocidade(true) , ForceMode.Force);
     }
 
     // Código para fazer o player mirar a direção do escudo e gancho de forma separada da movimentação 
@@ -400,12 +436,13 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
         if (estaMirando)
         {
             Vector3 novaDirecao = new Vector3(inputMira.x, 0, inputMira.y).normalized;
+            bool houveMudanca = direcao != novaDirecao;
             
             direcao = novaDirecao;
             visualizarDirecao.transform.forward = direcao;
             
-            if (GameManager.instance.isOnline && isLocalPlayer) // Pelo que eu vi as coisas do Juan ACHO que é só fazer isso aqui mesmo pro online, se der merda tem que mudar aqui 
-                AtualizarDirecaoCmd(direcao);
+            if (houveMudanca && GameManager.instance.isOnline && isLocalPlayer) // Pelo que eu vi as coisas do Juan ACHO que é só fazer isso aqui mesmo pro online, se der merda tem que mudar aqui 
+                AtualizarDirecaoCmd(direcao, true);
         }
     }
 

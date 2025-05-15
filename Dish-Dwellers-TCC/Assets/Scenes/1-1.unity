@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.049661797, g: 0.27139655, b: 0.33962262, a: 1}
+  m_AmbientSkyColor: {r: 0.050980385, g: 0.23910086, b: 0.34117648, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 0.6
@@ -506,7 +506,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (4)
@@ -1771,6 +1771,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1268545000}
     m_Modifications:
+    - target: {fileID: 4046522972944570195, guid: 709b903da1e96e749985f870a9fc8a76, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2efbe5590882b33428b2c4bc77a5b388, type: 2}
     - target: {fileID: 7178388892631872091, guid: 709b903da1e96e749985f870a9fc8a76, type: 3}
       propertyPath: m_Name
       value: Wooden_Garden_Box_00 (6)
@@ -7931,6 +7935,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -217.106
       objectReference: {fileID: 0}
+    - target: {fileID: 1226357637654747405, guid: 9606e6ce3a76f594590eb4bb7ddf818d, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 4090820985685603947, guid: 9606e6ce3a76f594590eb4bb7ddf818d, type: 3}
       propertyPath: m_LocalScale.y
       value: 1.3237995
@@ -8353,6 +8361,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 842069728}
     m_Modifications:
+    - target: {fileID: 4046522972944570195, guid: 709b903da1e96e749985f870a9fc8a76, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2efbe5590882b33428b2c4bc77a5b388, type: 2}
     - target: {fileID: 7178388892631872091, guid: 709b903da1e96e749985f870a9fc8a76, type: 3}
       propertyPath: m_Name
       value: Wooden_Garden_Box_00 (6)
@@ -8627,7 +8639,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (4)
@@ -9508,55 +9520,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 368941274584126530, guid: 2a995b13c76dca144ad175db2e699f7b, type: 3}
   m_PrefabInstance: {fileID: 656566647}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &657838136 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5514330781826472210, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
-  m_PrefabInstance: {fileID: 8238157085239288752}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &657838144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 657838136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
-  m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
-  m_Cameras: []
-  m_RendererIndex: -1
-  m_VolumeLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  m_VolumeTrigger: {fileID: 0}
-  m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 1
-  m_Antialiasing: 0
-  m_AntialiasingQuality: 2
-  m_StopNaN: 0
-  m_Dithering: 0
-  m_ClearDepth: 1
-  m_AllowXRRendering: 1
-  m_AllowHDROutput: 1
-  m_UseScreenCoordOverride: 0
-  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
-  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
-  m_RequiresDepthTexture: 0
-  m_RequiresColorTexture: 0
-  m_Version: 2
-  m_TaaSettings:
-    m_Quality: 3
-    m_FrameInfluence: 0.1
-    m_JitterScale: 1
-    m_MipBias: 0
-    m_VarianceClampScale: 0.9
-    m_ContrastAdaptiveSharpening: 0
 --- !u!4 &669643098 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3684694276549067546, guid: ea227763446556143a8b457e7c4aadf7, type: 3}
@@ -9626,6 +9589,14 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4505980271778228782, guid: 85b2397d6e2427a428ae63a074e9503c, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a59f603a298af5040837908bfb4b4754, type: 2}
+    - target: {fileID: 4505980271778228782, guid: 85b2397d6e2427a428ae63a074e9503c, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 630e82c66a97e5d408e82b6eaec70c3f, type: 2}
     - target: {fileID: 9012001778205939293, guid: 85b2397d6e2427a428ae63a074e9503c, type: 3}
       propertyPath: m_Name
       value: OldWheelbarrow (1)
@@ -9829,6 +9800,14 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4505980271778228782, guid: 85b2397d6e2427a428ae63a074e9503c, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a59f603a298af5040837908bfb4b4754, type: 2}
+    - target: {fileID: 4505980271778228782, guid: 85b2397d6e2427a428ae63a074e9503c, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 630e82c66a97e5d408e82b6eaec70c3f, type: 2}
     - target: {fileID: 9012001778205939293, guid: 85b2397d6e2427a428ae63a074e9503c, type: 3}
       propertyPath: m_Name
       value: OldWheelbarrow
@@ -10045,7 +10024,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (4)
@@ -11231,6 +11210,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 842069728}
     m_Modifications:
+    - target: {fileID: 4046522972944570195, guid: 709b903da1e96e749985f870a9fc8a76, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2efbe5590882b33428b2c4bc77a5b388, type: 2}
     - target: {fileID: 7178388892631872091, guid: 709b903da1e96e749985f870a9fc8a76, type: 3}
       propertyPath: m_Name
       value: Wooden_Garden_Box_00 (8)
@@ -11348,7 +11331,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (5)
@@ -11916,7 +11899,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (5)
@@ -11989,7 +11972,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (5)
@@ -12007,6 +11990,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 842069728}
     m_Modifications:
+    - target: {fileID: 4046522972944570195, guid: 709b903da1e96e749985f870a9fc8a76, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2efbe5590882b33428b2c4bc77a5b388, type: 2}
     - target: {fileID: 7178388892631872091, guid: 709b903da1e96e749985f870a9fc8a76, type: 3}
       propertyPath: m_Name
       value: Wooden_Garden_Box_00 (2)
@@ -12124,7 +12111,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (4)
@@ -12761,7 +12748,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (5)
@@ -14318,10 +14305,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Torch
       objectReference: {fileID: 0}
-    - target: {fileID: 7028031300529166454, guid: c97a6757bb4e34c41a7058d52f562f67, type: 3}
-      propertyPath: m_UseColorTemperature
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8209849153709779193, guid: c97a6757bb4e34c41a7058d52f562f67, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.946915
@@ -14492,7 +14475,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (5)
@@ -15079,6 +15062,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 516604806}
     m_Modifications:
+    - target: {fileID: 965066843985961897, guid: ef97f0d6924944645b5f1fd9b1c46902, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a59f603a298af5040837908bfb4b4754, type: 2}
     - target: {fileID: 6593346705222193870, guid: ef97f0d6924944645b5f1fd9b1c46902, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.44
@@ -15424,6 +15411,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 516604806}
     m_Modifications:
+    - target: {fileID: 965066843985961897, guid: ef97f0d6924944645b5f1fd9b1c46902, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a59f603a298af5040837908bfb4b4754, type: 2}
     - target: {fileID: 6593346705222193870, guid: ef97f0d6924944645b5f1fd9b1c46902, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.35
@@ -16617,7 +16608,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (4)
@@ -17255,7 +17246,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (5)
@@ -17856,7 +17847,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (4)
@@ -18099,7 +18090,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (5)
@@ -18448,7 +18439,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (4)
@@ -18617,6 +18608,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1268545000}
     m_Modifications:
+    - target: {fileID: 4046522972944570195, guid: 709b903da1e96e749985f870a9fc8a76, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2efbe5590882b33428b2c4bc77a5b388, type: 2}
     - target: {fileID: 7178388892631872091, guid: 709b903da1e96e749985f870a9fc8a76, type: 3}
       propertyPath: m_Name
       value: Wooden_Garden_Box_00 (2)
@@ -19259,7 +19254,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: be0451da5da94f949ba742c61d988404, type: 2}
+      objectReference: {fileID: 2100000, guid: 75fb9dfe38edb1f44b200bc50eb95200, type: 2}
     - target: {fileID: 919132149155446097, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
       propertyPath: m_Name
       value: ThinMushroom (4)
@@ -19269,55 +19264,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
---- !u!1 &2083696690 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3410263644774509295, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
-  m_PrefabInstance: {fileID: 8238157085239288752}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2083696696
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2083696690}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RenderShadows: 1
-  m_RequiresDepthTextureOption: 2
-  m_RequiresOpaqueTextureOption: 2
-  m_CameraType: 0
-  m_Cameras: []
-  m_RendererIndex: -1
-  m_VolumeLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
-  m_VolumeTrigger: {fileID: 0}
-  m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
-  m_AntialiasingQuality: 2
-  m_StopNaN: 0
-  m_Dithering: 0
-  m_ClearDepth: 1
-  m_AllowXRRendering: 1
-  m_AllowHDROutput: 1
-  m_UseScreenCoordOverride: 0
-  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
-  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
-  m_RequiresDepthTexture: 0
-  m_RequiresColorTexture: 0
-  m_Version: 2
-  m_TaaSettings:
-    m_Quality: 3
-    m_FrameInfluence: 0.1
-    m_JitterScale: 1
-    m_MipBias: 0
-    m_VarianceClampScale: 0.9
-    m_ContrastAdaptiveSharpening: 0
 --- !u!4 &2101852160 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8209849153709779193, guid: c97a6757bb4e34c41a7058d52f562f67, type: 3}
@@ -19894,6 +19840,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4125490655632057030, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 81e481b59f49f97469c79465b5959d95, type: 2}
+    - target: {fileID: 6108717416735368529, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a59f603a298af5040837908bfb4b4754, type: 2}
+    - target: {fileID: 6108717416735368529, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 630e82c66a97e5d408e82b6eaec70c3f, type: 2}
+    - target: {fileID: 8571784466977613516, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a59f603a298af5040837908bfb4b4754, type: 2}
+    - target: {fileID: 8571784466977613516, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 630e82c66a97e5d408e82b6eaec70c3f, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20166,13 +20132,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5514330781826472210, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 657838144}
-    - targetCorrespondingSourceObject: {fileID: 3410263644774509295, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2083696696}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
 --- !u!1001 &8392362722848674755
 PrefabInstance:
@@ -20386,3 +20346,4 @@ SceneRoots:
   - {fileID: 1098174055}
   - {fileID: 1691449066}
   - {fileID: 626555885}
+  - {fileID: 5023403335686003444}

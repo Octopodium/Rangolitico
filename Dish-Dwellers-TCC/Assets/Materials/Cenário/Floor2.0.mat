@@ -27,7 +27,7 @@ Material:
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 2
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -59,8 +59,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _FloorMetallic: 0
+    - _FloorSmoothness: 0.2
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _WallMetallic: 0.1
+    - _WallSmoothness: 0.1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Scale: {r: 0.2, g: 0.2, b: 0.2, a: 0}

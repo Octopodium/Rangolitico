@@ -12,12 +12,10 @@ public class AnimadorPlayer : MonoBehaviour
     public static readonly int Arremesso = Animator.StringToHash(nameof(Arremesso));
     public static readonly int Morre = Animator.StringToHash(nameof(Morre));
     public static readonly int Dano = Animator.StringToHash(nameof(Dano));
-    private Quaternion deFrente = Quaternion.Euler(0, 180, 0), deCostas = Quaternion.Euler(0, 0, 0);
+    private Quaternion deFrente = Quaternion.Euler(-15, 180, 0), deCostas = Quaternion.Euler(15, 0, 0);
     private float orientacao = 1;
 
     #endregion
-
-    // Configuração do RaioX:
 
     private void Start(){
         animator = GetComponent<Animator>();
@@ -30,8 +28,6 @@ public class AnimadorPlayer : MonoBehaviour
     /// </summary>
     /// <param name="velocidade"></param>
     public void Mover(Vector3 velocidade){
-        Vector3 escala = transform.localScale;
-        if(velocidade.x != 0) orientacao = velocidade.x;
         
         if(velocidade.z > 0){// Vira de costas
             transform.localRotation = deCostas;
@@ -43,15 +39,22 @@ public class AnimadorPlayer : MonoBehaviour
         // Quando o jogador vira de costas, como a rotação ta em 180, é preciso inverter pra qual direção ele vira.
         int rotacao = transform.localRotation == deFrente ? 1 : -1;
 
-        if(orientacao > 0){ // Vira para a esquerda
-            escala.x = rotacao;
-        }
-        else if(orientacao < 0){// Vira para a direita
-            escala.x = -rotacao;
-        }
+        // Virar o jogador pra direita ou pra esquerda
+        Vector3 escala = transform.localScale;
+        if(velocidade.x != 0) orientacao = velocidade.x;
 
-        transform.localScale = escala;
+        if(orientacao != 0){
+            if(orientacao > 0){ // Vira para a esquerda
+                escala.x = rotacao;
+            }
+            else if(orientacao < 0){// Vira para a direita
+                escala.x = -rotacao;
+            }
+
+            transform.localScale = escala;
+        }
         
+        // Coloca a animação de andar no animator.
         animator.SetBool(Anda, velocidade.sqrMagnitude > 0);
     }
 

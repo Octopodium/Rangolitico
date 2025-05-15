@@ -50,6 +50,7 @@ public class Projectile : MonoBehaviour
         else if (isReflected && other.gameObject == owner)
         {
             Debug.Log("Colidiu");
+            
             //Quando acerta o proprietário do projetil(ou seja, a torreta) coloca o mesmo no estado de stunado
             InimigoTorreta torreta = owner.GetComponent<InimigoTorreta>(); 
             if (torreta != null)

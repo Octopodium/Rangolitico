@@ -10,7 +10,7 @@ public enum QualPlayer { Player1, Player2, Desativado }
 public enum QualPersonagem { Heater, Angler }
 
 [RequireComponent(typeof(Carregador)), RequireComponent(typeof(Carregavel))]
-public class Player : NetworkBehaviour, SincronizaMetodo {
+public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
     public QualPersonagem personagem = QualPersonagem.Heater;
     public QualPlayer qualPlayer = QualPlayer.Player1;
     public InputActionMap inputActionMap {get; protected set;}
@@ -424,7 +424,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
         rb.AddForce(movimentacao.normalized * GetVelocidade(true) , ForceMode.Force);
     }
 
-    // Código para fazer o player mirar a direção do escudo e gancho de forma separada da movimentação 
+    /// <summary>
+    /// Código para fazer o player mirar a direção do escudo e gancho de forma separada da movimentação 
+    /// </summary>
     void Mira()
     {
         if (GameManager.instance.modoDeJogo == ModoDeJogo.MULTIPLAYER_LOCAL) return; // No multiplayer local, as setinhas são utilizadas como controle do segundo jogador
@@ -444,6 +446,24 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
             if (houveMudanca && GameManager.instance.isOnline && isLocalPlayer) // Pelo que eu vi as coisas do Juan ACHO que é só fazer isso aqui mesmo pro online, se der merda tem que mudar aqui 
                 AtualizarDirecaoCmd(direcao, true);
         }
+    }
+
+    /// <summary>
+    /// Interface para lidar com os knockbacks do player 
+    /// </summary>
+    /// <param name="executaEmpurrar"></param>
+    public void ExecutaEmpurrar(Transform executaEmpurrar)
+    {
+        LogicaEmpurrar(executaEmpurrar);
+    }
+
+    //Método responsável pela lógica do knockback 
+    public void LogicaEmpurrar(Transform executaEmpurrar)
+    {
+        Vector3 dirEmpurrao = (transform.position - executaEmpurrar.transform.position).normalized;
+
+        float forcaDoEmpurrao = 10f;
+        rb.AddForce(dirEmpurrao * forcaDoEmpurrao, ForceMode.Impulse);
     }
 
     bool usandoRb = true;

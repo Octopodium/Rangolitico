@@ -74,6 +74,15 @@ public class Projectile : MonoBehaviour
         {
             player = other.GetComponent<Player>();
             player.MudarVida(-1);
+
+            //Chamada do knockback aqui, que vai verificar se ele possui a interface IEmpurrar implementada
+            //Se possuir, ele executa sua lógica
+            IEmpurrar empurrao = other.GetComponent<IEmpurrar>();
+            if (empurrao != null)
+            {
+                empurrao.ExecutaEmpurrar(transform); 
+            }
+
             Debug.Log("deu dano");
             Destroy(gameObject);
         }

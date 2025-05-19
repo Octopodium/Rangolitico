@@ -8,9 +8,9 @@ using System.Runtime.CompilerServices;
     COMO UTILIZAR A SINCRONIZAÇÃO POR ATRIBUTO:
 
     A sincronização por atributo sincroniza chamada de métodos entre os clientes.
-    Para utilizar, basta adicionar o atributo [Sincronizar("NOME_UNICO_AQUI")] no método que você quer sincronizar (método deve ser público).
-    O método pode ou não receber parâmetros, porém só pode receber **UM** parâmetro. Confira os parâmetros suportados em Sincronizador.tiposSuportados.
-    Além disso, deve chamar a extensão gameObject.Sincronizar("NOME_UNICO_AQUI", parametro) no inicio do método, para que o método seja chamado no outro cliente.
+    Para utilizar, basta adicionar o atributo [Sincronizar] no método que você quer sincronizar (método deve ser público).
+    O método pode ou não receber parâmetros, até no máximo 5 parâmetros (cheque os tipos suportados pelo Mirror ou pelo seu projeto).
+    Além disso, deve chamar a extensão gameObject.Sincronizar(parametro1, parametro2, ...) no inicio do método, para que o método seja chamado no outro cliente.
     (não irá chamar o método no cliente que chamou, apenas nos outros clientes)
 
     Para que isto funcione, o objeto que possui o método deve ter o componente Sincronizavel.
@@ -18,9 +18,9 @@ using System.Runtime.CompilerServices;
 
     Exemplo de uso:
 
-    [Sincronizar("setar-vida")]
+    [Sincronizar]
     public void SetarVida(int vida) {
-        gameObject.Sincronizar("setar-vida", vida);
+        gameObject.Sincronizar(vida);
         this.vida = vida;
     }
 
@@ -28,12 +28,12 @@ using System.Runtime.CompilerServices;
     Considere que onde você chamar Sincronizar, será quando o método será chamado no outro cliente.
     Exemplo de chamada adiada:
 
-    [Sincronizar("carregar-jogador")]
+    [Sincronizar]
     public void CarregarJogador(GameObject jogador) {
         Player player = jogador.GetComponent<Player>();
         if (player == null) return; // Se não for um player, não faz nada.
 
-        gameObject.Sincronizar("carregar-jogador", jogador);
+        gameObject.Sincronizar(jogador);
         // ... código para carregar o jogador ...
     }
 
@@ -49,6 +49,8 @@ using System.Runtime.CompilerServices;
     Por isso, ao criar um método sincronizado, você tem que considerar quais variaveis podem estar diferentes entre os clientes.
     Não só isso, mas também que há MUITA chance do método ser chamado duas vezes no mesmo cliente (caso o Mirror tenha chamado o método corretamente).
     Para evitar problemas, tente trabalhar com valores completos ao invés de variações.
+    Pense em qual é o vetor de sincronização, ao invés de pensar em qual é o valor que você quer sincronizar.
+    Por exemplo, ao invés de sincronizar a vida do jogador, sincronize o que está dando o dano.
     
     Nosso projeto utiliza essa forma de sincronização pois o jogo também é jogado localmente, e o Mirror não é necessário, assim, não podemos ter uma dependência do mesmo.
     Quando o jogo está no modo offline, os métodos de sincronização são ignorados.
@@ -64,8 +66,9 @@ public interface SincronizaMetodo {}
 /// </summary>
 public static class SincronizavelExtensions {
 
-    public static string GetTriggerDeFato(GameObject obj, string triggerName) {
-        if (obj == null) return null;
+    public static InformacoesMetodo GetMetodo(GameObject obj, string methodName, out string id) {
+        id = "";
+        if (obj == null) return new InformacoesMetodo();
 
         SincronizaMetodo sincronizaMetodo = obj.GetComponent<SincronizaMetodo>();
         if (sincronizaMetodo == null) {
@@ -75,29 +78,35 @@ public static class SincronizavelExtensions {
         Sincronizavel sincronizavel = obj.GetComponent<Sincronizavel>();
         if (sincronizavel == null) {
             Debug.LogError("Erro no objeto [" + obj.name + "]. Para utilizar a extensão [gameObject.Sincronizar], é necessário que o gameObject possua o componente Sincronizavel.");
-            return null;
+            return new InformacoesMetodo();
         }
 
-        return sincronizavel.GetTriggerDeFato(triggerName);
-    }
-    
-
-    public static void Sincronizar(this GameObject obj, [CallerMemberName] string triggerName = "") {
-        if (obj == null) return;
-
-        Sincronizador.instance.SetTrigger(GetTriggerDeFato(obj, triggerName));
+        id = sincronizavel.GetID();
+        return sincronizavel.GetMetodo(methodName);
     }
 
-    public static void Sincronizar(this GameObject obj, int valor, [CallerMemberName] string triggerName = "") {
-        if (obj == null) return;
+    public static bool Sincronizar(this GameObject obj, object[] parametros, [CallerMemberName] string triggerName = "") {
+        if (obj == null) return false;
 
-        Sincronizador.instance.SetTrigger<int>(GetTriggerDeFato(obj, triggerName), valor);
+        string id = "";
+        InformacoesMetodo infos = GetMetodo(obj, triggerName, out id);
+
+        if (infos.IsValid) return Sincronizador.instance.ChamarMetodo(infos, parametros, id);
+
+        Debug.LogWarning("Método invalido: " + triggerName);
+        return false;
     }
 
-    public static void Sincronizar(this GameObject obj, GameObject valor, [CallerMemberName] string triggerName = "") {
-        if (obj == null) return;
+    // Lista de métodos de sincronização com 1 a 5 parâmetros. (não é possível utilizar "params object[]" por causa do [CallerMemberName])
+    public static bool Sincronizar(this GameObject obj, object arg1 = null, object arg2 = null, object arg3 = null, object arg4 = null, object arg5 = null, [CallerMemberName] string triggerName = "") {
+        object[] args = new object[] { arg1, arg2, arg3, arg4, arg5 };
+        List<object> argsList = new List<object>(args);
 
-        Sincronizador.instance.SetTrigger<GameObject>(GetTriggerDeFato(obj, triggerName), valor);
+        foreach (var arg in args) {
+            if (arg == null) argsList.Remove(arg);
+        }
+
+        return Sincronizar(obj, argsList.ToArray(), triggerName);
     }
 }
 
@@ -105,8 +114,24 @@ public static class SincronizavelExtensions {
 [System.AttributeUsage(System.AttributeTargets.Method)]
 public class SincronizarAttribute : System.Attribute {
     public bool debugLog = false;
-    public SincronizarAttribute(bool debugLog = false) {
+    public bool unico = false;
+    public bool repeteParametro = true;
+    public float cooldown = -1;
+    public SincronizarAttribute(bool debugLog = false, bool unico = false, float cooldown = -1, bool repeteParametro = true) {
         this.debugLog = debugLog;
+        this.unico = unico;
+        this.cooldown = cooldown;
+        this.repeteParametro = repeteParametro;
+    }
+
+    public OpcoesDeExecucaoDeMetodo GerarOpcoes() {
+        OpcoesDeExecucaoDeMetodo opcoes = new OpcoesDeExecucaoDeMetodo();
+        opcoes.debug = debugLog;
+        opcoes.unico = unico;
+        opcoes.cooldown = cooldown;
+        opcoes.repeteParametro = repeteParametro;
+
+        return opcoes;
     }
 }
 
@@ -116,6 +141,9 @@ public class SincronizarAttribute : System.Attribute {
 /// Qualquer objeto que utilize a interface SincronizaMetodo e o atributo SincronizarAttribute, precisa ter esse componente.
 /// </summary>
 public class Sincronizavel : MonoBehaviour {
+    protected Dictionary<string, InformacoesMetodo> metodosSincronizados = new Dictionary<string, InformacoesMetodo>();
+
+    public bool debugLogMetodosCadastrados = false;
 
     [SerializeField] private string id = "";
     public string idObjetoSincronizado {
@@ -146,16 +174,13 @@ public class Sincronizavel : MonoBehaviour {
 
     [Tooltip("Caso positivo, inclui o nome da sala no ID. Deve ser utilizado em todos os objetos que não são mantidos entre as salas (a maioria).")]
     public bool exclusivoDaSala = true;
-    
+
     public bool autoIDSeVazio = true;
 
-    private List<(string, System.Action<object>)> metodosSincronizados = new List<(string, System.Action<object>)>();
-    private List<(string, System.Action)> metodosSincronizadosSemParametro = new List<(string, System.Action)>();
+
     private List<(Component, MethodInfo)> metodos = new List<(Component, MethodInfo)>();
 
     void Awake() {
-        AcharAtributo();
-
         if (Sincronizador.instance == null) Sincronizador.onInstanciaCriada += Setup;
         else Setup();
     }
@@ -181,6 +206,10 @@ public class Sincronizavel : MonoBehaviour {
         CadastrarMetodos();
     }
 
+
+
+    #region Objeto Sincronizavel
+
     void GerarIDAuto() {
         if (!autoIDSeVazio || idObjetoSincronizado != null && idObjetoSincronizado.Trim() != "") return;
         idObjetoSincronizado = gameObject.name;
@@ -199,91 +228,6 @@ public class Sincronizavel : MonoBehaviour {
 
     public string GetTriggerDeFato(string trigger) {
         return trigger + "_" + GetID();
-    }
-
-    private void AcharAtributo() {
-        SincronizaMetodo[] componentes = GetComponents<SincronizaMetodo>();
-
-        metodos.Clear();
-
-        foreach (SincronizaMetodo componente in componentes) {
-            var metodosNoComponente = componente.GetType().GetMethods();
-            foreach (var metodo in metodosNoComponente) {
-                var atributos = metodo.GetCustomAttributes(typeof(SincronizarAttribute), false);
-                if (atributos.Length > 0) {
-                    var atributo = (SincronizarAttribute)atributos[0];
-                    if (atributo != null) {
-                        metodos.Add(((Component) componente, metodo));
-                    }
-                }
-            }
-        }
-    }
-
-    
-    private void CadastrarMetodos() {
-        foreach (var (componente, metodo) in metodos) {
-            var atributos = metodo.GetCustomAttributes(typeof(SincronizarAttribute), false);
-            if (atributos.Length == 0 || atributos[0] == null) continue;
-            SincronizarAttribute atributo = (SincronizarAttribute)atributos[0];
-            
-            bool debugLog = atributo.debugLog;
-            string trigger = metodo.Name;
-            string triggerDeFato = GetTriggerDeFato(trigger);
-            if (string.IsNullOrEmpty(trigger)) {
-                Debug.LogError("O método " + metodo.Name + " não possui um trigger definido. Não é possível sincronizar.");
-                continue;
-            }
-
-            var parametros = metodo.GetParameters();
-            if (parametros.Length > 1) {
-                Debug.LogError("O método " + metodo.Name + " tem mais de um parâmetro. Não é possível sincronizar.");
-                continue;
-            }
-
-            System.Action callbackSemParametro = null;
-            System.Action<object> callback = null;
-
-            if (parametros.Length == 0) {
-                callbackSemParametro = Sincronizador.instance.WrapActionObjectSemParametro((System.Action) metodo.CreateDelegate(typeof(System.Action), componente), debugLog);
-            } else if (parametros[0].ParameterType == typeof(GameObject)) {
-                callback = Sincronizador.instance.WrapActionObject((System.Action<GameObject>) metodo.CreateDelegate(typeof(System.Action<GameObject>), componente), debugLog);
-            } else if (parametros[0].ParameterType == typeof(int)) {
-                callback = Sincronizador.instance.WrapActionObject((System.Action<int>) metodo.CreateDelegate(typeof(System.Action<int>), componente), debugLog);
-            } else {
-                string tiposSuportados = "";
-                foreach (var tipo in Sincronizador.tiposSuportados) {
-                    tiposSuportados += tipo.Name + ", ";
-                }
-
-                Debug.LogError("O método " + metodo.Name + " tem um tipo de parâmetro inválido para sincronização. Os tipos suportados são: " + tiposSuportados);
-            }
-
-            if (callback != null) {
-                Sincronizador.instance.OnTrigger(triggerDeFato, callback);
-                metodosSincronizados.Add((triggerDeFato, callback));
-            } else if (callbackSemParametro != null) {
-                Sincronizador.instance.OnTrigger(triggerDeFato, callbackSemParametro);
-                metodosSincronizadosSemParametro.Add((triggerDeFato, callbackSemParametro));
-            }
-        }
-
-        cadastrouUmaVez = true;
-        jaCadastrado = true;
-    }
-
-    private void DescadastrarMetodos() {
-        foreach (var (trigger, callback) in metodosSincronizados) {
-            Sincronizador.instance.OffTrigger(trigger, callback);
-        }
-
-        foreach (var (trigger, callback) in metodosSincronizadosSemParametro) {
-            Sincronizador.instance.OffTrigger(trigger, callback);
-        }
-
-        metodosSincronizados.Clear();
-        metodosSincronizadosSemParametro.Clear();
-        jaCadastrado = false;
     }
 
 
@@ -305,4 +249,59 @@ public class Sincronizavel : MonoBehaviour {
         if (string.IsNullOrEmpty(sufixo)) return "";
         return GetSalaSufix() + "_";
     }
+
+    #endregion
+
+
+    #region Metodos Sincronizados
+    private void CadastrarMetodos() {
+        SincronizaMetodo[] componentes = GetComponents<SincronizaMetodo>();
+
+        metodosSincronizados.Clear();
+
+        foreach (SincronizaMetodo componente in componentes) {
+            var metodosNoComponente = componente.GetType().GetMethods();
+            foreach (MethodInfo metodo in metodosNoComponente) {
+                var atributos = metodo.GetCustomAttributes(typeof(SincronizarAttribute), false);
+                if (atributos.Length > 0) {
+                    var atributo = (SincronizarAttribute)atributos[0];
+                    if (atributo != null) {
+                        if (debugLogMetodosCadastrados) Debug.Log("Cadastrando método [" + metodo.Name + "] no objeto [" + gameObject.name + "] de ID [" + idObjetoSincronizado + "]");
+                        CadastrarMetodo(metodo, (Component)componente, atributo.GerarOpcoes());
+                    }
+                }
+            }
+        }
+
+        cadastrouUmaVez = true;
+        jaCadastrado = true;
+    }
+
+    private void CadastrarMetodo(MethodInfo method, Component componente, OpcoesDeExecucaoDeMetodo opcoes = null) {
+        InformacoesMetodo info = new InformacoesMetodo();
+        info.metodo = method;
+        info.componenteDoMetodo = componente;
+        info.opcoes = opcoes;
+
+        metodosSincronizados.Add(method.Name, info);
+        Sincronizador.instance.CadastrarMetodo(info, GetID());
+    }
+
+    public InformacoesMetodo GetMetodo(string nome) {
+        if (metodosSincronizados.ContainsKey(nome)) {
+            return metodosSincronizados[nome];
+        } else {
+            return new InformacoesMetodo();
+        }
+    }
+
+    private void DescadastrarMetodos() {
+        foreach (var metodo in metodosSincronizados) {
+            Sincronizador.instance.DescadastrarMetodo(metodo.Value, GetID());
+        }
+
+        metodosSincronizados.Clear();
+    }
+
+    #endregion
 }

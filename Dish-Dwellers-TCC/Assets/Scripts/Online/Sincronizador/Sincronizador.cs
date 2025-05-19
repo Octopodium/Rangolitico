@@ -2,6 +2,7 @@ using UnityEngine;
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 /*
     EI, VOCÊ AÍ!
@@ -11,18 +12,25 @@ using System.Collections.Generic;
     "Ai mas eu não sei nenhum dos dois", ok, então vai pro outro!
     "Mas eu não quero, eu quero fazer no pelo!", vai por sua conta e risco então camarada.
 */
-/*
-public interface SincronizadorDeTipo<T> {
-    void SetTrigger(string triggerName, T obj);
-    System.Action<object> WrapActionObject(System.Action<T> action);
+
+public class OpcoesDeExecucaoDeMetodo {
+    public bool debug = false; // Debugar a chamada
+    public bool unico = false; // Se o método só pode ser chamado uma vez
+    public float cooldown = -1; // Tempo de espera entre chamadas do método
+    public bool repeteParametro = true; // Se o método pode ser chamado com os mesmos parâmetros da ultima vez
 }
-*/
 
 
-public interface SincronizadorComTipo {
-    public void Setup(Sincronizador sinc);
-    public System.Type GetTipo();
-    public void SetTrigger(string triggerName, object valor);
+public struct InformacoesMetodo {
+    public MethodInfo metodo;
+    public Component componenteDoMetodo;
+    public OpcoesDeExecucaoDeMetodo opcoes;
+
+    public string GetNome(string id = "") {
+        return componenteDoMetodo.GetType().Name + "." + metodo.Name + (id != "" ? "_" + id : "");
+    }
+
+    public bool IsValid => metodo != null && componenteDoMetodo != null;
 }
 
 
@@ -30,17 +38,12 @@ public class Sincronizador : NetworkBehaviour {
     public static Sincronizador instance { get; private set; }
     public static System.Action onInstanciaCriada;
 
-    public static System.Type[] tiposSuportados = new System.Type[] { typeof(int), typeof(GameObject) };
-
-    Dictionary<System.Type, SincronizadorComTipo> sincronizadores = new Dictionary<System.Type, SincronizadorComTipo>();
-    SincronizadorComTipo sincronizadorSemParametro = null;
-
 
     protected Dictionary<string, Sincronizavel> sincronizaveis = new Dictionary<string, Sincronizavel>();
-    protected Dictionary<string, List<System.Action>> triggers = new Dictionary<string, List<System.Action>>();
-    protected Dictionary<string, List<System.Action<object>>> triggersComParametro = new Dictionary<string, List<System.Action<object>>>();
-
-    bool isOnCallback = false;
+    protected Dictionary<string, HashSet<InformacoesMetodo>> metodos = new Dictionary<string, HashSet<InformacoesMetodo>>();
+    protected HashSet<string> metodosOnCooldown = new HashSet<string>();
+    protected Dictionary<string, object[]> parametrosUltimosChamados = new Dictionary<string, object[]>();
+    protected HashSet<string> currentTriggerOnCallback = new HashSet<string>();
 
     private void Awake() {
         if (instance == null) {
@@ -51,20 +54,6 @@ public class Sincronizador : NetworkBehaviour {
             return;
         }
 
-        SincronizadorComTipo[] sincronizadores = GetComponentsInChildren<SincronizadorComTipo>();
-        foreach (var sincronizador in sincronizadores) {
-            if (sincronizador == null) continue;
-            System.Type tipo = sincronizador.GetTipo();
-
-            if (tipo == null && sincronizadorSemParametro == null) {
-                sincronizadorSemParametro = sincronizador;
-                sincronizadorSemParametro.Setup(this);
-            } else if (!this.sincronizadores.ContainsKey(tipo)) {
-                this.sincronizadores[tipo] = sincronizador;
-                sincronizador.Setup(this);
-            }
-        }
-  
         onInstanciaCriada?.Invoke();
         onInstanciaCriada = null;
     }
@@ -80,32 +69,37 @@ public class Sincronizador : NetworkBehaviour {
         }
     }
 
-    public void ForeachTriggerComParametro(string triggerName, System.Action<System.Action<object>> action) {
-        isOnCallback = true;
+    protected void SetMetodoOnCooldown(string id, float tempo) {
+        if (metodosOnCooldown.Contains(id)) return;
 
-        if (triggersComParametro.ContainsKey(triggerName)) {
-            foreach (var acao in triggersComParametro[triggerName]) {
-                action.Invoke(acao);
-            }
-        }
-
-        isOnCallback = false;
+        metodosOnCooldown.Add(id);
+        StartCoroutine(RemoverCooldown(id, tempo));
     }
 
-    public void ForeachTriggerSemParametro(string triggerName, System.Action<System.Action> action) {
-        isOnCallback = true;
+    IEnumerator RemoverCooldown(string id, float tempo) {
+        yield return new WaitForSeconds(tempo);
+        metodosOnCooldown.Remove(id);
+    }
 
-        if (triggers.ContainsKey(triggerName)) {
-            foreach (var acao in triggers[triggerName]) {
-                action.Invoke(acao);
+    protected bool ParametrosRepetidos(string id, object[] parametros) {
+        if (parametrosUltimosChamados.ContainsKey(id)) {
+            object[] ultimosChamados = parametrosUltimosChamados[id];
+            parametrosUltimosChamados[id] = parametros;
+
+            if (ultimosChamados.Length != parametros.Length) return false;
+
+            for (int i = 0; i < ultimosChamados.Length; i++) {
+                if (!ultimosChamados[i].Equals(parametros[i])) return false;
             }
+
+            return true;
         }
 
-        isOnCallback = false;
+        parametrosUltimosChamados[id] = parametros;
+        return false;
     }
 
     #endregion
-
 
 
     #region Cadastro de Sincronizaveis
@@ -120,7 +114,7 @@ public class Sincronizador : NetworkBehaviour {
         string idValidado = id;
 
         int i = 1;
-        while (sincronizaveis.ContainsKey(prefixo+idValidado+sufixo)) {
+        while (sincronizaveis.ContainsKey(prefixo + idValidado + sufixo)) {
             idValidado = id + "_" + i;
             i++;
         }
@@ -133,7 +127,7 @@ public class Sincronizador : NetworkBehaviour {
         string id = idOriginal;
 
         if (sincronizaveis.ContainsKey(id)) {
-            Debug.LogWarning("Sincronizavel de ID ["+id+"] não foi cadastrado pois já havia um com o mesmo ID!");
+            Debug.LogWarning("Sincronizavel de ID [" + id + "] não foi cadastrado pois já havia um com o mesmo ID!");
             return false;
         }
 
@@ -144,7 +138,7 @@ public class Sincronizador : NetworkBehaviour {
     public void DescadastrarSincronizavel(Sincronizavel obj) {
         string id = obj.GetID();
 
-        if (sincronizaveis.ContainsKey(id)) 
+        if (sincronizaveis.ContainsKey(id))
             sincronizaveis.Remove(id);
     }
 
@@ -159,91 +153,160 @@ public class Sincronizador : NetworkBehaviour {
     #endregion
 
 
+    public InformacoesMetodo CadastrarMetodo(MethodInfo metodo, Component componenteDoMetodo, string id = "") {
+        InformacoesMetodo info = new InformacoesMetodo();
+        info.metodo = metodo;
+        info.componenteDoMetodo = componenteDoMetodo;
+
+        return CadastrarMetodo(info, id);
+    }
+
+    public InformacoesMetodo CadastrarMetodo(InformacoesMetodo info, string id = "") {
+        string nome = info.GetNome(id);
+
+        if (!CanSetOnTrigger(nome)) return new InformacoesMetodo();
+
+        if (metodos.ContainsKey(nome)) {
+            if (!metodos[nome].Contains(info)) {
+                metodos[nome].Add(info);
+            }
+        } else {
+            HashSet<InformacoesMetodo> lista = new HashSet<InformacoesMetodo>();
+            lista.Add(info);
+            metodos[nome] = lista;
+        }
+
+        return info;
+    }
+
+    public void DescadastrarMetodo(MethodInfo metodo, Component componenteDoMetodo, string id = "") {
+        InformacoesMetodo info = new InformacoesMetodo();
+        info.metodo = metodo;
+        info.componenteDoMetodo = componenteDoMetodo;
+
+        DescadastrarMetodo(info, id);
+    }
+
+    public void DescadastrarMetodo(InformacoesMetodo info, string id = "") {
+        string nome = info.GetNome(id);
+        if (!CanUnsetOnTrigger(nome)) return;
+
+        if (metodos[nome].Contains(info)) {
+            metodos[nome].Remove(info);
+        }
+    }
+
+    /// <summary>
+    /// Chama o método em outro cliente.
+    /// </summary>
+    /// <returns>Retorna true se o método que o chamou pode prosseguir com o funcionamento. Retorna false apenas se houver alguma restrinção;</returns>
+    public bool ChamarMetodo(MethodInfo metodo, Component componenteDoMetodo, object[] parametros = null, string id = "") {
+        InformacoesMetodo info = new InformacoesMetodo { metodo = metodo, componenteDoMetodo = componenteDoMetodo };
+        return ChamarMetodo(info, parametros, id);
+    }
+
+    /// <summary>
+    /// Chama o método em outro cliente.
+    /// </summary>
+    /// <returns>Retorna true se o método que o chamou pode prosseguir com o funcionamento. Retorna false apenas se houver alguma restrinção;</returns>
+    public bool ChamarMetodo(InformacoesMetodo info, object[] parametros = null, string id = "") {
+        string nome = info.GetNome(id);
+
+        if (info.opcoes != null) {
+            if (info.opcoes.unico) {
+                DescadastrarMetodo(info, id);
+            }
+
+            if (info.opcoes.cooldown > 0) {
+                if (metodosOnCooldown.Contains(nome)) {
+                    Debug.LogWarning("Método [" + nome + "] está em cooldown!");
+                    return false;
+                } else {
+                    SetMetodoOnCooldown(nome, info.opcoes.cooldown);
+                }
+            }
+
+            if (!info.opcoes.repeteParametro && ParametrosRepetidos(nome, parametros)) {
+                Debug.LogWarning("Método [" + nome + "] não será chamado com os mesmos parâmetros!");
+                return false;
+            }
+        }
+
+        if (!CanSetTrigger(nome)) return true; // Pode executar o método, só não pode chamar o trigger
+
+        if (parametros == null) parametros = new object[0];
+
+        ValorGenerico[] valores = new ValorGenerico[parametros.Length];
+        for (int i = 0; i < parametros.Length; i++) {
+            valores[i] = new ValorGenerico(parametros[i]);
+        }
+
+        CmdChamarMetodo(nome, valores);
+        return true;
+    }
+
+    [Command(requiresAuthority = false)]
+    public void CmdChamarMetodo(string nomeMetodo, ValorGenerico[] v, NetworkConnectionToClient sender = null) {
+        ForeachConnection((conexao) => {
+            RpcChamarMetodo(conexao, nomeMetodo, v);
+        }, sender);
+    }
+
+    [TargetRpc]
+    public void RpcChamarMetodo(NetworkConnectionToClient conn, string nomeMetodo, ValorGenerico[] v) {
+        var listaMetodos = metodos[nomeMetodo];
+        if (listaMetodos == null) return;
+
+        object[] valores = new object[v.Length];
+        for (int i = 0; i < v.Length; i++) {
+            valores[i] = v[i].valor;
+        }
+
+        currentTriggerOnCallback.Add(nomeMetodo);
+        foreach (InformacoesMetodo info in listaMetodos) {
+            if (info.componenteDoMetodo == null) {
+                Debug.LogError("O componente do método [" + info.GetNome() + "] não existe mais!");
+                continue;
+            }
+
+            if (info.metodo == null) {
+                Debug.LogError("O método [" + info.GetNome() + "] não existe mais!");
+                continue;
+            }
+
+            try {
+                if (info.opcoes != null && info.opcoes.debug) Debug.Log("Chamando método [" + info.GetNome() + "] com os valores: " + string.Join(", ", valores));
+                info.metodo.Invoke(info.componenteDoMetodo, valores);
+                if (info.opcoes != null && info.opcoes.debug) Debug.Log("Método [" + info.GetNome() + "] chamado com sucesso!");
+            } catch (System.Exception e) {
+                Debug.LogError("Erro ao chamar o método [" + info.GetNome() + "]: " + e.Message);
+            }
+        }
+        currentTriggerOnCallback.Remove(nomeMetodo);
+    }
+
 
     #region Set e Unset de Evento de Trigger
 
-    public void OnTrigger(string triggerName, System.Action action) {
-        if (!CanSetOnTrigger(triggerName)) return;
-
-        if (!triggers.ContainsKey(triggerName)) {
-            triggers[triggerName] = new List<System.Action>();
-        }
-
-        triggers[triggerName].Add(action);
+    public bool IsOnline() {
+        return GameManager.instance != null && GameManager.instance.isOnline;
     }
 
-    public void OnTrigger(string triggerName, System.Action<object> action) {
-        if (!CanSetOnTrigger(triggerName)) return;
-
-        if (!triggersComParametro.ContainsKey(triggerName)) {
-            triggersComParametro[triggerName] = new List<System.Action<object>>();
-        }
-
-        triggersComParametro[triggerName].Add(action);
-    }
-
-    public void OffTrigger(string triggerName, System.Action action) {
-        if (!CanSetOnTrigger(triggerName)) return;
-
-        if (triggers.ContainsKey(triggerName)) {
-            triggers[triggerName].Remove(action);
-        }
-    }
-
-    public void OffTrigger(string triggerName, System.Action<object> action) {
-        if (!CanSetOnTrigger(triggerName)) return;
-
-        if (triggersComParametro.ContainsKey(triggerName)) {
-            triggersComParametro[triggerName].Remove(action);
-        }
-    }
-
+    // Se pode triggar
     public bool CanSetTrigger(string triggerName) {
-        return !isOnCallback && GameManager.instance != null && GameManager.instance.isOnline && triggerName != null;
+        return IsOnline() && triggerName != null && !currentTriggerOnCallback.Contains(triggerName) && metodos.ContainsKey(triggerName);
     }
 
+    // Se pode cadastrar
     public bool CanSetOnTrigger(string triggerName) {
-        return GameManager.instance != null && GameManager.instance.isOnline && triggerName != null;
+        return IsOnline() && triggerName != null;
+    }
+
+    // Se pode cadastrar
+    public bool CanUnsetOnTrigger(string triggerName) {
+        return IsOnline() && triggerName != null && metodos.ContainsKey(triggerName);
     }
 
     #endregion
-    
-    // Sincronização de triggers com parametro 
-    public void SetTrigger<T>(string triggerName, T value) {
-        System.Type tipo = typeof(T);
-        if (this.sincronizadores.ContainsKey(tipo)) {
-            this.sincronizadores[tipo].SetTrigger(triggerName, value);
-        }
-    }
 
-    public void SetTrigger(string triggerName) {
-        if (this.sincronizadorSemParametro != null) {
-            this.sincronizadorSemParametro.SetTrigger(triggerName, null);
-        }
-    }
-    
-
-    public System.Action WrapActionObjectSemParametro(System.Action action, bool debugLog = false) {
-        if (action == null) return null;
-        return () => {
-            if (debugLog) Debug.Log("[Sync - Inicio]");
-
-            action.Invoke();
-            
-            if (debugLog) Debug.Log("[Sync - Fim]");
-        };
-    }
-
-    public System.Action<object> WrapActionObject<T>(System.Action<T> action, bool debugLog = false) {
-        if (action == null) return null;
-        return (obj) => {
-            if (debugLog) Debug.Log("[Sync - Inicio]");
-
-            if (obj is T valor) action.Invoke(valor);
-            else Debug.LogError("O objeto passado não é um " + nameof(T) + ".");
-
-            if (debugLog) Debug.Log("[Sync - Fim]");
-        };
-    }
-    
 }

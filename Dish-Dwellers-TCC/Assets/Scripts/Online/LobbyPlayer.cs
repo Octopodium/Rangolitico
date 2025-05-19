@@ -7,6 +7,8 @@ using System.Collections;
 /// </summary>
 public class LobbyPlayer : NetworkBehaviour {
 
+    public float atualizaPingACada = 0.5f; // Tempo em segundos para atualizar o ping
+
     [SyncVar] public bool isPlayerOne = false;
     [SyncVar(hook = nameof(UpdateNomeUI))] public string nome;
     [SyncVar(hook = nameof(UpdatePingUI))] public int ping;
@@ -30,12 +32,14 @@ public class LobbyPlayer : NetworkBehaviour {
     }
 
     IEnumerator PingCoroutine() {
-        while (true) {
-            ping = (int)NetworkTime.rtt * 1000; // RTT em milissegundos
-            yield return new WaitForSeconds(1f); // Espera 1 segundo antes de atualizar o ping novamente
+        DishNetworkManager manager = (DishNetworkManager)NetworkManager.singleton;
+        
+        while (gameObject.activeSelf) {
+            int pingV = manager.GetCurrentPingInMs();
+            SetPing(pingV);
+            yield return new WaitForSeconds(atualizaPingACada); // Espera N segundo antes de atualizar o ping novamente
         }
     }
-
 
     // Definir que o jogador está pronto
     public void SetPronto(bool pronto) {
@@ -101,6 +105,17 @@ public class LobbyPlayer : NetworkBehaviour {
         if (nome.Trim() == "") {
             pronto = false;
         }
+    }
+
+    public void SetPing(int ping) {
+        if (isLocalPlayer && ping != this.ping) {
+            CmdSetPing(ping);
+        }
+    }
+
+    [Command]
+    void CmdSetPing(int ping) {
+        this.ping = ping;
     }
 
 

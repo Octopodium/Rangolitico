@@ -32,8 +32,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
             OnVidaMudada?.Invoke(this, _playerVidas);
 
             if (_playerVidas == 0){
-                GameManager.instance.ResetSala();
-                Debug.Log("morreu");
+                Morrer();
             }
         }
     }
@@ -129,16 +128,10 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
         
         inputActionMap = GameManager.instance.GetPlayerInput(qualPlayer);
 
-        if (!GameManager.instance.isOnline) {
+        if (!GameManager.instance.isOnline || isLocalPlayer) {
             inputActionMap["Interact"].performed += Interagir;
             inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
             inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
-            inputActionMap["Aim"].performed += cnt => Mira();
-            inputActionMap["Aim"].canceled += cnt => Mira();
-        } else if (isLocalPlayer) {
-            inputActionMap["Interact"].performed += ctx => InteragirOnlineCmd();
-            inputActionMap["Attack"].performed += ctx => AcionarFerramentaOnlineCmd();
-            inputActionMap["Attack"].canceled += ctx => SoltarFerramentaOnlineCmd();
             inputActionMap["Aim"].performed += cnt => Mira();
             inputActionMap["Aim"].canceled += cnt => Mira();
         }
@@ -215,11 +208,20 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
         playerVidas += valor;
     }
 
+    /// <summary>
+    /// Chamado quando o jogador morre
+    /// </summary>
+    [Sincronizar]
+    public void Morrer() {
+        gameObject.Sincronizar();
+        GameManager.instance.ResetSala();
+        Debug.Log("morreu");
+    }
 
 
     #region Online
 
-    [HideInInspector, SyncVar(hook=nameof(AtualizarStatusConectado))] public bool conectado = false;
+    [HideInInspector, SyncVar(hook = nameof(AtualizarStatusConectado))] public bool conectado = false;
     void AtualizarStatusConectado(bool oldValue, bool newValue) {
         if (isLocalPlayer) {
             if (!oldValue && newValue) {
@@ -271,40 +273,6 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
         animacaoJogador.Mover(movimentacao);
     }
 
-
-    // Respota para inputs na versão Online (é uma gambiarra que funciona)
-
-    [Command]
-    void InteragirOnlineCmd() {
-        InteragirOnlineClientRpc();
-    }
-
-    [ClientRpc]
-    void InteragirOnlineClientRpc() {
-        ChecarInteragiveis();
-        Interagir();
-    }
-
-    [Command]
-    void AcionarFerramentaOnlineCmd() {
-        AcionarFerramentaOnlineClientRpc();
-    }
-
-    [ClientRpc]
-    void AcionarFerramentaOnlineClientRpc() {
-        AcionarFerramenta();
-    }
-
-    [Command]
-    void SoltarFerramentaOnlineCmd() {
-        SoltarFerramentaOnlineClientRpc();
-    }
-
-    [ClientRpc]
-    void SoltarFerramentaOnlineClientRpc() {
-        SoltarFerramenta();
-    }
-
     #endregion
 
 
@@ -314,7 +282,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
     /// <summary>
     /// Chamado quando o botão de "ataque" é pressionado
     /// </summary>
-    void AcionarFerramenta() {
+    [Sincronizar]
+    public void AcionarFerramenta() {
+        gameObject.Sincronizar();
         if (!carregador.estaCarregando && ferramenta != null) ferramenta.Acionar();
     }
 
@@ -325,7 +295,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
     /// <summary>
     /// Chamado quando o botão de "ataque" é solto
     /// </summary>
-    void SoltarFerramenta() {
+    [Sincronizar]
+    public void SoltarFerramenta() {
+        gameObject.Sincronizar();
         if (!carregador.estaCarregando && ferramenta != null) ferramenta.Soltar();
     }
 
@@ -678,7 +650,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
         interagivel.Interagir(this);
     }
 
-    [Sincronizar()]
+    [Sincronizar]
     public void SoltarCarregando() {
         if (!carregador.estaCarregando) return;
         gameObject.Sincronizar();

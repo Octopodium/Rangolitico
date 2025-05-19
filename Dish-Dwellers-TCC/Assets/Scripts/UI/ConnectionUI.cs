@@ -103,6 +103,9 @@ public class ConnectionUI : MonoBehaviour {
         inputP1.text = (p1 != null) ? p1.nome : "???";
         inputP2.text = (p2 != null) ? p2.nome : "???";
 
+        if (p1 != null) UpdatePingUI(p1.ping, p1.personagem == DishNetworkManager.Personagem.Angler);
+        if (p2 != null) UpdatePingUI(p2.ping, p2.personagem == DishNetworkManager.Personagem.Angler);
+
         if (p1 != null && p1.isLocalPlayer) {
             inputP1.interactable = true;
             inputP2.interactable = false;

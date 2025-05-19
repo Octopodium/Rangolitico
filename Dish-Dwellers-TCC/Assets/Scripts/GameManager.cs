@@ -47,10 +47,6 @@ public class GameManager : MonoBehaviour {
     public GameObject offlineAnglerPrefab;
     public GameObject offlineHeaterPrefab;
 
-    public void AAAa(string teste){
-        Debug.Log("aaa: " + teste);
-    }
-
 
     void Awake() {
         if (instance == null) {
@@ -364,7 +360,7 @@ public class GameManager : MonoBehaviour {
     /// Envia uma mensagem para servidor pedindo para passar de sala.
     /// </summary>
     private void RequestPassaDeSalaOnline() {
-        NetworkClient.Send(new DishNetworkManager.RequestPassaDeSalaMessage(true));
+        NetworkClient.Send(new DishNetworkManager.RequestPassaDeSalaMessage(true, salaAtual?.GetNome()));
     }
 
     /// <summary>

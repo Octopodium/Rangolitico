@@ -25,7 +25,7 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo
     /// <summary>
     /// Caso não exista nenhum objeto atribuido ao campo do objeto controlado, instancia um novo objeto com base no prefab.
     /// </summary>
-    [Sincronizar(debugLog=true)]
+    [Sincronizar]
     public void Spawn(){
         gameObject.Sincronizar();
         if(objeto == null) objeto = Instantiate(prefab, respawnPos.position, transform.rotation);
@@ -38,7 +38,7 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo
     /// <summary>
     /// Transporta o objeto controlado para o ponto de respawn atribuido no componente e ativa ele.
     /// </summary>
-    [Sincronizar()]
+    [Sincronizar]
     public void Respawn(){
         gameObject.Sincronizar();
         objeto.transform.position = respawnPos.position;
@@ -50,7 +50,7 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo
     /// <summary>
     /// Destroi o objeto controlado e reinicia o sistema
     /// </summary>
-    [Sincronizar()]
+    [Sincronizar]
     public void Reiniciar(){
         gameObject.Sincronizar();
         Destroy(objeto);

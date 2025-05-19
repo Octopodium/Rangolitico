@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3420029047754408677}
   - component: {fileID: 2652810447332975667}
   - component: {fileID: 5891275666692182563}
+  - component: {fileID: 4145125627521940710}
   m_Layer: 0
   m_Name: "PlacaDePress\xE3o"
   m_TagString: Untagged
@@ -132,6 +133,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.90344346, y: 0.1277678, z: 0.9100024}
   m_Center: {x: 0, y: 0.19, z: 0}
+--- !u!114 &4145125627521940710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589745267072308041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: P
+  cadastrarNoInicio: 1
+  exclusivoDaSala: 1
 --- !u!1001 &3104843997873636961
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -128,8 +128,8 @@ public class CameraController : MonoBehaviour{
         
         SetTempoDeBlend(tempoDBlendNormal);
 
-        onTerminarIntro?.Invoke();
         podeTrocarCamera = true;
+        onTerminarIntro?.Invoke();
         ConfigurarCameras();
     }
 

@@ -116,6 +116,7 @@ MonoBehaviour:
   layerChao:
     serializedVersion: 2
     m_Bits: 1463
+  distanciaCheckChao: 0.5
   direcao: {x: 0, y: 0, z: 0}
   mira: {x: 0, y: 0, z: 0}
   movimentacao: {x: 0, y: 0, z: 0}
@@ -250,7 +251,7 @@ CharacterController:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1463
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -327,6 +328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugLogMetodosCadastrados: 0
   id: 
   cadastrarNoInicio: 1
   exclusivoDaSala: 0

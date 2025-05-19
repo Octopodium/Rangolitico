@@ -21,7 +21,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
     public float velocidade = 14f;
     public float velocidadeRB = 14f; // Velocidade do Rigidbody
     public LayerMask layerChao;
-
+    public float distanciaCheckChao = 0.5f;
 
     [HideInInspector] public Vector3 direcao, mira, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
     private int _playerVidas = 3;
@@ -155,15 +155,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
         if (inputActionMap != null) inputActionMap.Enable();
     }
 
-    void OnDisable(){
-        /*
-        if (inputActionMap != null) {
-            inputActionMap["Interact"].performed -= Interagir;
-            inputActionMap["Attack"].performed -= AcionarFerramenta;
-            inputActionMap["Attack"].canceled -= SoltarFerramenta;
-        }
-        */
-
+    void OnDisable() {
         if (ultimoInteragivel != null) {
             ultimoInteragivel.MostarIndicador(false);
             ultimoInteragivel = null;
@@ -377,9 +369,11 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
         if (ehJogadorAtual && !sendoCarregado && podeMovimentar && movimentacao.magnitude > 0) 
             movimentacaoEfetiva += movimentacao * GetVelocidade();
         
+        movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
+        /*
         if (!characterController.isGrounded && !sendoCarregado) {
-            movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
-        }
+
+        }*/
             
         
         if (movimentacaoEfetiva != Vector3.zero) {
@@ -465,7 +459,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
 
 
     public bool CheckEstaNoChao() {
-        return Physics.Raycast(transform.position, Vector3.down, 0.5f, layerChao);
+        return Physics.Raycast(transform.position, Vector3.down, distanciaCheckChao, layerChao);
     }
 
     public void Teletransportar(Vector3 posicao) {

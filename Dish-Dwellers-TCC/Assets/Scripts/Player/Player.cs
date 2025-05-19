@@ -231,16 +231,20 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
 
 
     [Command]
-    void AtualizarDirecaoCmd(Vector3 valor, bool isMira) {
-        AtualizarDirecaoClientRpc(valor, isMira);
+    void AtualizarDirecaoCmd(Vector3 valor, bool isMira, bool estaMirando) {
+        AtualizarDirecaoClientRpc(valor, isMira, estaMirando);
     }
 
     [ClientRpc]
-    void AtualizarDirecaoClientRpc(Vector3 valor, bool isMira) {
+    void AtualizarDirecaoClientRpc(Vector3 valor, bool isMira, bool estaMirando) {
         if (isLocalPlayer) return; // Não atualiza a direção do jogador local
 
         direcao = valor;
         visualizarDirecao.transform.forward = direcao;
+
+        this.estaMirando = estaMirando;
+
+        if (!estaMirando) direcao = movimentacao;
 
         if (!isMira)
             animacaoJogador.Mover(direcao);
@@ -400,17 +404,18 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
         inputMira = inputActionMap["Aim"].ReadValue<Vector2>();
         
         estaMirando = inputMira.magnitude > deadzoneMira;
-        
-        if (estaMirando)
-        {
+
+        if (estaMirando) {
             Vector3 novaDirecao = new Vector3(inputMira.x, 0, inputMira.y).normalized;
             bool houveMudanca = direcao != novaDirecao;
-            
+
             direcao = novaDirecao;
             visualizarDirecao.transform.forward = direcao;
-            
+
             if (houveMudanca && GameManager.instance.isOnline && isLocalPlayer) // Pelo que eu vi as coisas do Juan ACHO que é só fazer isso aqui mesmo pro online, se der merda tem que mudar aqui 
-                AtualizarDirecaoCmd(direcao, true);
+                AtualizarDirecaoCmd(direcao, true, estaMirando);
+        } else {
+            AtualizarDirecaoCmd(Vector3.zero, true, estaMirando);
         }
     }
 

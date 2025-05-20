@@ -13,7 +13,8 @@ Shader "Unlit/Fire"
             "PreviewType" = "Plane"
             "IgnoreProjector" = "True"
         }
-        Blend One One
+        Blend SrcAlpha One
+        ZWrite Off
         LOD 100
 
         Pass
@@ -56,9 +57,9 @@ Shader "Unlit/Fire"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2D(_MainTex, i.uv);
+                fixed4 col = tex2D(_MainTex, i.uv) * _Color * i.color;
                 UNITY_APPLY_FOG(i.fogCoord, col);
-                return col * i.color * _Color;
+                return col;
             }
             ENDCG
         }

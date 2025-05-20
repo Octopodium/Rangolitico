@@ -1,82 +1,90 @@
-using System;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 public class JanelaEditorSala : EditorWindow
 {
     [Header("Environment Settings Asset")]
-    [SerializeField] Dictionary<string, EnvironmentSettingsAsset> table = new Dictionary<string, EnvironmentSettingsAsset>();
     [SerializeField] EnvironmentSettingsAsset data;
-    [SerializeField] EnvironmentSettingsAsset[] environmentSettingByLevel;
     private readonly string path = "Assets/EvironmentSettings/Data.asset";
-
-    [Header("Configuration")]
-    [SerializeField] AmbientMode ambientMode;
-    [SerializeField] Color ambientColor;
-    [SerializeField] Material skyboxMat;
-
-    [SerializeField] Scene currentScene;
+    private string floorTag = "Floor";
+    private string wallTag = "Wall";
+    private string waterTag = "Water";
 
 
-    private void OnEnable(){
+    private void OnEnable()
+    {
         //SetDataByScene();
         EditorSceneManager.activeSceneChangedInEditMode += OnSceneChanged;
     }
 
-    [MenuItem("Window/JanelaEditorSala")]
-    public static void ShowWindow(){
+    [MenuItem("Window/Editor de Sala")]
+    public static void ShowWindow()
+    {
         GetWindow(typeof(JanelaEditorSala));
     }
 
 
-    private void OnSceneChanged(Scene previous, Scene next){
-        currentScene = next;
-
-        if(table.ContainsKey(next.name)){
-            data = table[next.name];
-            SetConfigurationFromAsset();
-        }
-        else{
-            SetDataByScene(next);
-        }
-    }
-
-    private void SetDataByScene(Scene scene){
+    private void OnSceneChanged(Scene previous, Scene next)
+    {
         data = null;
-        GetConfigurationFromScene();
     }
 
-    private void GetConfigurationFromScene(){
-        ambientMode = RenderSettings.ambientMode;
-        ambientColor = RenderSettings.ambientLight;
-        skyboxMat = RenderSettings.skybox;
-    }
+    private void SetConfigurationFromAsset()
+    {
+        Lightmapping.lightingSettings = data.lightingSettings;
 
-    private void SetConfigurationFromAsset(){
         RenderSettings.ambientMode = data.mode;
-        ambientMode = data.mode;
+        RenderSettings.ambientLight = data.ambientColor;
+        RenderSettings.skybox = data.skyboxMaterial;
 
-        if(data.mode == AmbientMode.Skybox){
-            RenderSettings.skybox = data.skyboxMaterial;
-            skyboxMat = data.skyboxMaterial;
+        RenderSettings.fog = data.fog;
+        RenderSettings.fogColor = data.fogColor;
+        RenderSettings.fogDensity = data.fogDensity;
+
+        if (data.floorMaterial != null)
+        {
+            SetEnvironmentMaterial(data.floorMaterial, floorTag);
+        }
+        if (data.wallMaterial != null)
+        {
+            SetEnvironmentMaterial(data.wallMaterial, wallTag);
+        }
+        if (data.waterMaterial != null)
+        {
+            SetEnvironmentMaterial(data.waterMaterial, waterTag);
         }
 
-        else if(data.mode == AmbientMode.Flat){
-            RenderSettings.ambientLight = data.ambientColor;
-            ambientColor = data.ambientColor;
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+
+        Debug.Log("Settings applied to scene.");
+    }
+
+    private void SetEnvironmentMaterial(Material floorMat, string tag)
+    {
+
+        GameObject[] floor = GameObject.FindGameObjectsWithTag(tag);
+        foreach (GameObject obj in floor)
+        {
+            Renderer render = obj.GetComponentInChildren<Renderer>();
+            render.material = floorMat;
         }
     }
 
-    private void CreateEnvironmentAsset(){
+    private void CreateEnvironmentAsset()
+    {
         EnvironmentSettingsAsset newAsset = ScriptableObject.CreateInstance<EnvironmentSettingsAsset>();
 
-        newAsset.mode = ambientMode;
-        newAsset.ambientColor = ambientColor;
-        newAsset.skyboxMaterial = skyboxMat;
+        newAsset.lightingSettings = Lightmapping.lightingSettings;
+
+        newAsset.mode = RenderSettings.ambientMode;
+        newAsset.ambientColor = RenderSettings.ambientLight;
+        newAsset.skyboxMaterial = RenderSettings.skybox;
+
+        newAsset.fog = RenderSettings.fog;
+        newAsset.fogColor = RenderSettings.fogColor;
+        newAsset.fogDensity = RenderSettings.fogDensity;
 
         AssetDatabase.CreateAsset(newAsset, path);
         AssetDatabase.SaveAssets();
@@ -87,37 +95,32 @@ public class JanelaEditorSala : EditorWindow
 
     public void OnGUI()
     {
-
-        EditorGUILayout.LabelField("Ambient Mode");
-        ambientMode = (AmbientMode)EditorGUILayout.EnumFlagsField(ambientMode);
-        RenderSettings.ambientMode = ambientMode;
-
+        EditorGUILayout.LabelField("Evironment Asset");
         data = (EnvironmentSettingsAsset)EditorGUILayout.ObjectField(data, typeof(EnvironmentSettingsAsset), true);
-        if(data != null){
-            if(table.ContainsKey(currentScene.name)){
-                table[currentScene.name] = data;
+        EditorGUILayout.Space();
+
+        if (data != null)
+        {
+            floorTag = EditorGUILayout.TagField("Floor Tag", floorTag);
+            wallTag = EditorGUILayout.TagField("Wall Tag", wallTag);
+            waterTag = EditorGUILayout.TagField("Water Tag", waterTag);
+
+            EditorGUILayout.Space();
+
+            if (GUILayout.Button("Apply Evironment Settings Asset"))
+            {
+                SetConfigurationFromAsset();
             }
-            else{
-                table.Add(currentScene.name, data);
-            }
         }
 
-        if(ambientMode == AmbientMode.Skybox){
-            skyboxMat = (Material)EditorGUILayout.ObjectField("Skybox Material", skyboxMat, typeof(Material), true);
-            RenderSettings.skybox = skyboxMat;
-        }
+        EditorGUILayout.Space();
 
-        else if(ambientMode == AmbientMode.Flat){
-            EditorGUILayout.LabelField("Ambient Color");
-            ambientColor = EditorGUILayout.ColorField(ambientColor);
-            RenderSettings.ambientLight = ambientColor;
-        }
-
-        if(GUILayout.Button("Generate Evironment Settings Asset")){
+        if (GUILayout.Button("Generate Evironment Settings Asset"))
+        {
             CreateEnvironmentAsset();
         }
 
         SaveChanges();
-    } 
+    }
 
 }

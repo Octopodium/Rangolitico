@@ -43,7 +43,7 @@ Shader "Unlit/NewUnlitShader"
                 Varyings OUT;
 
                 OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
-                OUT.positionWS = 
+                //OUT.positionWS = 
                 OUT.uv = IN.uv;
 
                 return OUT;

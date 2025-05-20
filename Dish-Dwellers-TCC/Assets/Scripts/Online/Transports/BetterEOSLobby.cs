@@ -256,8 +256,9 @@ public class BetterEOSLobby : MonoBehaviour {
     /// </summary>
     protected virtual void ConectarCliente_EncontrarLobby(LobbyDetails details) {
         if (details != null) {
-            OnLobbyEncontrado?.Invoke(idHost);
-            Debug.Log("Host ID: " + idHost);
+            string idVisual = GetHostIDFromInfo(details);
+            OnLobbyEncontrado?.Invoke(idVisual);
+            Debug.Log("Host ID: " + idVisual +"[" + idHost + "]");
             eOSLobby.JoinLobby(details);
         } else {
             Debug.LogError("Nenhum lobby encontrado com o ID fornecido.");

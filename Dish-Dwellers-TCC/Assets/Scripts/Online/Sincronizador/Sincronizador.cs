@@ -45,6 +45,10 @@ public class Sincronizador : NetworkBehaviour {
     protected Dictionary<string, object[]> parametrosUltimosChamados = new Dictionary<string, object[]>();
     protected HashSet<string> currentTriggerOnCallback = new HashSet<string>();
 
+    [Header("Debug")]
+    public bool debugLogMetodos = false;
+    public bool debugLogSincronizaveis = false;
+
     private void Awake() {
         if (instance == null) {
             instance = this;
@@ -131,6 +135,10 @@ public class Sincronizador : NetworkBehaviour {
             return false;
         }
 
+        if (debugLogSincronizaveis) {
+            Debug.Log("Cadastrando sincronizável [" + id + "]");
+        }
+
         sincronizaveis[id] = obj;
         return true;
     }
@@ -174,6 +182,10 @@ public class Sincronizador : NetworkBehaviour {
             HashSet<InformacoesMetodo> lista = new HashSet<InformacoesMetodo>();
             lista.Add(info);
             metodos[nome] = lista;
+        }
+
+        if (debugLogMetodos) {
+            Debug.Log("Cadastrando método [" + info.GetNome(id) + "]");
         }
 
         return info;
@@ -254,6 +266,11 @@ public class Sincronizador : NetworkBehaviour {
 
     [TargetRpc]
     public void RpcChamarMetodo(NetworkConnectionToClient conn, string nomeMetodo, ValorGenerico[] v) {
+        if (!metodos.ContainsKey(nomeMetodo)) {
+            Debug.LogError("Método [" + nomeMetodo + "] não encontrado!");
+            return;
+        }
+
         var listaMetodos = metodos[nomeMetodo];
         if (listaMetodos == null) return;
 

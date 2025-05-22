@@ -171,10 +171,6 @@ public class Sincronizavel : MonoBehaviour {
     public bool cadastrarNoInicio = true;
     private bool cadastrouUmaVez = false;
 
-
-    [Tooltip("Caso positivo, inclui o nome da sala no ID. Deve ser utilizado em todos os objetos que não são mantidos entre as salas (a maioria).")]
-    public bool exclusivoDaSala = true;
-
     public bool autoIDSeVazio = true;
 
 
@@ -230,12 +226,6 @@ public class Sincronizavel : MonoBehaviour {
         return trigger + "_" + GetID();
     }
 
-
-    private string GetSalaSufix() {
-        if (!exclusivoDaSala) return "";
-        return SceneManager.GetActiveScene().name;
-    }
-
     public virtual string GetID() {
         return GetPrefixo() + idObjetoSincronizado + GetSufixo();
     }
@@ -245,9 +235,7 @@ public class Sincronizavel : MonoBehaviour {
     }
 
     public virtual string GetPrefixo() {
-        string sufixo = GetSalaSufix();
-        if (string.IsNullOrEmpty(sufixo)) return "";
-        return GetSalaSufix() + "_";
+        return "";
     }
 
     #endregion

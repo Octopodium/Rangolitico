@@ -49,7 +49,6 @@ public class Portal : IResetavel, SincronizaMetodo {
 
     public void PassarDeSala() {
         if (playersNoPortal.Count < 2) return;
-        gameObject.Sincronizar();
         
         if (finalDaDemo) canvasFinalDaDemo.SetActive(true);
         else GameManager.instance.PassaDeSala();

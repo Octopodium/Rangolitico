@@ -31,7 +31,11 @@ public partial struct ValorGenerico {
         if (tipo == null) {
             Debug.LogError("Tipo não encontrado: " + partes[0]);
         } else {
-            valor = System.Convert.ChangeType(partes[1], tipo);
+            try {
+                valor = System.Convert.ChangeType(partes[1], tipo);
+            } catch (System.Exception e) {
+                Debug.LogError("Erro ao converter valor: " + partes[1] + " para o tipo: " + tipo + "\n" + e);
+            }
         }
 
         return new ValorGenerico(tipo, valor);

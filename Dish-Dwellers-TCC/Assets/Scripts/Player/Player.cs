@@ -403,19 +403,20 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
 
         inputMira = inputActionMap["Aim"].ReadValue<Vector2>();
         
+        bool estavaMirando = estaMirando;
         estaMirando = inputMira.magnitude > deadzoneMira;
 
         if (estaMirando) {
             Vector3 novaDirecao = new Vector3(inputMira.x, 0, inputMira.y).normalized;
-            bool houveMudanca = direcao != novaDirecao;
+            bool houveMudanca = (direcao != novaDirecao) || (estavaMirando != estaMirando);
 
             direcao = novaDirecao;
             visualizarDirecao.transform.forward = direcao;
 
-            if (houveMudanca && GameManager.instance.isOnline && isLocalPlayer) // Pelo que eu vi as coisas do Juan ACHO que é só fazer isso aqui mesmo pro online, se der merda tem que mudar aqui 
+            if (houveMudanca && GameManager.instance.isOnline && isLocalPlayer)
                 AtualizarDirecaoCmd(direcao, true, estaMirando);
         } else {
-            AtualizarDirecaoCmd(Vector3.zero, true, estaMirando);
+            AtualizarDirecaoCmd(direcao, true, estaMirando);
         }
     }
 
@@ -511,7 +512,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
         int quant = 0;
 
         for (int i = 0; i < colliders.Length; i++) {
-            if (collidersIgnoraveis.Contains(colliders[i])) {
+            if (collidersIgnoraveis.Contains(colliders[i]) || colliders[i] == null) {
                 colliders[i] = null;
             } else {
                 quant++;
@@ -545,7 +546,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
         int quantFiltrada = RemoveColisoresIgnoraveis(collidersInteragiveis);
 
         // Na maioria das vezes, não haverá interagíveis
-        if (quantFiltrada == 0) { 
+        if (quantFiltrada == 0) {
             if (ultimoInteragivel != null) ultimoInteragivel.MostarIndicador(false);
             ultimoInteragivel = null;
             cache_interagiveisProximos.Clear();

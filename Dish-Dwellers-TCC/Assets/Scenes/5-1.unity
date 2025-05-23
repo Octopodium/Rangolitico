@@ -614,6 +614,7 @@ Transform:
   - {fileID: 353093213}
   - {fileID: 1230891192}
   - {fileID: 1210895472}
+  - {fileID: 1761712810}
   m_Father: {fileID: 1166284913}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1001 &50041834
@@ -3031,11 +3032,11 @@ GameObject:
   - component: {fileID: 378191585}
   - component: {fileID: 378191584}
   m_Layer: 0
-  m_Name: Cube (1)
+  m_Name: Pilar
   m_TagString: Parede
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &378191583
 Transform:
@@ -4283,11 +4284,11 @@ GameObject:
   - component: {fileID: 554682996}
   - component: {fileID: 554682995}
   m_Layer: 0
-  m_Name: Cube (2)
+  m_Name: Pilar
   m_TagString: Parede
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &554682994
 Transform:
@@ -13205,12 +13206,12 @@ Transform:
   m_GameObject: {fileID: 1761712804}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.707107, z: -0, w: 0.70710665}
-  m_LocalPosition: {x: 9.929386, y: 0.39284325, z: 30.35002}
+  m_LocalPosition: {x: 15.92939, y: 1.5632391, z: 23.450024}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1238649667}
-  m_Father: {fileID: 1846203522}
+  m_Father: {fileID: 49898435}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &1776439507
 GameObject:
@@ -14040,7 +14041,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1761712810}
   - {fileID: 892763951}
   - {fileID: 378191583}
   - {fileID: 554682994}

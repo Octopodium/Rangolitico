@@ -13,8 +13,7 @@ public class Projectile : MonoBehaviour
     [Header("<color=green> Lima coisas :")]
     [SerializeField]private bool refletirNormal;
 
-    void Awake()
-    {
+    void Awake() {
         animator = GetComponentInChildren<AnimatorTorreta>();
     }
     

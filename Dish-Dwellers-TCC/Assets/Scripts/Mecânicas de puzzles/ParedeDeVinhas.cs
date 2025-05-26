@@ -4,20 +4,27 @@ public class ParedeDeVinhas : MonoBehaviour
 {
     [SerializeField] private int integridade = 3;
     [SerializeField] private Color[] cores;
+    [SerializeField] private SkinnedMeshRenderer[] renderers;
     private MaterialPropertyBlock mpb;
 
-    public void ReduzirIntegridade(){
-        if(--integridade <= 0 ){
-            Destroy(gameObject);
-        }
+    private void Start() {
+        mpb = new MaterialPropertyBlock();
     }
 
-    private void SetarCor(int integridade){
-        mpb = new MaterialPropertyBlock();
-        Renderer renderer = GetComponent<Renderer>();
+    public void ReduzirIntegridade() {
+        if (--integridade <= 0) {
+            Destroy(gameObject);
+            return;
+        }
+        SetarCor(integridade);
+    }
 
-        mpb.SetColor("_Color",cores[integridade - 1]);
-        renderer.SetPropertyBlock(mpb);
+    private void SetarCor(int integridade) {
+       mpb.SetColor("_BaseColor", cores[integridade - 1]);
+
+        foreach (Renderer render in renderers) {
+            render.SetPropertyBlock(mpb);
+        }
     }
 
 }

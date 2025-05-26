@@ -101,6 +101,7 @@ public class InimigoTorreta : Inimigo
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         GameObject newProjectile = Instantiate(projectile, fireAction.transform.position, targetRotation);
+        newProjectile.transform.LookAt(target);
         newProjectile.GetComponent<Projectile>().owner = this.gameObject;
         base.Atacar();
     }

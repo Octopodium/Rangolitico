@@ -5,5 +5,5 @@ using UnityEngine;
 /// </summary>
 public interface IEmpurrar 
 {
-    public void ExecutaEmpurrar(Transform executaEmpurrar){}
+    void ExecutaEmpurrar(Transform executaEmpurrar);
 }

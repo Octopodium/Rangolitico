@@ -10,7 +10,7 @@ public enum QualPlayer { Player1, Player2, Desativado }
 public enum QualPersonagem { Heater, Angler }
 
 [RequireComponent(typeof(Carregador)), RequireComponent(typeof(Carregavel))]
-public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
+public class Player : NetworkBehaviour, SincronizaMetodo {
     public QualPersonagem personagem = QualPersonagem.Heater;
     public QualPlayer qualPlayer = QualPlayer.Player1;
     public InputActionMap inputActionMap {get; protected set;}
@@ -67,6 +67,12 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
     public bool estaMirando = false;
     private Vector2 inputMira;
     public float deadzoneMira = 0.1f; // Zona morta para evitar mira acidental
+
+    [Header("Configurações de Knockback")] [Space(10)]
+    public float forcaKnockback = 5f;
+    public float duracaoKnockback = 0.3f;
+    public float componenteVerticalKnockback = 0.2f;
+    private bool estaSofrendoKnockback = false;
 
 
 
@@ -421,21 +427,43 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IEmpurrar {
     }
 
     /// <summary>
-    /// Interface para lidar com os knockbacks do player 
+    /// Coisas de knockback do player que foram mudadas 
+    /// devido as complicações com a física atualmente 
     /// </summary>
     /// <param name="executaEmpurrar"></param>
-    public void ExecutaEmpurrar(Transform executaEmpurrar)
+    public void AplicarKnockback(Transform origem)
     {
-        LogicaEmpurrar(executaEmpurrar);
+        if (estaSofrendoKnockback) return;
+        
+        StartCoroutine(ProcessarKnockback(origem));
     }
 
-    //Método responsável pela lógica do knockback 
-    public void LogicaEmpurrar(Transform executaEmpurrar)
+    private IEnumerator ProcessarKnockback(Transform origem)
     {
-        Vector3 dirEmpurrao = (transform.position - executaEmpurrar.transform.position).normalized;
+        estaSofrendoKnockback = true;
+        bool podiaSeMover = podeMovimentar;
+        podeMovimentar = false;
 
-        float forcaDoEmpurrao = 10f;
-        rb.AddForce(dirEmpurrao * forcaDoEmpurrao, ForceMode.Impulse);
+        Vector3 direcao = (transform.position - origem.position).normalized;
+        direcao.y = componenteVerticalKnockback;
+        direcao.Normalize();
+
+        float tempo = 0f;
+        Vector3 velocidadeInicial = direcao * forcaKnockback;
+        Vector3 velocidadeFinal = Vector3.zero;
+
+        while (tempo < duracaoKnockback)
+        {
+            tempo += Time.deltaTime;
+            float progresso = tempo / duracaoKnockback;
+            Vector3 velocidadeAtual = Vector3.Lerp(velocidadeInicial, velocidadeFinal, progresso);
+            
+            characterController.Move(velocidadeAtual * Time.deltaTime);
+            yield return null;
+        }
+
+        podeMovimentar = podiaSeMover;
+        estaSofrendoKnockback = false;
     }
 
     bool usandoRb = true;

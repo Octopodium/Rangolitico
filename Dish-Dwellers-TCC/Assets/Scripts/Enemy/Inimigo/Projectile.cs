@@ -73,18 +73,12 @@ public class Projectile : MonoBehaviour
 
         else if (other.gameObject.CompareTag("Player") && !isReflected)
         {
-            player = other.GetComponent<Player>();
-            player.MudarVida(-1);
-
-            //Chamada do knockback aqui, que vai verificar se ele possui a interface IEmpurrar implementada
-            //Se possuir, ele executa sua lógica
-            IEmpurrar empurrao = other.GetComponent<IEmpurrar>();
-            if (empurrao != null)
+           Player player = other.GetComponent<Player>();
+            if (player != null)
             {
-                empurrao.ExecutaEmpurrar(transform); 
+                player.MudarVida(-1);
+                player.AplicarKnockback(transform); 
             }
-
-            Debug.Log("deu dano");
             Destroy(gameObject);
         }
 

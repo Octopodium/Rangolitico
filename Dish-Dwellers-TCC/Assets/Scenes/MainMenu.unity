@@ -4662,8 +4662,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1445152986}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 1445152988}
+        m_TargetAssemblyTypeName: MenuPrincipal, Assembly-CSharp
         m_MethodName: IrParaLink
         m_Mode: 5
         m_Arguments:
@@ -5047,6 +5047,7 @@ GameObject:
   - component: {fileID: 1445152982}
   - component: {fileID: 1445152986}
   - component: {fileID: 1445152987}
+  - component: {fileID: 1445152988}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -5170,6 +5171,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0df3603925f066747891449ad31a0e0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1445152988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1445152981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f7bce828e172c645bb6d1132dc3dcfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildVersionTxt: {fileID: 141770737}
 --- !u!1 &1465459442
 GameObject:
   m_ObjectHideFlags: 0
@@ -7750,8 +7764,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1445152986}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 1445152988}
+        m_TargetAssemblyTypeName: MenuPrincipal, Assembly-CSharp
         m_MethodName: QuitJogo
         m_Mode: 1
         m_Arguments:

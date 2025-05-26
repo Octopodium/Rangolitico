@@ -57,13 +57,4 @@ public class UIManager : MonoBehaviour
             GameManager.instance.VoltarParaMenu();
         }
     }
-
-    public void QuitJogo(){
-        Application.Quit();
-    }
-
-    public void IrParaLink(string link) {
-        // Abre o link no navegador padrão do dispositivo
-        Application.OpenURL(link);
-    }
 }

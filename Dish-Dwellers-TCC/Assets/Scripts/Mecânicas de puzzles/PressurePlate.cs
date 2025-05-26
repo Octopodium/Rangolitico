@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,6 +18,8 @@ public class PressurePlate : IResetavel, SincronizaMetodo
     [SerializeField] private Vector3 boxHalfExtents;
     [SerializeField] private Vector3 offset;
     public UnityEvent OnAtivado, OnDesativado;
+
+    private Coroutine corotinaQuandoAtivo = null;
 
     // Animação:
     private Animator animator;
@@ -61,7 +64,7 @@ public class PressurePlate : IResetavel, SincronizaMetodo
 
     [Sincronizar]
     public void Ativar() {
-        if(ativado) return;
+        if (ativado) return;
 
         gameObject.Sincronizar();
 
@@ -69,11 +72,20 @@ public class PressurePlate : IResetavel, SincronizaMetodo
         ativado = true;
 
         OnAtivado?.Invoke();
+
+        corotinaQuandoAtivo = StartCoroutine(CheckSeAindaEmCima());
+    }
+
+    IEnumerator CheckSeAindaEmCima() {
+        do {
+            yield return new WaitForEndOfFrame();
+            ChecarAtivacao();
+        } while (corotinaQuandoAtivo != null);
     }
 
     [Sincronizar]
     public void Desativar() {
-        if(!ativado) return;
+        if (!ativado) return;
 
         gameObject.Sincronizar();
 
@@ -81,6 +93,10 @@ public class PressurePlate : IResetavel, SincronizaMetodo
         ativado = false;
 
         OnDesativado?.Invoke();
+
+        if (corotinaQuandoAtivo != null) {
+            StopCoroutine(corotinaQuandoAtivo);
+        }
     }
 
     // Para cada objeto com um rigidbody em cima do botão, adiciona o peso dele ao peso total.

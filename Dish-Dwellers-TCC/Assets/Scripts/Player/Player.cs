@@ -23,7 +23,10 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     public LayerMask layerChao;
     public float distanciaCheckChao = 0.5f;
 
-    [HideInInspector] public Vector3 direcao, mira, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
+    [HideInInspector] public Vector3 direcao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
+    [HideInInspector] public Vector3 mira;
+    [HideInInspector] public Vector3 movimentacao;
+
     private int _playerVidas = 3;
     public int playerVidas {
         get { return _playerVidas; }
@@ -96,6 +99,8 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     // Awake: trata de referências/configurações internas
     void Awake() {
         collidersInteragiveis = new Collider[maxInteragiveisEmRaio];
+
+        direcao = new Vector3(0, 0, -1);
 
         rb = GetComponent<Rigidbody>();
         col = GetComponent<CapsuleCollider>();
@@ -245,12 +250,14 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     void AtualizarDirecaoClientRpc(Vector3 valor, bool isMira, bool estaMirando) {
         if (isLocalPlayer) return; // Não atualiza a direção do jogador local
 
-        direcao = valor;
-        visualizarDirecao.transform.forward = direcao;
-
         this.estaMirando = estaMirando;
 
-        if (!estaMirando) direcao = movimentacao;
+        if (estaMirando || direcao.magnitude != 0) {
+            direcao = valor;
+            visualizarDirecao.transform.forward = direcao;
+        } else if (movimentacao.magnitude != 0) {
+            direcao = movimentacao;
+        }
 
         if (!isMira)
             animacaoJogador.Mover(direcao);

@@ -13,10 +13,10 @@ public class JanelaEditorSala : EditorWindow
     private string waterTag = "Water";
 
 
-    private void OnEnable()
-    {
+    private void OnEnable() {
         //SetDataByScene();
         EditorSceneManager.activeSceneChangedInEditMode += OnSceneChanged;
+        
     }
 
     [MenuItem("Window/Editor de Sala")]
@@ -93,30 +93,48 @@ public class JanelaEditorSala : EditorWindow
         Selection.activeObject = newAsset;
     }
 
-    public void OnGUI()
-    {
+    private void SaveTags() {
+        EditorPrefs.SetString("FloorTag", floorTag);
+        EditorPrefs.SetString("WallTag", wallTag);
+        EditorPrefs.SetString("WaterTag", waterTag);
+    }
+
+    private void LoadTags(){
+        string floorVal = EditorPrefs.GetString("FloorTag");
+        if (!string.IsNullOrEmpty(floorVal))
+        {
+            floorTag = EditorPrefs.GetString("FloorTag");
+        }
+        wallTag = EditorPrefs.GetString("WallTag");
+        waterTag = EditorPrefs.GetString("WaterTag");
+    }
+
+    public void OnGUI() {
         EditorGUILayout.LabelField("Evironment Asset");
+
+        EditorGUI.BeginChangeCheck();
+
         data = (EnvironmentSettingsAsset)EditorGUILayout.ObjectField(data, typeof(EnvironmentSettingsAsset), true);
         EditorGUILayout.Space();
 
-        if (data != null)
-        {
+        if (data != null) {
             floorTag = EditorGUILayout.TagField("Floor Tag", floorTag);
             wallTag = EditorGUILayout.TagField("Wall Tag", wallTag);
             waterTag = EditorGUILayout.TagField("Water Tag", waterTag);
 
-            EditorGUILayout.Space();
 
-            if (GUILayout.Button("Apply Evironment Settings Asset"))
-            {
-                SetConfigurationFromAsset();
-            }
+
+            EditorGUILayout.Space();
+        }
+
+        if (EditorGUI.EndChangeCheck()) {
+            SetConfigurationFromAsset();
+            SaveTags();
         }
 
         EditorGUILayout.Space();
 
-        if (GUILayout.Button("Generate Evironment Settings Asset"))
-        {
+        if (GUILayout.Button("Generate Evironment Settings Asset")) {
             CreateEnvironmentAsset();
         }
 

@@ -159,11 +159,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     }
 
     void OnEnable() {
-        if (GameManager.instance != null && GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap != null && inputActionMap.enabled) {
-            GameManager.instance.TrocarControleSingleplayer(qualPlayer);
+        if (GameManager.instance != null && GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER) {
+            GameManager.instance.AtualizarControleSingleplayer();
         }
-
-        if (inputActionMap != null) inputActionMap.Enable();
     }
 
     void OnDisable() {

@@ -149,7 +149,11 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void TrocarControleSingleplayer(){
+    public void AtualizarControleSingleplayer() {
+        TrocarControleSingleplayer(playerAtual);
+    }
+
+    public void TrocarControleSingleplayer() {
         if (modoDeJogo != ModoDeJogo.SINGLEPLAYER) return;
 
         if (playerAtual == QualPlayer.Player1) {

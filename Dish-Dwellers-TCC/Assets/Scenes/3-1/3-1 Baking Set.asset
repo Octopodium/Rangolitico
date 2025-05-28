@@ -15,7 +15,7 @@ MonoBehaviour:
   singleSceneMode: 1
   dialogNoProbeVolumeInSetShown: 0
   settings:
-    m_Version: 0
+    m_Version: 1
     dilationSettings:
       enableDilation: 0
       dilationDistance: 0
@@ -27,24 +27,25 @@ MonoBehaviour:
       validityThreshold: 0.25
       outOfGeoOffset: 0
       searchMultiplier: 0
-      rayOriginBias: 0
+      rayOriginBias: -0.001
       collisionMask:
         serializedVersion: 2
-        m_Bits: 0
+        m_Bits: 4294967291
   m_SceneGUIDs:
   - 21901adf287ade64fbfbb611a48add82
   obsoleteScenesToNotBake: []
-  m_LightingScenarios: []
+  m_LightingScenarios:
+  - Default
   cellDescs:
     m_Keys: 00000000030000000100000004000000
     m_Values:
     - position: {x: -1, y: -1, z: -1}
       index: 0
-      probeCount: 4736
+      probeCount: 5312
       minSubdiv: 0
       indexChunkCount: 91
       shChunkCount: 1
-      bricksCount: 74
+      bricksCount: 83
       indirectionEntryInfo:
       - positionInBricks: {x: -27, y: -27, z: -27}
         minSubdiv: 0
@@ -54,11 +55,11 @@ MonoBehaviour:
         hasOnlyBiggerBricks: 0
     - position: {x: -1, y: 0, z: -1}
       index: 3
-      probeCount: 14464
+      probeCount: 16192
       minSubdiv: 0
       indexChunkCount: 91
       shChunkCount: 2
-      bricksCount: 226
+      bricksCount: 253
       indirectionEntryInfo:
       - positionInBricks: {x: -27, y: 0, z: -27}
         minSubdiv: 0
@@ -68,11 +69,11 @@ MonoBehaviour:
         hasOnlyBiggerBricks: 0
     - position: {x: 0, y: -1, z: -1}
       index: 1
-      probeCount: 5184
+      probeCount: 4864
       minSubdiv: 0
       indexChunkCount: 91
       shChunkCount: 1
-      bricksCount: 81
+      bricksCount: 76
       indirectionEntryInfo:
       - positionInBricks: {x: 0, y: -27, z: -27}
         minSubdiv: 0
@@ -82,11 +83,11 @@ MonoBehaviour:
         hasOnlyBiggerBricks: 0
     - position: {x: 0, y: 0, z: -1}
       index: 4
-      probeCount: 14016
+      probeCount: 14144
       minSubdiv: 0
       indexChunkCount: 91
       shChunkCount: 2
-      bricksCount: 219
+      bricksCount: 221
       indirectionEntryInfo:
       - positionInBricks: {x: 0, y: 0, z: -27}
         minSubdiv: 0
@@ -117,7 +118,7 @@ MonoBehaviour:
     m_Keys:
     - Default
     m_Values:
-    - sceneHash: 1470418921
+    - sceneHash: 1452877375
       cellDataAsset:
         m_AssetGUID: 116dd4c1df9eba94d83a245afc7e082a
         m_StreamableAssetPath: APVStreamingAssets\de36f6d7c8d0ada41bb6cf2d22f08673\116dd4c1df9eba94d83a245afc7e082a.bytes
@@ -174,13 +175,13 @@ MonoBehaviour:
       m_Keys: 00000000030000000100000004000000
       m_Values:
       - offset: 0
-        elementCount: 74
-      - offset: 1184
-        elementCount: 226
-      - offset: 4800
-        elementCount: 81
-      - offset: 6096
-        elementCount: 219
+        elementCount: 83
+      - offset: 1328
+        elementCount: 253
+      - offset: 5376
+        elementCount: 76
+      - offset: 6592
+        elementCount: 221
     m_Asset: {fileID: 0}
   cellSupportDataAsset:
     m_AssetGUID: 861ecee36030d064ca9d33bc5f6b132e

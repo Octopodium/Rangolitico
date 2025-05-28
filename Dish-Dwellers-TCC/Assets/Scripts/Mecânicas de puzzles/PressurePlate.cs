@@ -39,11 +39,6 @@ public class PressurePlate : IResetavel, SincronizaMetodo
         ChecarAtivacao();
     }
 
-    //Precisa ser onTriggerStay pra caso algum objeto com peso caia em cima do player, sem passar pelo colisor
-    private void OnTriggerStay(Collider other) {
-        ChecarAtivacao();
-    }
-
     private void OnTriggerExit(Collider other){
         ChecarAtivacao();
     }

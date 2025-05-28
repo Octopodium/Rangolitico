@@ -52,7 +52,10 @@ public class Sincronizador : NetworkBehaviour {
     private void Awake() {
         if (instance == null) {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+
+            if (transform.parent == null)
+                DontDestroyOnLoad(gameObject);
+            
         } else {
             Destroy(gameObject);
             return;

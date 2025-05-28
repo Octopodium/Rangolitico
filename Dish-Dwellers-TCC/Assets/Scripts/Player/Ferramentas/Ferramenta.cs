@@ -1,4 +1,5 @@
 public interface Ferramenta {
+    bool acionada { get; }
 
     /// <summary>
     /// Deve ser chamada antes de qualquer ação da ferramenta
@@ -14,4 +15,9 @@ public interface Ferramenta {
     /// Chamada quando o jogador solta o botão de ferramenta
     /// </summary>
     void Soltar();
+
+    /// <summary>
+    /// Chamada quando a ferramenta foi acionado mas não foi possível completar a ação, por exemplo, quando o jogador mira o gancho e desiste.
+    /// </summary>
+    void Cancelar();
 }

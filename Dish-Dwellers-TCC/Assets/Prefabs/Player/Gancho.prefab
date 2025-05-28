@@ -48,15 +48,11 @@ MonoBehaviour:
   lineRenderer: {fileID: 2444251424244566183}
   ganchoSpawn: {fileID: 1247592641809008241}
   ganchoPrefab: {fileID: 7144495205656712935, guid: 79d193ee88a72dd4096a9ab0a6925086, type: 3}
-  layerGanchavel:
-    serializedVersion: 2
-    m_Bits: 128
   layerCortante:
     serializedVersion: 2
     m_Bits: 1024
   distanciaMaxima: 15
   velocidadeGancho: 30
-  corPadrao: {r: 0.6603774, g: 0.3313846, b: 0, a: 1}
   gradienteCorda:
     serializedVersion: 2
     key0: {r: 0.65882355, g: 0.33333334, b: 0, a: 1}
@@ -87,7 +83,7 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 4
     m_NumAlphaKeys: 2
-  forcaDePuxada: 1
+  forcaDePuxada: 2
   alturaDePuxada: 6.5
 --- !u!120 &2444251424244566183
 LineRenderer:

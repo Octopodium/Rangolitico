@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement; // Titi: Adição temporaria pra reset de sala
 using System.Collections.Generic;
 using System.Collections;
 using Mirror;
@@ -10,7 +9,7 @@ public enum QualPlayer { Player1, Player2, Desativado }
 public enum QualPersonagem { Heater, Angler }
 
 [RequireComponent(typeof(Carregador)), RequireComponent(typeof(Carregavel))]
-public class Player : NetworkBehaviour, SincronizaMetodo {
+public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     public QualPersonagem personagem = QualPersonagem.Heater;
     public QualPlayer qualPlayer = QualPlayer.Player1;
     public InputActionMap inputActionMap {get; protected set;}
@@ -22,6 +21,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     public float velocidadeRB = 14f; // Velocidade do Rigidbody
     public LayerMask layerChao;
     public float distanciaCheckChao = 0.5f;
+    bool sendoPuxado = false; // Se o jogador está sendo puxado por um gancho (definido no GanchavelAntesPuxar)
 
     [HideInInspector] public Vector3 direcao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
     [HideInInspector] public Vector3 mira;
@@ -67,6 +67,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     public float velocidadeComEscudoMult = 0.65f;
 
     [Header("Config de Mira")] [Space(10)]
+    public float velocidadeGanchadoMult = 0.75f;
     public bool estaMirando = false;
     private Vector2 inputMira;
     public float deadzoneMira = 0.1f; // Zona morta para evitar mira acidental
@@ -86,14 +87,14 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     public Carregavel carregando => carregador.carregado; // O que o jogador está carregando
     Carregavel carregavel; // O que permite o jogador a ser carregado
     public bool sendoCarregado => carregavel.sendoCarregado; // Se o jogador está sendo carregado
+    Ganchavel ganchavel; // O que permite o jogador ser puxado pelo gancho
+    public bool ganchado => ganchavel != null && ganchavel.ganchado; // Se o jogador está ganchado
     AnimadorPlayer animacaoJogador;
 
     public bool estaNoChao = true;
     CharacterController characterController;
     Rigidbody rb; // Rigidbody do jogador (se houver)
     Collider col;
-
-    public bool estaGanchado {get; set;}
 
 
     // Awake: trata de referências/configurações internas
@@ -107,6 +108,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
         characterController = GetComponent<CharacterController>();
         carregador = GetComponent<Carregador>();
         carregavel = GetComponent<Carregavel>();
+        ganchavel = GetComponent<Ganchavel>();
         ferramenta = GetComponentInChildren<Ferramenta>();
         ferramenta.Inicializar(this);
 
@@ -119,11 +121,11 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
         
 
         // Se está carregando algo, ignora a interação com esta coisa
-        carregador.OnCarregar += (carregavel) => { if (carregavel != null)  collidersIgnoraveis.Add(carregavel.GetComponent<Collider>()); };
+        carregador.OnCarregar += (carregavel) => { if (carregavel != null) collidersIgnoraveis.Add(carregavel.GetComponent<Collider>()); ResetarFerramenta(); };
         carregador.OnSoltar += (carregavel) => { if (carregavel != null)  collidersIgnoraveis.Remove(carregavel.GetComponent<Collider>()); };
 
         // Se o jogador está sendo carregado, ignora a interação com o carregador
-        carregavel.OnCarregado += (carregador) => { if (carregador != null)  collidersIgnoraveis.Add(carregador.GetComponent<Collider>()); UsarRB(true); };
+        carregavel.OnCarregado += (carregador) => { if (carregador != null)  collidersIgnoraveis.Add(carregador.GetComponent<Collider>()); };
         carregavel.OnSolto += (carregador) => {  if (carregador != null)  collidersIgnoraveis.Remove(carregador.GetComponent<Collider>()); };
     }
 
@@ -217,6 +219,13 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
         gameObject.Sincronizar();
         GameManager.instance.ResetSala();
         Debug.Log("morreu");
+    }
+
+    public void Resetar() {
+        MudarVida(3);
+
+        if (sendoCarregado) carregavel.carregador.Soltar(); // Se o jogador está sendo carregado, se solta
+        if (carregando != null) carregador.Soltar(); // Se o jogador está carregando algo, se solta
     }
 
 
@@ -313,14 +322,41 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     }
 
     /// <summary>
+    /// Chamado quando o jogador não pode estar com a ferramenta acionada porém está
+    /// </summary>
+    [Sincronizar]
+    public void ResetarFerramenta() {
+        if (!ferramenta.acionada) return;
+
+        gameObject.Sincronizar();
+        ferramenta.Cancelar();
+    }
+
+    /// <summary>
     /// Mostra ou esconde o indicador de direção (seta)
     /// Se mostrar, o jogador não pode se mover.
     /// </summary>
     /// <param name="mostrar">Se irá mostrar ou não</param>
     public void MostrarDirecional(bool mostrar) {
         visualizarDirecao.SetActive(mostrar);
-        if(personagem == QualPersonagem.Heater) return;
+        if (personagem == QualPersonagem.Heater) return;
         podeMovimentar = !mostrar;
+    }
+
+    /// <summary>
+    /// Garante que o jogador será um Rigidbody ao ser puxado pelo gancho
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator GanchavelAntesPuxar() {
+        UsarRB(true);
+        StartCoroutine(SendoPuxadoCoroutine());
+        yield return new WaitForEndOfFrame();
+    }
+
+    IEnumerator SendoPuxadoCoroutine() {
+        sendoPuxado = true;
+        yield return new WaitForSeconds(0.1f); // Espera um pouco para garantir que deu tempo de sair do chão
+        sendoPuxado = false;
     }
 
 
@@ -332,7 +368,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     /// <summary>
     /// Trata da movimentação do jogador
     /// </summary>
-    
+
     //Titi: Fiz algumas alterações aqui na movimentação pro escudo ok :3
     void Movimentacao() {
         if (!GameManager.instance.isOnline || isLocalPlayer)
@@ -340,7 +376,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
 
         estaNoChao = CheckEstaNoChao();
 
-        if(estaGanchado || !estaNoChao) MovimentacaoNoAr();
+        if(!estaNoChao) MovimentacaoNoAr();
         else MovimentacaoNoChao();
 
         UsarAtrito(estaNoChao);
@@ -370,7 +406,8 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
         float v = isRb ? velocidadeRB : velocidade;
 
         if (escudoAtivo) v *= velocidadeComEscudoMult;
-        if (carregando) v*= velocidadeCarregandoMult;
+        else if (carregando) v *= velocidadeCarregandoMult;
+        if (ganchado) v *= velocidadeGanchadoMult;
 
         return v;
     }
@@ -498,6 +535,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
 
 
     public bool CheckEstaNoChao() {
+        if (sendoPuxado) return false; // Se o jogador está sendo puxado, não está no chão
         return Physics.Raycast(transform.position, Vector3.down, distanciaCheckChao, layerChao);
     }
 
@@ -692,15 +730,6 @@ public class Player : NetworkBehaviour, SincronizaMetodo {
     }
 
     #endregion
-
-    // IEnumerator pra desativar o ganchado so depois que puxar
-    public void FalsearGanchado(){
-        StartCoroutine("WaitForDesganchado");
-    }
-    IEnumerator WaitForDesganchado(){
-        yield return new WaitForSeconds(0.1f);
-        estaGanchado = false;
-    }
     
     void OnDrawGizmos() {
         Gizmos.color = Color.green;

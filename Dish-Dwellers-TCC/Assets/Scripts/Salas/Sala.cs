@@ -31,7 +31,7 @@ public class sala : MonoBehaviour{
         // Reposiciona o jogador na sua posição inicial, e restaura sua vida.
         PosicionarJogador();
         foreach( var player in GameManager.instance.jogadores){
-            player.MudarVida(3);
+            player.Resetar();
         }
 
         // Reativa todos os triggers da sala.

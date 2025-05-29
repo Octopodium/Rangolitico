@@ -34,7 +34,8 @@ public class Portal : IResetavel, SincronizaMetodo {
         bool prosseguir = gameObject.Sincronizar(playerObj);
         if (!prosseguir) return;
 
-        player.inputActionMap["Cancelar"].performed += SairDoPortal;
+        if (player.playerInput != null)
+            player.playerInput.currentActionMap["Cancelar"].performed += SairDoPortal;
         
         playerObj.gameObject.SetActive(false);
 
@@ -59,7 +60,7 @@ public class Portal : IResetavel, SincronizaMetodo {
         SairDoPortal();
     }
 
-    [Sincronizar()]
+    [Sincronizar]
     public void SairDoPortal(){
         if(playersNoPortal.Count == 1){
             gameObject.Sincronizar();
@@ -73,7 +74,8 @@ public class Portal : IResetavel, SincronizaMetodo {
 
             Debug.Log("<color=red>Saiu do portal.");
 
-            player.inputActionMap["Cancelar"].performed -= SairDoPortal;
+            if (player.playerInput != null)
+                player.playerInput.currentActionMap["Cancelar"].performed -= SairDoPortal;
         }
     }
 

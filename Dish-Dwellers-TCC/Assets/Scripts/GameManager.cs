@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Users;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using System.Collections;
@@ -14,6 +15,7 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager instance;
     public Actions input;
+    public PlayerInputManager playerInputManager; // Gerencia os inputs dos jogadores locais
 
 
     public LeitorDeControle controle;
@@ -42,6 +44,8 @@ public class GameManager : MonoBehaviour {
     public string menuPrincipalSceneName = "MainMenu"; // Cena do menu do jogo
     bool voltandoParaMenu = false; // Evitar fadiga
 
+    
+
 
     [Header("Opção Offline")]
     public GameObject offlineAnglerPrefab;
@@ -55,7 +59,7 @@ public class GameManager : MonoBehaviour {
             Destroy(gameObject);
             return;
         }
-        
+
         DontDestroyOnLoad(gameObject);
 
         // Lê o modo de jogo escolhido pelo jogador (é definido na escolha do menu)
@@ -70,9 +74,8 @@ public class GameManager : MonoBehaviour {
 
         input.UI.Pause.started += ctx => Pause();
         input.Geral.TrocarPersonagens.performed += ctx => TrocarControleSingleplayer();
-        
-        SetarInputs();
 
+        ConfigurarInputs();
 
         // Referencia interna
         controle = GetComponent<LeitorDeControle>();
@@ -96,93 +99,144 @@ public class GameManager : MonoBehaviour {
             Time.timeScale = 1;
         }
     }
-    
 
     #region Input
 
-    Actions input2_singleplayer;
-    public QualPlayer playerAtual {get; private set;} = QualPlayer.Player1;
+    public PlayerInput player1Input, player2Input;
+    public InputDevice player1Device, player2Device;
 
-    public InputActionMap GetPlayerInput(QualPlayer player = QualPlayer.Player1){
-        switch(modoDeJogo){
-            case ModoDeJogo.SINGLEPLAYER:
-                return player == QualPlayer.Player1 ? input.Player.Get() : input2_singleplayer.Player.Get();
-            case ModoDeJogo.MULTIPLAYER_LOCAL:
-                return player == QualPlayer.Player1 ? input.Player.Get() : input.Player2.Get();
-            case ModoDeJogo.MULTIPLAYER_ONLINE:
-                return input.Player.Get();
-            default:
-                return null;
+    public QualPlayer playerAtual { get; private set; } = QualPlayer.Player1;
+    public Action<InputAction.CallbackContext, QualPlayer> OnInputTriggered;
+
+    protected void ConfigurarInputs() {
+        player1Input.gameObject.SetActive(true);
+        player1Input.onActionTriggered += ctx => HandleOnInputTriggered(ctx, QualPlayer.Player1);
+
+        if (modoDeJogo == ModoDeJogo.MULTIPLAYER_LOCAL) {
+            player2Input.gameObject.SetActive(true);
+            player2Input.onActionTriggered += ctx => HandleOnInputTriggered(ctx, QualPlayer.Player2);
+
+            CadastrarDevices();
+        } else {
+            Destroy(player2Input.gameObject);
+            player2Input = null;
         }
     }
 
-    void SetarInputs() {
-        switch(modoDeJogo){
-            case ModoDeJogo.SINGLEPLAYER:
-                if (input2_singleplayer == null) {
-                    input2_singleplayer = new Actions();
-                    input2_singleplayer.Enable();
-                }
+    protected void HandleOnInputTriggered(InputAction.CallbackContext ctx, QualPlayer qualPlayer) {
+        if (modoDeJogo == ModoDeJogo.SINGLEPLAYER) {
+            qualPlayer = playerAtual;
+        } else if (modoDeJogo == ModoDeJogo.MULTIPLAYER_ONLINE) {
+            qualPlayer = QualPlayer.Player1;
+        }
 
-                input.Player2.Disable();
-                input2_singleplayer.Player2.Disable();
+        if (OnInputTriggered != null) {
+            OnInputTriggered(ctx, qualPlayer);
+        }
+    }
 
-                if (playerAtual == QualPlayer.Player1) {
-                    input.Player.Enable();
-                    input2_singleplayer.Player.Disable();
-                } else {
-                    input.Player.Disable();
-                    input2_singleplayer.Player.Enable();
-                }
+    public PlayerInput GetPlayerInput(Player player) {
+        if (modoDeJogo == ModoDeJogo.MULTIPLAYER_LOCAL) {
+            return (player.qualPlayer == QualPlayer.Player1) ? player1Input : player2Input;
+        } else {
+            return (player.qualPlayer == playerAtual) ? player1Input : null;
+        }
+    }
 
-                break;
-            case ModoDeJogo.MULTIPLAYER_LOCAL:
-                input.Player.Enable();
-                input.Player2.Enable();
-                break;
-            case ModoDeJogo.MULTIPLAYER_ONLINE:
-                input.Player.Enable();
-                input.Player2.Disable();
-                break;
-            default:
+    protected void CadastrarDevices() {
+        if (modoDeJogo != ModoDeJogo.MULTIPLAYER_LOCAL) return;
+
+        player1Device = null;
+        player2Device = null;
+
+        player1Input.user.UnpairDevices();
+        player2Input.user.UnpairDevices();
+
+
+        input.Player.Get().actionTriggered += OuveAcoesParaCadastrarDevices;
+    }
+
+    protected void OuveAcoesParaCadastrarDevices(InputAction.CallbackContext ctx) {
+        InputDevice device = ctx.control.device;
+        if (device == null) return;
+
+        if (player1Device != null && player2Device != null) {
+            input.Player.Get().actionTriggered -= OuveAcoesParaCadastrarDevices;
+            return;
+        }
+
+        if (player1Device == null) {
+            CadastrarDevice(QualPlayer.Player1, device);
+        } else if (player2Device == null && player1Device != device) {
+            CadastrarDevice(QualPlayer.Player2, device);
+        }
+    }
+
+    protected void CadastrarDevice(QualPlayer player, InputDevice device) {
+        if (device == null) return;
+
+        bool isPlayer1 = player == QualPlayer.Player1;
+
+        if (isPlayer1) {
+            if (player2Device != null && player2Device == device) {
+                // Se o dispositivo já estiver registrado para o Player2, não faz nada
                 return;
+            }
+
+            player1Device = device;
+        } else {
+            if (player1Device != null && player1Device == device) {
+                // Se o dispositivo já estiver registrado para o Player1, não faz nada
+                return;
+            }
+
+            player2Device = device;
+        }
+
+        PlayerInput playerInput = isPlayer1 ? player1Input : player2Input;
+        playerInput.user.UnpairDevices();
+        InputUser.PerformPairingWithDevice(device, playerInput.user);
+
+        // O Input System não reconhece automaticamente o esquema de controle, então é necessário definir manualmente... (??????)
+        string controlScheme = GetControlSchemeName(device);
+        playerInput.SwitchCurrentControlScheme(controlScheme, device);
+
+        Debug.Log($"Dispositivo {device.displayName} cadastrado para o {player}. Device: {device}. Control Scheme: {controlScheme}");
+    }
+
+    string GetControlSchemeName(InputDevice device) {
+        switch (device) {
+            case Gamepad:
+                return "Gamepad";
+            case Keyboard:
+                return "Keyboard&Mouse";
+            case Touchscreen:
+                return "Touch";
+            case Joystick:
+                return "Joystick";
+            default:
+                return "Unknown";
         }
     }
 
     public void AtualizarControleSingleplayer() {
+        if (player1Input == null || player2Input == null) return;
         TrocarControleSingleplayer(playerAtual);
     }
 
     public void TrocarControleSingleplayer() {
         if (modoDeJogo != ModoDeJogo.SINGLEPLAYER) return;
 
-        if (playerAtual == QualPlayer.Player1) {
-            playerAtual = QualPlayer.Player2;
-            input.Player.Disable();
-            input2_singleplayer.Player.Enable();
-        } else {
-            playerAtual = QualPlayer.Player1;
-            input2_singleplayer.Player.Disable();
-            input.Player.Enable();
-        }
+        this.playerAtual = (this.playerAtual == QualPlayer.Player1) ? QualPlayer.Player2 : QualPlayer.Player1;
 
-        OnTrocarControle?.Invoke(playerAtual);
+        OnTrocarControle?.Invoke(this.playerAtual);
     }
 
     public void TrocarControleSingleplayer(QualPlayer player){
         if (modoDeJogo != ModoDeJogo.SINGLEPLAYER) return;
+        if (this.playerAtual == player) return;
 
-        if (player == QualPlayer.Player2) {
-            playerAtual = QualPlayer.Player2;
-            input.Player.Disable();
-            input2_singleplayer.Player.Enable();
-        } else {
-            playerAtual = QualPlayer.Player1;
-            input2_singleplayer.Player.Disable();
-            input.Player.Enable();
-        }
-
-        OnTrocarControle?.Invoke(playerAtual);
+        TrocarControleSingleplayer();
     }
 
     #endregion
@@ -417,7 +471,6 @@ public class GameManager : MonoBehaviour {
         voltandoParaMenu = false;
 
         input.Disable();
-        if (input2_singleplayer != null) input2_singleplayer.Disable();
 
         instance = null;
         Destroy(gameObject);

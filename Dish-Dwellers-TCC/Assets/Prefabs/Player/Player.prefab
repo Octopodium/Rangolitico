@@ -112,6 +112,7 @@ MonoBehaviour:
   syncInterval: 0
   personagem: 0
   qualPlayer: 0
+  playerInput: {fileID: 0}
   velocidade: 12
   velocidadeRB: 6.5
   layerChao:
@@ -131,8 +132,12 @@ MonoBehaviour:
   visualizarDirecao: {fileID: 5890127384661449939}
   escudo: 0
   velocidadeComEscudoMult: 0.45
+  velocidadeGanchadoMult: 0.75
   estaMirando: 0
   deadzoneMira: 0.1
+  forcaKnockback: 5
+  duracaoKnockback: 0.3
+  componenteVerticalKnockback: 0.2
   carregador: {fileID: 0}
   estaNoChao: 1
   conectado: 0
@@ -332,7 +337,6 @@ MonoBehaviour:
   debugLogMetodosCadastrados: 0
   id: 
   cadastrarNoInicio: 1
-  exclusivoDaSala: 0
   autoIDSeVazio: 1
 --- !u!1 &3965158462078731169
 GameObject:

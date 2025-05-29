@@ -12,7 +12,7 @@ public enum QualPersonagem { Heater, Angler }
 public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     public QualPersonagem personagem = QualPersonagem.Heater;
     public QualPlayer qualPlayer = QualPlayer.Player1;
-    public InputActionMap inputActionMap {get; protected set;}
+    [HideInInspector] public PlayerInput playerInput => GameManager.instance.GetPlayerInput(this);
 
 
 
@@ -118,15 +118,15 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         foreach (var col in colliders) {
             collidersIgnoraveis.Add(col);
         }
-        
 
         // Se está carregando algo, ignora a interação com esta coisa
         carregador.OnCarregar += (carregavel) => { if (carregavel != null) collidersIgnoraveis.Add(carregavel.GetComponent<Collider>()); ResetarFerramenta(); };
-        carregador.OnSoltar += (carregavel) => { if (carregavel != null)  collidersIgnoraveis.Remove(carregavel.GetComponent<Collider>()); };
+        carregador.OnSoltar += (carregavel) => { if (carregavel != null) collidersIgnoraveis.Remove(carregavel.GetComponent<Collider>()); };
 
         // Se o jogador está sendo carregado, ignora a interação com o carregador
-        carregavel.OnCarregado += (carregador) => { if (carregador != null)  collidersIgnoraveis.Add(carregador.GetComponent<Collider>()); };
-        carregavel.OnSolto += (carregador) => {  if (carregador != null)  collidersIgnoraveis.Remove(carregador.GetComponent<Collider>()); };
+        carregavel.OnCarregado += (carregador) => { if (carregador != null) collidersIgnoraveis.Add(carregador.GetComponent<Collider>()); };
+        carregavel.OnSolto += (carregador) => { if (carregador != null) collidersIgnoraveis.Remove(carregador.GetComponent<Collider>()); };
+        
     }
 
     // Start: trata de referências/configurações externas
@@ -138,16 +138,8 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
             qualPlayer = isLocalPlayer ? QualPlayer.Player1 : QualPlayer.Desativado;
         }
-        
-        inputActionMap = GameManager.instance.GetPlayerInput(qualPlayer);
 
-        if (!GameManager.instance.isOnline || isLocalPlayer) {
-            inputActionMap["Interact"].performed += Interagir;
-            inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
-            inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
-            inputActionMap["Aim"].performed += cnt => Mira();
-            inputActionMap["Aim"].canceled += cnt => Mira();
-        }
+        GameManager.instance.OnInputTriggered += OnInputTriggered; // Registra o evento de input do GameManager
 
         estaNoChao = CheckEstaNoChao(); // Verifica se o jogador está no chão
         if (estaNoChao){ 
@@ -157,6 +149,24 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         else{
             UsarRB(true); // Se o jogador não está no chão, desabilita o CharacterController (habilita o Rigidbody)
             UsarAtrito(false);
+        }
+    }
+
+    public void OnInputTriggered(InputAction.CallbackContext ctx, QualPlayer qualPlayer) {
+        if (qualPlayer != this.qualPlayer) return;
+        if (!ehJogadorAtual) return; // Se não é o jogador atual, não faz nada
+
+        switch (ctx.action.name) {
+            case "Interact":
+                if (ctx.performed) Interagir(ctx);
+                break;
+            case "Attack":
+                if (ctx.performed) AcionarFerramenta(ctx);
+                else SoltarFerramenta(ctx);
+                break;
+            case "Aim":
+                Mira();
+                break;
         }
     }
 
@@ -172,7 +182,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
             ultimoInteragivel = null;
         }
 
-        if (GameManager.instance != null && GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap.enabled) {
+        if (GameManager.instance != null && GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && playerInput != null && playerInput.enabled) {
             GameManager.instance.TrocarControleSingleplayer();
         }
     }
@@ -180,7 +190,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     public bool ehJogadorAtual { get { 
             switch (GameManager.instance.modoDeJogo) {
                 case ModoDeJogo.SINGLEPLAYER:
-                    return inputActionMap.enabled;
+                    return playerInput != null && playerInput.enabled;
                 case ModoDeJogo.MULTIPLAYER_ONLINE:
                     return isLocalPlayer;
                 default:
@@ -191,7 +201,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
     void FixedUpdate() {
         // No modo singleplayer, caso este jogador não seja o atual, não faz nada
-        if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && !inputActionMap.enabled) {
+        if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && (playerInput == null || !playerInput.enabled)) {
             if (ultimoInteragivel != null) {
                 ultimoInteragivel.MostarIndicador(false);
                 ultimoInteragivel = null;
@@ -386,7 +396,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     }
 
     void CalcularDirecao() {
-        Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
+        if (playerInput == null || !playerInput.enabled) return;
+
+        Vector2 input = playerInput.currentActionMap["Move"].ReadValue<Vector2>();
         float x = input.x;
         float z = input.y;
 
@@ -447,9 +459,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     /// </summary>
     void Mira()
     {
-        if (GameManager.instance.modoDeJogo == ModoDeJogo.MULTIPLAYER_LOCAL) return; // No multiplayer local, as setinhas são utilizadas como controle do segundo jogador
+        if (playerInput == null || !playerInput.enabled) return;
 
-        inputMira = inputActionMap["Aim"].ReadValue<Vector2>();
+        inputMira = playerInput.currentActionMap["Aim"].ReadValue<Vector2>();
         
         bool estavaMirando = estaMirando;
         estaMirando = inputMira.magnitude > deadzoneMira;

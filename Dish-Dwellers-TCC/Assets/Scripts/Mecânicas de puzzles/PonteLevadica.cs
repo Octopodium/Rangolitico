@@ -7,9 +7,13 @@ public class PonteLevadica : IResetavel
     private Quaternion rotInicial;
     [SerializeField] private float duracao;
     private Coroutine rotinaAnterior;
+    private float progresso = 0.0f;
+    private int ativacoes = 0;
+    
+    Quaternion step = Quaternion.Euler(new Vector3(0, 0, 18.0f));
 
 
-    private void Awake(){
+    private void Awake() {
         rotInicial = transform.rotation;
     }
 
@@ -19,36 +23,46 @@ public class PonteLevadica : IResetavel
     }
 
     public void AbaixarPonte(){
-        if(rotinaAnterior != null){
+        ativacoes++;
+        if (rotinaAnterior != null) {
             StopCoroutine(rotinaAnterior);
         }
 
-        rotinaAnterior = StartCoroutine(InterpolarRotação(rotDesejada));
+        rotinaAnterior = StartCoroutine(InterpolarRotação(true));
     }
 
     public void LevantarPonte(){
-        if(rotinaAnterior != null){
+        --ativacoes;
+        if (ativacoes > 0) {
+            return;    
+        }
+
+        if (rotinaAnterior != null) {
             StopCoroutine(rotinaAnterior);
         }
 
-        rotinaAnterior = StartCoroutine(InterpolarRotação(rotInicial));
+        rotinaAnterior = StartCoroutine(InterpolarRotação(false));
     }
 
-    IEnumerator InterpolarRotação( Quaternion fRot){
+    IEnumerator InterpolarRotação(bool desce) {
+        //Quaternion rotInicial = transform.rotation;
+        float multiplicador = desce ? 1 : -1;
 
-        float duracao = this.duracao;
-        float tempo = 0f;
-        Quaternion rotInicial = transform.rotation;
+        while (progresso >= 0.0f && progresso <= duracao) {
 
-        while (tempo < duracao)
-        {
-            tempo += Time.deltaTime;
-            float t = tempo / duracao;
+            progresso += Time.fixedDeltaTime * multiplicador;
+            float t = progresso / duracao;
 
-            transform.rotation = Quaternion.Lerp(rotInicial, fRot, t);
+            transform.rotation = Quaternion.Lerp(rotInicial, rotDesejada, t);
             yield return new WaitForFixedUpdate();
         }
 
-        transform.rotation = fRot;
+        if (desce) {
+            transform.rotation = rotDesejada;
+            progresso = duracao;
+        } else {
+            transform.rotation = rotInicial;
+            progresso = 0.0f;
+        }
     }
 }

@@ -39,7 +39,11 @@ public class PressurePlate : IResetavel, SincronizaMetodo
         ChecarAtivacao();
     }
 
-    private void OnTriggerExit(Collider other){
+    private void OnTriggerStay(Collider other) {
+        ChecarAtivacao();
+    }
+
+    private void OnTriggerExit(Collider other) {
         ChecarAtivacao();
     }
 

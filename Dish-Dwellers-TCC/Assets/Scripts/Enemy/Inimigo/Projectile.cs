@@ -80,10 +80,13 @@ public class Projectile : MonoBehaviour
             }
             Destroy(gameObject);
         }
+        
+        else if(other.CompareTag("Chao") || other.CompareTag("Parede")){
+            Destroy(gameObject);
+        }
 
         //previsão pra caso houver colisão com outros obstáculos
-        else
-        {
+        else {
             Destroy(gameObject);
         }
     }

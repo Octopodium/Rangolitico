@@ -49,7 +49,7 @@ public class CameraController : MonoBehaviour{
             case ModoDeJogo.MULTIPLAYER_LOCAL:
                 UsarSegundaCam();
                 if (!introCamera)
-                    cameras[0].rect = new Rect(0.5f, 0.0f, 1, 1);
+                    cameras[0].rect = new Rect(-0.5f, 0.0f, 1, 1);
                 break;
 
             case ModoDeJogo.MULTIPLAYER_ONLINE:
@@ -109,15 +109,15 @@ public class CameraController : MonoBehaviour{
             while(timer > 0){
                 timer -= Time.deltaTime;
                 interpolador = timer / 2;
-                y = Mathf.Lerp(0.5f, 0.05f, interpolador);
+                y = Mathf.Lerp(-0.5f, 0.05f, interpolador);
 
                 cameras[0].rect = new Rect(y, 0, 1, 1);
                 cameras[1].rect = new Rect( -1.0f + y, 0, 1, 1);
 
                 yield return new WaitForFixedUpdate();
             }
-            cameras[0].rect = new Rect( 0.5f, 0, 1, 1);
-            cameras[1].rect = new Rect( -0.5f, 0, 1, 1);
+            cameras[0].rect = new Rect( -0.5f, 0, 1, 1);
+            cameras[1].rect = new Rect( 0.5f, 0, 1, 1);
         }
 
         else{

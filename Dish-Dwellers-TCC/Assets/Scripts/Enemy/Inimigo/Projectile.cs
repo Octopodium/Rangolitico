@@ -28,7 +28,7 @@ public class Projectile : MonoBehaviour
         transform.Translate(direction * projectileSpeed * Time.deltaTime, Space.World);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("Escudo") && !isReflected)
         {
@@ -64,15 +64,15 @@ public class Projectile : MonoBehaviour
             return;
         }
 
-        else if(other.CompareTag("Queimavel"))
+        else if(other.transform.CompareTag("Queimavel"))
         {
-            other.GetComponent<ParedeDeVinhas>().ReduzirIntegridade();
+            other.transform.GetComponent<ParedeDeVinhas>().ReduzirIntegridade();
             Destroy(gameObject);
         }
 
         else if (other.gameObject.CompareTag("Player") && !isReflected)
         {
-           Player player = other.GetComponent<Player>();
+           Player player = other.transform.GetComponent<Player>();
             if (player != null)
             {
                 player.MudarVida(-1);
@@ -81,7 +81,7 @@ public class Projectile : MonoBehaviour
             Destroy(gameObject);
         }
         
-        else if(other.CompareTag("Chao") || other.CompareTag("Parede")){
+        else if(other.transform.CompareTag("Chao") || other.transform.CompareTag("Parede")){
             Destroy(gameObject);
         }
 

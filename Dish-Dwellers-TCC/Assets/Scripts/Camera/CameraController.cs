@@ -33,6 +33,7 @@ public class CameraController : MonoBehaviour{
         if (!ativo) return;
 
         modoDeJogoConfigurado = GameManager.instance.modoDeJogo;
+        modoDeJogoConfigurado = ModoDeJogo.MULTIPLAYER_LOCAL;
 
         switch (modoDeJogoConfigurado) {
             case ModoDeJogo.SINGLEPLAYER:
@@ -109,13 +110,16 @@ public class CameraController : MonoBehaviour{
             while(timer > 0){
                 timer -= Time.deltaTime;
                 interpolador = timer / 2;
-                y = Mathf.Lerp(-0.5f, 0.05f, interpolador);
+                y = Mathf.Lerp(-0.5f, 0.0f, interpolador);
+
+                Debug.Log(y);
 
                 cameras[0].rect = new Rect(y, 0, 1, 1);
-                cameras[1].rect = new Rect( -1.0f + y, 0, 1, 1);
+                cameras[1].rect = new Rect(1 + y, 0, 1, 1);
 
                 yield return new WaitForFixedUpdate();
             }
+            Debug.Log("Terminou");
             cameras[0].rect = new Rect( -0.5f, 0, 1, 1);
             cameras[1].rect = new Rect( 0.5f, 0, 1, 1);
         }

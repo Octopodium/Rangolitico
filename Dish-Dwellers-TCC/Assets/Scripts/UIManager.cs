@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject[] coracoesEsquerda;
     [SerializeField] GameObject[] coracoesDireita;
     public GameObject telaPause;
+    private Image img;
 
     void Awake(){
         Player.OnVidaMudada += HandleDisplayVida;
@@ -31,9 +32,12 @@ public class UIManager : MonoBehaviour
         GameObject[] coracoes = player.qualPlayer == QualPlayer.Player1 ? coracoesEsquerda : coracoesDireita;
 
         for (int i = 0; i < coracoes.Length; i++){ 
-            //percorre pela array de coracoes e ativa caso ele for menor que as vidas, ele ativa
+            //percorre pela array de coracoes e ativa caso ele for menor que as vidas
             //como temos 3 de vida e a array tem 0,1,2 ele trata por i e nao pelo numero de vida
-            coracoes[i].SetActive(i < player.playerVidas);
+            img = coracoes[i].GetComponent<Image>();
+            
+            img.color = i < player.playerVidas ? Color.red : Color.white;
+            //coracoes[i].SetActive(i < player.playerVidas);
         }
     }
 

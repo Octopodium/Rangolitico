@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac7bb264a1437ea41b5a7da14ca04c2d, type: 3}
+  m_Name: TesteTexto
+  m_EditorClassIdentifier: 
+  NodeLinks:
+  - baseNodeGuid: da5a4d81-7ccf-4c52-bff6-bc1bbb2ba9e3
+    portName: Next
+    targetNodeGuid: 0bf8d8f3-28b2-4daf-abea-e9ca5dec3f10
+  - baseNodeGuid: 0bf8d8f3-28b2-4daf-abea-e9ca5dec3f10
+    portName: output
+    targetNodeGuid: 0d85fb11-edd4-4b9c-bdd5-dd0d20e2bcb6
+  DialogueNodeData:
+  - Guid: 0bf8d8f3-28b2-4daf-abea-e9ca5dec3f10
+    nodeName: Text Node
+    dialogueText: Texto
+    position: {x: 168, y: 100}
+  - Guid: 0d85fb11-edd4-4b9c-bdd5-dd0d20e2bcb6
+    nodeName: Text Node
+    dialogueText: Texto 2
+    position: {x: 456, y: 100}

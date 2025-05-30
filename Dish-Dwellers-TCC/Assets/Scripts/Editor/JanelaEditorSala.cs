@@ -109,6 +109,15 @@ public class JanelaEditorSala : EditorWindow
         waterTag = EditorPrefs.GetString("WaterTag");
     }
 
+    private void TurnAllProbe() {
+        Renderer[] renders = GameObject.FindObjectsByType<Renderer>(FindObjectsSortMode.None);
+        foreach (Renderer render in renders) {
+            if (render.gameObject.isStatic) {
+                render.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.BlendProbes;
+            }
+        }
+    }
+
     public void OnGUI() {
         EditorGUILayout.LabelField("Evironment Asset");
 
@@ -136,6 +145,10 @@ public class JanelaEditorSala : EditorWindow
 
         if (GUILayout.Button("Generate Evironment Settings Asset")) {
             CreateEnvironmentAsset();
+        }
+
+        if (GUILayout.Button("Change to Probe Volume")) {
+            TurnAllProbe();
         }
 
         SaveChanges();

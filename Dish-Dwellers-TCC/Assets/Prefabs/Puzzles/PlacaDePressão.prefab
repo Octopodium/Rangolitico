@@ -145,9 +145,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugLogMetodosCadastrados: 0
   id: P
   cadastrarNoInicio: 1
-  exclusivoDaSala: 1
+  autoIDSeVazio: 1
 --- !u!1001 &3104843997873636961
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -163,6 +164,10 @@ PrefabInstance:
     - target: {fileID: 649958663238660825, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 649958663238660825, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1500079848897797196, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
       propertyPath: m_LocalPosition.x
@@ -203,6 +208,10 @@ PrefabInstance:
     - target: {fileID: 1500079848897797196, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655040583333579307, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
+      propertyPath: m_ReceiveGI
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2277284295719913206, guid: d1f19b9586ab92d42b3d0eb838b720ad, type: 3}
       propertyPath: m_Name

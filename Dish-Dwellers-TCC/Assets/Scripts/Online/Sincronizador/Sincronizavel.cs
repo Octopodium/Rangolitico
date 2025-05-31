@@ -87,6 +87,7 @@ public static class SincronizavelExtensions {
 
     public static bool Sincronizar(this GameObject obj, object[] parametros, [CallerMemberName] string triggerName = "") {
         if (obj == null) return false;
+        if (!GameManager.instance.isOnline) return true;
 
         string id = "";
         InformacoesMetodo infos = GetMetodo(obj, triggerName, out id);
@@ -99,6 +100,8 @@ public static class SincronizavelExtensions {
 
     // Lista de métodos de sincronização com 1 a 5 parâmetros. (não é possível utilizar "params object[]" por causa do [CallerMemberName])
     public static bool Sincronizar(this GameObject obj, object arg1 = null, object arg2 = null, object arg3 = null, object arg4 = null, object arg5 = null, [CallerMemberName] string triggerName = "") {
+        if (!GameManager.instance.isOnline) return true;
+
         object[] args = new object[] { arg1, arg2, arg3, arg4, arg5 };
         List<object> argsList = new List<object>(args);
 
@@ -219,6 +222,7 @@ public class Sincronizavel : MonoBehaviour {
     }
 
     void DescadastrarSincronizavel() {
+        if (Sincronizador.instance == null) return;
         Sincronizador.instance.DescadastrarSincronizavel(this);
     }
 

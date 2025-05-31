@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -90,5 +91,6 @@ public class DialogueSystem : MonoBehaviour
     private void EndDialogue(){
         //dialoguePanel.SetActive(false);
         //proxima cena temporario para build3 e museu
+        SceneManager.LoadScene("1-1");
     }
 }

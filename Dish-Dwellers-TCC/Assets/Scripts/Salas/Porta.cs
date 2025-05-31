@@ -33,7 +33,12 @@ public class Porta : IResetavel, Interacao{
         }
     }
 
+    private void AbrePorta() {
+        animator.SetTrigger("AbrePorta");
+    }
+
     public void Destrancar() {
+        AbrePorta();
         portal.SetActive(true);
 
         OnDestrancaPorta?.Invoke();

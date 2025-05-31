@@ -147,6 +147,7 @@ Transform:
   - {fileID: 4514750920608723790}
   - {fileID: 6653772514078857803}
   - {fileID: 4804350359267847894}
+  - {fileID: 7726063650291813255}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5495382886329868030
@@ -223,6 +224,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.589773, y: 3.9454842, z: 0.6859941}
   m_Center: {x: 0.00000009498743, y: 1.97122, z: 0.10159388}
+--- !u!1 &6467234283098901176
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7726063650291813255}
+  m_Layer: 7
+  m_Name: SpawnDeSaida
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7726063650291813255
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6467234283098901176}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 3.11}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5738875683432274772}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7294154053241251536
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,8 +308,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.18, y: 3.1772394, z: 0.88538885}
-  m_Center: {x: -7.381723e-17, y: -0.6613803, z: 0.05730556}
+  m_Size: {x: 3.18, y: 3.1772394, z: 1.2817191}
+  m_Center: {x: -2.2537853e-16, y: -0.6613803, z: -0.14085957}
 --- !u!114 &3471890769104003802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,7 +324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   finalDaDemo: 0
   canvasFinalDaDemo: {fileID: 0}
-  spawnDeSaida: {fileID: 0}
+  spawnDeSaida: {fileID: 7726063650291813255}
 --- !u!114 &7176484666348276313
 MonoBehaviour:
   m_ObjectHideFlags: 0

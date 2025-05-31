@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 64924233ff4b661448645e3841513e2c, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: fce47d0c27bebbe43b8a80261f2b91ff, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: f943f4f9b4b3f9041b5ab1b714abd724, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -5841,25 +5841,25 @@ MonoBehaviour:
   lowestSubdivLevelOverride: 0
   highestSubdivLevelOverride: 7
   overridesSubdivLevels: 0
-  mightNeedRebaking: 1
+  mightNeedRebaking: 0
   cachedTransform:
-    e00: 1
+    e00: 1.0000002
     e01: 0
     e02: 0
-    e03: 4.8274536
+    e03: 4.8274546
     e10: 0
     e11: 1
     e12: 0
     e13: -8.382191
     e20: 0
     e21: 0
-    e22: 1
-    e23: 22.560127
+    e22: 1.0000002
+    e23: 22.560133
     e30: 0
     e31: 0
     e32: 0
     e33: 1
-  cachedHashCode: 1136947952
+  cachedHashCode: 1156256981
   fillEmptySpaces: 0
   version: 2
   globalVolume: 0
@@ -9752,6 +9752,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1489110783}
     m_Modifications:
+    - target: {fileID: 3471890769104003802, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: finalDaDemo
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5266469779556692219, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
       propertyPath: m_Name
       value: DoubleDoor
@@ -9806,6 +9810,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5738875683432274772, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
   m_PrefabInstance: {fileID: 1630823497}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1630823499 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5495382886329868030, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+  m_PrefabInstance: {fileID: 1630823497}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22f72cf4349dc0446a7d6d4e79ac085f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1639500349 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5927340053707188262, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
@@ -11571,14 +11586,15 @@ MonoBehaviour:
   - {fileID: 834468378}
   triggers: []
   resetaveis:
-  - {fileID: 1639500349}
-  - {fileID: 1424035636}
-  - {fileID: 1214237382}
-  - {fileID: 170194216}
-  - {fileID: 159653523}
-  - {fileID: 159653524}
   - {fileID: 563923840}
+  - {fileID: 1639500349}
+  - {fileID: 1630823499}
+  - {fileID: 1214237382}
   - {fileID: 623483288}
+  - {fileID: 170194216}
+  - {fileID: 1424035636}
+  - {fileID: 159653524}
+  - {fileID: 159653523}
   onResetSala:
     m_PersistentCalls:
       m_Calls: []
@@ -12032,7 +12048,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!23 &4733207046224713629
 MeshRenderer:
@@ -12236,7 +12252,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!1001 &6537732546770195761
 PrefabInstance:

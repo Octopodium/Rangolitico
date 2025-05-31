@@ -27,7 +27,7 @@ public class Portal : IResetavel, SincronizaMetodo {
         }
     }
 
-    [Sincronizar(debugLog=true, repeteParametro=false)]
+    [Sincronizar(debugLog=true)]
     public void PlayerEntra(GameObject playerObj) {
         Player player = playerObj.GetComponent<Player>();
         if(player == null) return; // Se não for um player, não faz nada.

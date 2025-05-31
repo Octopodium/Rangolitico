@@ -15,12 +15,13 @@ public class sala : MonoBehaviour{
 
     [HideInInspector]public int nSala, nFase;
 
-    private void Start(){
+    private void Start() {
 
         GetNomeDaSala();
         PosicionarJogador();
         GameManager.instance.SetSala(this);
         Debug.Log("Lista formada");
+        ResetSala();
     }
 
     /// <summary>

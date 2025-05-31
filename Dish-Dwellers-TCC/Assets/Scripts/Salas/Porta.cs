@@ -5,6 +5,7 @@ public class Porta : IResetavel, Interacao{
     [Tooltip ("Colisor que transporta o jogador quando destrancada")]
     [SerializeField]private GameObject portal;
     private bool destrancada;
+    public bool trancada => !destrancada;
     public UnityEvent OnDestrancaPorta;
 
 
@@ -30,7 +31,7 @@ public class Porta : IResetavel, Interacao{
         }
     }
 
-    private void Destrancar(){
+    public void Destrancar() {
         portal.SetActive(true);
 
         OnDestrancaPorta?.Invoke();
@@ -38,7 +39,7 @@ public class Porta : IResetavel, Interacao{
         // Previne que o jogador possa destrancar a porta duas vezes.
     }
 
-    private void Trancar(){
+    public void Trancar() {
         portal.SetActive(false);
     }
 }

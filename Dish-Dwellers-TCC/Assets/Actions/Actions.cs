@@ -1129,6 +1129,69 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pre-DevTools"",
+                    ""type"": ""Button"",
+                    ""id"": ""83d12513-dd2c-4b85-a133-e50f6ad101a1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DevTools1"",
+                    ""type"": ""Button"",
+                    ""id"": ""f1d2c11f-5d9d-4d95-8e7a-8415919cda03"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DevTools2"",
+                    ""type"": ""Button"",
+                    ""id"": ""ae03fd20-c070-438a-8543-70c29da07283"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DevTools3"",
+                    ""type"": ""Button"",
+                    ""id"": ""95dda43b-1d0e-455f-82a1-6d19f1eca575"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DevTools4"",
+                    ""type"": ""Button"",
+                    ""id"": ""ffa9369c-cea5-4597-860c-c1d163a9519b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DevTools5"",
+                    ""type"": ""Button"",
+                    ""id"": ""f482be36-5783-46cd-aae6-827aa00aa959"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DevTools6"",
+                    ""type"": ""Button"",
+                    ""id"": ""07d7b546-c8a5-4857-b801-3fbbb2f8f8ad"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1151,6 +1214,83 @@ public partial class @Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""TrocarPersonagens"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""68f4132e-da0e-4d3a-a2e5-0293070eafa3"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pre-DevTools"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""13fbe654-9011-4e97-9334-581ffb3146a0"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DevTools1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""37a610b5-3ae4-44c3-aac0-0a4ee07a6176"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DevTools2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c534e306-d4f4-49ed-8d53-0ae118e8684c"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DevTools3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""96a4fe0d-6f3f-4799-9a03-64b672e051d6"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DevTools4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f1bcaaf4-b1a6-480b-92f3-bbe155210285"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DevTools5"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e8af3273-3e86-49c1-9b6e-9b44be8cc353"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""DevTools6"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1248,6 +1388,13 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         // Geral
         m_Geral = asset.FindActionMap("Geral", throwIfNotFound: true);
         m_Geral_TrocarPersonagens = m_Geral.FindAction("TrocarPersonagens", throwIfNotFound: true);
+        m_Geral_PreDevTools = m_Geral.FindAction("Pre-DevTools", throwIfNotFound: true);
+        m_Geral_DevTools1 = m_Geral.FindAction("DevTools1", throwIfNotFound: true);
+        m_Geral_DevTools2 = m_Geral.FindAction("DevTools2", throwIfNotFound: true);
+        m_Geral_DevTools3 = m_Geral.FindAction("DevTools3", throwIfNotFound: true);
+        m_Geral_DevTools4 = m_Geral.FindAction("DevTools4", throwIfNotFound: true);
+        m_Geral_DevTools5 = m_Geral.FindAction("DevTools5", throwIfNotFound: true);
+        m_Geral_DevTools6 = m_Geral.FindAction("DevTools6", throwIfNotFound: true);
     }
 
     ~@Actions()
@@ -1732,6 +1879,13 @@ public partial class @Actions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Geral;
     private List<IGeralActions> m_GeralActionsCallbackInterfaces = new List<IGeralActions>();
     private readonly InputAction m_Geral_TrocarPersonagens;
+    private readonly InputAction m_Geral_PreDevTools;
+    private readonly InputAction m_Geral_DevTools1;
+    private readonly InputAction m_Geral_DevTools2;
+    private readonly InputAction m_Geral_DevTools3;
+    private readonly InputAction m_Geral_DevTools4;
+    private readonly InputAction m_Geral_DevTools5;
+    private readonly InputAction m_Geral_DevTools6;
     /// <summary>
     /// Provides access to input actions defined in input action map "Geral".
     /// </summary>
@@ -1747,6 +1901,34 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Geral/TrocarPersonagens".
         /// </summary>
         public InputAction @TrocarPersonagens => m_Wrapper.m_Geral_TrocarPersonagens;
+        /// <summary>
+        /// Provides access to the underlying input action "Geral/PreDevTools".
+        /// </summary>
+        public InputAction @PreDevTools => m_Wrapper.m_Geral_PreDevTools;
+        /// <summary>
+        /// Provides access to the underlying input action "Geral/DevTools1".
+        /// </summary>
+        public InputAction @DevTools1 => m_Wrapper.m_Geral_DevTools1;
+        /// <summary>
+        /// Provides access to the underlying input action "Geral/DevTools2".
+        /// </summary>
+        public InputAction @DevTools2 => m_Wrapper.m_Geral_DevTools2;
+        /// <summary>
+        /// Provides access to the underlying input action "Geral/DevTools3".
+        /// </summary>
+        public InputAction @DevTools3 => m_Wrapper.m_Geral_DevTools3;
+        /// <summary>
+        /// Provides access to the underlying input action "Geral/DevTools4".
+        /// </summary>
+        public InputAction @DevTools4 => m_Wrapper.m_Geral_DevTools4;
+        /// <summary>
+        /// Provides access to the underlying input action "Geral/DevTools5".
+        /// </summary>
+        public InputAction @DevTools5 => m_Wrapper.m_Geral_DevTools5;
+        /// <summary>
+        /// Provides access to the underlying input action "Geral/DevTools6".
+        /// </summary>
+        public InputAction @DevTools6 => m_Wrapper.m_Geral_DevTools6;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1776,6 +1958,27 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @TrocarPersonagens.started += instance.OnTrocarPersonagens;
             @TrocarPersonagens.performed += instance.OnTrocarPersonagens;
             @TrocarPersonagens.canceled += instance.OnTrocarPersonagens;
+            @PreDevTools.started += instance.OnPreDevTools;
+            @PreDevTools.performed += instance.OnPreDevTools;
+            @PreDevTools.canceled += instance.OnPreDevTools;
+            @DevTools1.started += instance.OnDevTools1;
+            @DevTools1.performed += instance.OnDevTools1;
+            @DevTools1.canceled += instance.OnDevTools1;
+            @DevTools2.started += instance.OnDevTools2;
+            @DevTools2.performed += instance.OnDevTools2;
+            @DevTools2.canceled += instance.OnDevTools2;
+            @DevTools3.started += instance.OnDevTools3;
+            @DevTools3.performed += instance.OnDevTools3;
+            @DevTools3.canceled += instance.OnDevTools3;
+            @DevTools4.started += instance.OnDevTools4;
+            @DevTools4.performed += instance.OnDevTools4;
+            @DevTools4.canceled += instance.OnDevTools4;
+            @DevTools5.started += instance.OnDevTools5;
+            @DevTools5.performed += instance.OnDevTools5;
+            @DevTools5.canceled += instance.OnDevTools5;
+            @DevTools6.started += instance.OnDevTools6;
+            @DevTools6.performed += instance.OnDevTools6;
+            @DevTools6.canceled += instance.OnDevTools6;
         }
 
         /// <summary>
@@ -1790,6 +1993,27 @@ public partial class @Actions: IInputActionCollection2, IDisposable
             @TrocarPersonagens.started -= instance.OnTrocarPersonagens;
             @TrocarPersonagens.performed -= instance.OnTrocarPersonagens;
             @TrocarPersonagens.canceled -= instance.OnTrocarPersonagens;
+            @PreDevTools.started -= instance.OnPreDevTools;
+            @PreDevTools.performed -= instance.OnPreDevTools;
+            @PreDevTools.canceled -= instance.OnPreDevTools;
+            @DevTools1.started -= instance.OnDevTools1;
+            @DevTools1.performed -= instance.OnDevTools1;
+            @DevTools1.canceled -= instance.OnDevTools1;
+            @DevTools2.started -= instance.OnDevTools2;
+            @DevTools2.performed -= instance.OnDevTools2;
+            @DevTools2.canceled -= instance.OnDevTools2;
+            @DevTools3.started -= instance.OnDevTools3;
+            @DevTools3.performed -= instance.OnDevTools3;
+            @DevTools3.canceled -= instance.OnDevTools3;
+            @DevTools4.started -= instance.OnDevTools4;
+            @DevTools4.performed -= instance.OnDevTools4;
+            @DevTools4.canceled -= instance.OnDevTools4;
+            @DevTools5.started -= instance.OnDevTools5;
+            @DevTools5.performed -= instance.OnDevTools5;
+            @DevTools5.canceled -= instance.OnDevTools5;
+            @DevTools6.started -= instance.OnDevTools6;
+            @DevTools6.performed -= instance.OnDevTools6;
+            @DevTools6.canceled -= instance.OnDevTools6;
         }
 
         /// <summary>
@@ -2065,5 +2289,54 @@ public partial class @Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnTrocarPersonagens(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Pre-DevTools" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPreDevTools(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DevTools1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDevTools1(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DevTools2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDevTools2(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DevTools3" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDevTools3(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DevTools4" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDevTools4(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DevTools5" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDevTools5(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DevTools6" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDevTools6(InputAction.CallbackContext context);
     }
 }

@@ -102,6 +102,16 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public void Pause(bool pausar) {
+        if (pausar) {
+            OnPause?.Invoke(true);
+            Time.timeScale = 0;
+        } else {
+            OnPause?.Invoke(false);
+            Time.timeScale = 1;
+        }
+    }
+
     #region Input
 
     public PlayerInput player1Input, player2Input;
@@ -480,10 +490,7 @@ public class GameManager : MonoBehaviour {
 
         gameObject.SetActive(true);
 
-        if (cenaProx != null) {
-            cenaProx.allowSceneActivation = true;
-            cenaProx = null;
-        }
+        ForcarCenaAguardando();
 
         StartCoroutine(VoltarParaMenuAsync());
     }
@@ -496,13 +503,20 @@ public class GameManager : MonoBehaviour {
             op.allowSceneActivation = true;
             yield return new WaitUntil(() => op.isDone);
         }
-        
+
         voltandoParaMenu = false;
 
         input.Disable();
 
         instance = null;
         Destroy(gameObject);
+    }
+    
+    public void ForcarCenaAguardando() {
+        if (cenaProx != null) {
+            cenaProx.allowSceneActivation = true;
+            cenaProx = null;
+        }
     }
 
 }

@@ -813,10 +813,70 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3763654424041520862, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: Target.TrackingTarget
+      value: 
+      objectReference: {fileID: 999645399}
+    - target: {fileID: 3817333004083067404, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.9499979
+      objectReference: {fileID: 0}
+    - target: {fileID: 3817333004083067404, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.085275
+      objectReference: {fileID: 0}
+    - target: {fileID: 3817333004083067404, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -18.104399
+      objectReference: {fileID: 0}
+    - target: {fileID: 4003411983086384470, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: Target.TrackingTarget
+      value: 
+      objectReference: {fileID: 831223619}
+    - target: {fileID: 4316932076839675648, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.679999
+      objectReference: {fileID: 0}
+    - target: {fileID: 4316932076839675648, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.142642
+      objectReference: {fileID: 0}
+    - target: {fileID: 4316932076839675648, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -18.784399
+      objectReference: {fileID: 0}
     - target: {fileID: 4395727688683058075, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
       propertyPath: m_Name
       value: Cameras
       objectReference: {fileID: 0}
+    - target: {fileID: 4731370129845810038, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 30.857044
+      objectReference: {fileID: 0}
+    - target: {fileID: 4731370129845810038, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.033071
+      objectReference: {fileID: 0}
+    - target: {fileID: 4731370129845810038, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -32.314552
+      objectReference: {fileID: 0}
+    - target: {fileID: 5804118524100179378, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 30.857044
+      objectReference: {fileID: 0}
+    - target: {fileID: 5804118524100179378, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.033071
+      objectReference: {fileID: 0}
+    - target: {fileID: 5804118524100179378, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -32.314552
+      objectReference: {fileID: 0}
+    - target: {fileID: 7021994389819034840, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: Target.TrackingTarget
+      value: 
+      objectReference: {fileID: 1886499699}
     - target: {fileID: 8787564224961088567, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -15344,6 +15404,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f72cf4349dc0446a7d6d4e79ac085f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1886499699 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5738875683432274772, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+  m_PrefabInstance: {fileID: 1886499697}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1907313100
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float projectileSpeed = 7f;
     [SerializeField] private Player player; 
-    [SerializeField] private AnimatorTorreta animator;
+    [SerializeField] private GameObject splashDeFogo; // Particula que é instanciada quando a bola explode.
+    [SerializeField] private GameObject trail;
+    [SerializeField] private VisualEffect trailFx;
     public GameObject owner;
     private Vector3 direction;
     private bool isReflected = false;
@@ -12,10 +15,6 @@ public class Projectile : MonoBehaviour
 
     [Header("<color=green> Lima coisas :")]
     [SerializeField]private bool refletirNormal;
-
-    void Awake() {
-        animator = GetComponentInChildren<AnimatorTorreta>();
-    }
     
     void Start()
     {
@@ -26,6 +25,12 @@ public class Projectile : MonoBehaviour
     void FixedUpdate()
     {
         transform.Translate(direction * projectileSpeed * Time.deltaTime, Space.World);
+    }
+
+    private void OnDestroy() {
+        GameObject splash = Instantiate(splashDeFogo, transform.position, transform.rotation);
+        Destroy(splash, 2.0f);
+
     }
 
     private void OnCollisionEnter(Collision other)
@@ -46,8 +51,8 @@ public class Projectile : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(reflectDirection);
         }
 
-        else if (isReflected && other.gameObject == owner)
-        {
+
+        else if (isReflected && other.gameObject == owner){
             Debug.Log("Colidiu");
             
             //Quando acerta o proprietário do projetil(ou seja, a torreta) coloca o mesmo no estado de stunado
@@ -58,6 +63,7 @@ public class Projectile : MonoBehaviour
             }
             Destroy(gameObject);
         }
+        
 
         else if(other.gameObject.CompareTag("Torreta") && !isReflected)
         {
@@ -69,6 +75,7 @@ public class Projectile : MonoBehaviour
             other.transform.GetComponent<ParedeDeVinhas>().ReduzirIntegridade();
             Destroy(gameObject);
         }
+
 
         else if (other.gameObject.CompareTag("Player") && !isReflected)
         {

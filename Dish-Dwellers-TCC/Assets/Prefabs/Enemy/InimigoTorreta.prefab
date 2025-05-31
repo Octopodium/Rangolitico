@@ -59,12 +59,13 @@ MonoBehaviour:
   projectile: {fileID: 8089034994045674464, guid: e936e0edeb54bfc45a893fcdfed42a5e, type: 3}
   fireAction: {fileID: 8156304672999222061}
   projectileSpeed: 3
-  fireRate: 1
+  fireRate: 2
   nextFire: 0
   direction: {x: 0, y: 0, z: 0}
   tempoDeFoco: 3
-  stunDuration: 3
+  stunDuration: 5
   animator: {fileID: 3265054877791214882}
+  delayDoTiro: 0.825
 --- !u!1 &5390797750090950024
 GameObject:
   m_ObjectHideFlags: 0

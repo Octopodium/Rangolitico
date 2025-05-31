@@ -4,12 +4,14 @@ using UnityEngine.Events;
 public class Porta : IResetavel, Interacao{
     [Tooltip ("Colisor que transporta o jogador quando destrancada")]
     [SerializeField]private GameObject portal;
+    [SerializeField] private Animator animator;
     private bool destrancada;
     public bool trancada => !destrancada;
     public UnityEvent OnDestrancaPorta;
+    
 
 
-    private void Start(){
+    private void Start() {
         portal.SetActive(false);
     }
 

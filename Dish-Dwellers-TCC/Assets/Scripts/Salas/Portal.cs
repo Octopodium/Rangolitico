@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Collider))]
 public class Portal : IResetavel, SincronizaMetodo {
@@ -51,7 +52,7 @@ public class Portal : IResetavel, SincronizaMetodo {
     public void PassarDeSala() {
         if (playersNoPortal.Count < 2) return;
         
-        if (finalDaDemo) canvasFinalDaDemo.SetActive(true);
+        if (finalDaDemo) VaiParaOFim();
         else GameManager.instance.PassaDeSala();
     }
 
@@ -79,4 +80,10 @@ public class Portal : IResetavel, SincronizaMetodo {
         }
     }
 
+    public string cenaDoFim = "Fim";
+
+    public void VaiParaOFim() {
+        GameManager.instance.ForcarCenaAguardando();
+        SceneManager.LoadScene(cenaDoFim, LoadSceneMode.Single);
+    }
 }

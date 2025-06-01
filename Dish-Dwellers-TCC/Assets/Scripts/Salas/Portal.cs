@@ -27,10 +27,11 @@ public class Portal : IResetavel, SincronizaMetodo {
         }
     }
 
-    [Sincronizar(debugLog=true)]
+    [Sincronizar]
     public void PlayerEntra(GameObject playerObj) {
         Player player = playerObj.GetComponent<Player>();
         if(player == null) return; // Se não for um player, não faz nada.
+        if (playersNoPortal.Contains(player)) return; // Evita que o mesmo player entre várias vezes seguidas no mesmo portal.
 
         bool prosseguir = gameObject.Sincronizar(playerObj);
         if (!prosseguir) return;
@@ -39,8 +40,6 @@ public class Portal : IResetavel, SincronizaMetodo {
             player.playerInput.currentActionMap["Cancelar"].performed += SairDoPortal;
         
         playerObj.gameObject.SetActive(false);
-
-        if (playersNoPortal.Contains(player)) return; // Se o player já estiver na lista, não adiciona novamente.
         playersNoPortal.Add(player);
         
         // Caso os dois players tenham entrado na porta, passa de sala.
@@ -69,7 +68,7 @@ public class Portal : IResetavel, SincronizaMetodo {
 
             Player player = playersNoPortal[0];
 
-            player.transform.position = spawnDeSaida.position;
+            player.transform.position = spawnDeSaida.position + Vector3.up * 0.5f;    
             player.gameObject.SetActive(true);
             playersNoPortal.Remove(player);
 

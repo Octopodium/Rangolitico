@@ -2,8 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class DevTools : MonoBehaviour {
+    public EventSystem eventSystem;
+
     [Header("Trocar de cena")]
     public Transform trocarCenaPanel;
     public Dropdown cenasDropdown;
@@ -13,6 +16,9 @@ public class DevTools : MonoBehaviour {
     void Awake() {
         GerarDrowpdownCenas();
 
+        if (eventSystem == null) {
+            eventSystem = FindFirstObjectByType<EventSystem>();
+        }
     }
 
 
@@ -59,6 +65,9 @@ public class DevTools : MonoBehaviour {
 
     public void ToggleTrocarCenaPanel() {
         trocarCenaPanel.gameObject.SetActive(!trocarCenaPanel.gameObject.activeSelf);
+        if (trocarCenaPanel.gameObject.activeSelf) {
+            eventSystem.SetSelectedGameObject(cenasDropdown.gameObject);
+        }
     }
 
     #endregion

@@ -187,7 +187,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         }
     }
 
-    public bool ehJogadorAtual { get { 
+    public bool ehJogadorAtual { get {
+            if (GameManager.instance == null) return true;
+            
             switch (GameManager.instance.modoDeJogo) {
                 case ModoDeJogo.SINGLEPLAYER:
                     return playerInput != null && playerInput.enabled;
@@ -475,7 +477,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
             if (houveMudanca && GameManager.instance.isOnline && isLocalPlayer)
                 AtualizarDirecaoCmd(direcao, true, estaMirando);
-        } else {
+        } else if (GameManager.instance.isOnline && isLocalPlayer) {
             AtualizarDirecaoCmd(direcao, true, estaMirando);
         }
     }

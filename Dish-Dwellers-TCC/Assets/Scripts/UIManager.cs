@@ -1,18 +1,27 @@
 using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
     [SerializeField] GameObject[] coracoesEsquerda;
     [SerializeField] GameObject[] coracoesDireita;
+
     public GameObject telaPause;
     private Image img;
 
-    void Awake(){
+    [Header("Event System")]
+    public EventSystem eventSystem;
+    public GameObject primeiroSelecionadoPause;
+
+    void Awake() {
         Player.OnVidaMudada += HandleDisplayVida;
         GameManager.OnPause += HandlePausa;
+
+        if (eventSystem == null) {
+            eventSystem = FindFirstObjectByType<EventSystem>();
+        }
     }
 
     private void OnDestroy(){
@@ -42,21 +51,17 @@ public class UIManager : MonoBehaviour
     }
 
     public void HandlePausa(bool estado){
+        if (estado) eventSystem.SetSelectedGameObject(primeiroSelecionadoPause);
         AtivarEDesativarObjeto(telaPause);
     }
 
     public void DespauseNoResume(){ 
-    //Juan eu preciso que o botao Resumo funcione de algum jeito
-    //colocando o GM no OnClick ou fazendo uma
-    //funcao, escolhi a funcao pois posso comentar
         if(GameManager.instance != null){
             GameManager.instance.Pause();
         }
     }
 
     public void VoltarParaMenu() {
-        // Eu não devia ter que chamar nessa função,
-        // mas se eu referenciar o GameManager 
         if(GameManager.instance != null){
             GameManager.instance.VoltarParaMenu();
         }

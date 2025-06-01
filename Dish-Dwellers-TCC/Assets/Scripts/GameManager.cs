@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour {
         input = new Actions();
         input.Enable();
 
-        input.UI.Pause.started += ctx => Pause();
+        input.UI.Pause.started += Pause;
         input.Geral.TrocarPersonagens.performed += ctx => TrocarControleSingleplayer();
 
         // Referencia interna
@@ -90,6 +90,18 @@ public class GameManager : MonoBehaviour {
 
     void Start() {
         ConfigurarInputs();
+    }
+
+    void OnDestroy() {
+        if (input != null) {
+            input.Disable();
+            input.UI.Pause.started -= Pause;
+            input.Geral.TrocarPersonagens.performed -= TrocarControleSingleplayer;
+        }
+    }
+
+    public void Pause(InputAction.CallbackContext ctx) {
+        Pause();
     }
 
     public void Pause() {
@@ -261,6 +273,10 @@ public class GameManager : MonoBehaviour {
     public void AtualizarControleSingleplayer() {
         if (player1Input == null || player2Input == null) return;
         TrocarControleSingleplayer(playerAtual);
+    }
+
+    public void TrocarControleSingleplayer(InputAction.CallbackContext ctx) {
+        TrocarControleSingleplayer();
     }
 
     public void TrocarControleSingleplayer() {

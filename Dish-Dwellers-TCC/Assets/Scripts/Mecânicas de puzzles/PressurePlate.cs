@@ -19,6 +19,11 @@ public class PressurePlate : IResetavel, SincronizaMetodo
     [SerializeField] private Vector3 offset;
     public UnityEvent OnAtivado, OnDesativado;
 
+    [Header("Decalque")]
+    [SerializeField] private Renderer decalRender;
+    [SerializeField][ColorUsage(true, true)] private Color corAtivado, corDesativado;
+    private MaterialPropertyBlock decalMPB;
+
     private Coroutine corotinaQuandoAtivo = null;
 
     // Animação:
@@ -26,8 +31,9 @@ public class PressurePlate : IResetavel, SincronizaMetodo
     public static readonly int pressureID = Animator.StringToHash("Pressure");
 
 
-    private void Awake(){
+    private void Awake() {
         animator = GetComponentInChildren<Animator>();
+        decalMPB = new MaterialPropertyBlock();
     }
 
     public override void OnReset(){
@@ -73,6 +79,12 @@ public class PressurePlate : IResetavel, SincronizaMetodo
         OnAtivado?.Invoke();
 
         corotinaQuandoAtivo = StartCoroutine(CheckSeAindaEmCima());
+        TrocarCorDoDecalque(corAtivado);
+    }
+
+    private void TrocarCorDoDecalque(Color col) {
+        decalMPB.SetColor("_EmissionColor", col);
+        decalRender.SetPropertyBlock(decalMPB);
     }
 
     IEnumerator CheckSeAindaEmCima() {
@@ -96,6 +108,8 @@ public class PressurePlate : IResetavel, SincronizaMetodo
         if (corotinaQuandoAtivo != null) {
             StopCoroutine(corotinaQuandoAtivo);
         }
+
+        TrocarCorDoDecalque(corDesativado);
     }
 
     // Para cada objeto com um rigidbody em cima do botão, adiciona o peso dele ao peso total.

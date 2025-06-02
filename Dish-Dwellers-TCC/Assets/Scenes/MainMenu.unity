@@ -5702,6 +5702,8 @@ MonoBehaviour:
   coracoesEsquerda: []
   coracoesDireita: []
   telaPause: {fileID: 0}
+  eventSystem: {fileID: 0}
+  primeiroSelecionadoPause: {fileID: 0}
 --- !u!114 &1445152987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9247,7 +9249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cenaLobby: SelecaoDePersonagem
-  cenaPrimeiraFase: 1-1
+  cenaPrimeiraFase: DialogoInicial
   menuOpcoes: {fileID: 1876869513}
   lobbyOpcoes: {fileID: 3502461574436465625}
 --- !u!114 &2781459278595135475

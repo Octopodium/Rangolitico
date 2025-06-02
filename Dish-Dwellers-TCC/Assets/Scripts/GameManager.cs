@@ -302,17 +302,20 @@ public class GameManager : MonoBehaviour {
     private AsyncOperation cenaProx;
     private sala sala = null;
     public sala salaAtual{ get{return sala;} }
+    public TransicaoDeTela telaDeLoading;
 
     
     /// <summary>
     /// Descarrega a sala atual, finaliza o carregamento da proxima e posiciona o jogador no porximo ponto de spawn.
     /// </summary>
-    public void PassaDeSala(){
+    public void PassaDeSala() {
         if (isOnline) RequestPassaDeSalaOnline();
         else PassaDeSalaOffline();
     }
 
     private void PassaDeSalaOffline() {
+        // Inicio da transição
+
         sala.enabled = false;
         cenaProx.allowSceneActivation = true;
 
@@ -377,9 +380,11 @@ public class GameManager : MonoBehaviour {
         // Evita de tentar carregar uma sala quando está voltando para o menu principal:
         if (voltandoParaMenu) return;
 
+        // Carrega informação para lightProbes:
+
         // Inicia o precarregamento da próxima sala :
         string proximaSala = sala.NomeProximaSala();
-        if(proximaSala == string.Empty){
+        if (proximaSala == string.Empty) {
             return;
         }
         StartCoroutine(PreloadProximaSala(proximaSala));
@@ -388,15 +393,18 @@ public class GameManager : MonoBehaviour {
 
     #region Corotinas de carregamento
 
-    IEnumerator PreloadProximaSala(string salaPCarregar){
+    IEnumerator PreloadProximaSala(string salaPCarregar) {
 
-        if(SceneUtility.GetBuildIndexByScenePath($"Scenes/{salaPCarregar}") == 0){
+        if (SceneUtility.GetBuildIndexByScenePath($"Scenes/{salaPCarregar}") == 0) {
             Debug.Log("Proxima cena não está contida na build ou, não está com o nome correto.");
             yield break;
         }
 
         cenaProx = SceneManager.LoadSceneAsync(salaPCarregar, LoadSceneMode.Additive);
         cenaProx.allowSceneActivation = false;
+
+        yield return new WaitUntil(() => cenaProx.isDone);
+
     }
 
     IEnumerator UnloadSala(Scene scene){

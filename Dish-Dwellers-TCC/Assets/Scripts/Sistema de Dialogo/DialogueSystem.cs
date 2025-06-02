@@ -12,7 +12,7 @@ public class DialogueSystem : MonoBehaviour
     [Header("Ui Elements")]
     public GameObject dialoguePanel;
     public TMP_Text dialogueText;
-    private float textSpeed = 0.05f;
+    [SerializeField] private float textSpeed = 0.05f;
 
     private DialogueContainer currentDialogue;
     private DialogueNodeData currentNode;

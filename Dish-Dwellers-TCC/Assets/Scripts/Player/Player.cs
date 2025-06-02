@@ -208,6 +208,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
                 ultimoInteragivel.MostarIndicador(false);
                 ultimoInteragivel = null;
             }
+
+            direcao = Vector3.zero;
+            movimentacao = Vector3.zero;
         }
 
         if (ehJogadorAtual) ChecarInteragiveis();

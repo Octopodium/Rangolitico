@@ -101,6 +101,10 @@ public class GameManager : MonoBehaviour {
 
         if (isOnline)
             DesligarOOnline();
+
+        if (DialogueSystem.instance != null) {
+            Destroy(DialogueSystem.instance.gameObject);
+        }
     }
 
     public void Pause(InputAction.CallbackContext ctx) {

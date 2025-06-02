@@ -35,8 +35,8 @@ public class DialogueSystem : MonoBehaviour
 
     public void StartDialogue(DialogueContainer dialogue){
         currentDialogue = dialogue;
-        BuildNodeLookup();
 
+        BuildNodeLookup();
         var entryNode = dialogue.NodeLinks.Find(x => x.portName == "Next");
         currentNode = nodeLookup[entryNode.targetNodeGuid];
 
@@ -54,7 +54,6 @@ public class DialogueSystem : MonoBehaviour
     private void DisplayNextSentence(){
         if(isTyping){
             CompleteSentence();
-            return;
         }
 
         fullText = currentNode.dialogueText;

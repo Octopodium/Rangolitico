@@ -98,6 +98,9 @@ public class GameManager : MonoBehaviour {
             input.UI.Pause.started -= Pause;
             input.Geral.TrocarPersonagens.performed -= TrocarControleSingleplayer;
         }
+
+        if (isOnline)
+            DesligarOOnline();
     }
 
     public void Pause(InputAction.CallbackContext ctx) {
@@ -494,6 +497,19 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public void DesligarOOnline() {
+        if (!isOnline) return;
+        
+        NetworkManager networkManager = NetworkManager.singleton;
+        if (networkManager != null) {
+            networkManager.StopHost();
+            networkManager.StopClient();
+            networkManager.StopServer();
+
+            Destroy(networkManager.gameObject);
+        }
+    }
+
     #endregion
 
 
@@ -501,16 +517,7 @@ public class GameManager : MonoBehaviour {
         if (voltandoParaMenu) return;
         voltandoParaMenu = true;
 
-        if (isOnline) {
-            NetworkManager networkManager = NetworkManager.singleton;
-            if (networkManager != null) {
-                networkManager.StopHost();
-                networkManager.StopClient();
-                networkManager.StopServer();
-
-                Destroy(networkManager.gameObject);
-            }
-        }
+        DesligarOOnline();
 
         gameObject.SetActive(true);
 

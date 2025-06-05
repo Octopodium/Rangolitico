@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine.SceneManagement;
 using System.Runtime.CompilerServices;
+using UnityEditor;
 
 /*
     COMO UTILIZAR A SINCRONIZAÇÃO POR ATRIBUTO:
@@ -148,26 +149,6 @@ public class Sincronizavel : MonoBehaviour {
 
     public bool debugLogMetodosCadastrados = false;
 
-    [SerializeField] private string id = "";
-    public string idObjetoSincronizado {
-        get { return id; }
-        set {
-            if (string.IsNullOrEmpty(value)) return;
-
-            if (jaCadastrado) {
-                DescadastrarSincronizavel();
-                DescadastrarMetodos();
-            }
-
-            id = value;
-
-            if (jaCadastrado) {
-                CadastrarSincronizavel();
-                CadastrarMetodos();
-            }
-        }
-    }
-
     private bool jaCadastrado = false;
 
     [Tooltip("Caso o objeto possua métodos sincronizados, eles serão cadastrados no Awake. Se desativado, deve ser chamado manualmente pelo LateSetup.")]
@@ -191,7 +172,6 @@ public class Sincronizavel : MonoBehaviour {
 
     void Setup() {
         if (cadastrarNoInicio && !cadastrouUmaVez) {
-            GerarIDAuto();
             CadastrarSincronizavel();
             CadastrarMetodos();
         }
@@ -200,24 +180,76 @@ public class Sincronizavel : MonoBehaviour {
     public void LateSetup() {
         if (jaCadastrado) return;
 
-        GerarIDAuto();
         CadastrarSincronizavel();
         CadastrarMetodos();
     }
+   
 
+    void OnValidate() {
+        string goName = gameObject.name;
+        if (identificador != null && identificador.StartsWith(goName)) return;
+        GeraID();
+    }
+
+    [MenuItem("MyMenu/Re-gerar todos os IDS")]
+    public static void RegerarIDS() {
+        Sincronizavel[] sincronizaveis = FindObjectsByType<Sincronizavel>(FindObjectsSortMode.None);
+
+        foreach (Sincronizavel sinc in sincronizaveis) {
+            sinc.GeraID();
+        }
+    }
+
+
+    public string identificador = "";
+
+    public string AlgoritmoDoID(string nomeGameObject, string nomeDaCena, int ocorrencia = 0) {
+        return nomeGameObject +"{"+nomeDaCena+"}[" + ocorrencia + "]";
+    }
+
+    public void GeraID() {
+        string cenaAtual = SceneManager.GetActiveScene().name;
+        string goName = gameObject.name;
+        identificador = "";
+
+        Sincronizavel[] sincronizaveis = FindObjectsByType<Sincronizavel>(FindObjectsSortMode.None);
+
+        for (int j = 0; j < sincronizaveis.Length; j++) {
+            if (sincronizaveis[j].name != goName)
+                sincronizaveis[j] = null;
+        }
+
+
+        int i = 0;
+        while (identificador == "") {
+            identificador = AlgoritmoDoID(goName, cenaAtual, i);
+
+            bool achou = false;
+            foreach (Sincronizavel sincronizavel in sincronizaveis) {
+                if (sincronizavel == null || sincronizavel == this || sincronizavel.identificador == null || sincronizavel.identificador == "") continue;
+                if (sincronizavel.identificador == identificador) {
+                    achou = true;
+                    break;
+                }
+            }
+
+            if (achou) {
+                identificador = "";
+                i++;
+            }
+
+            if (i > 10) {
+                Debug.LogError("Filhão, deu errado no " + goName);
+                return;
+            }
+        }
+    }
 
 
     #region Objeto Sincronizavel
 
-    void GerarIDAuto() {
-        if (!autoIDSeVazio || idObjetoSincronizado != null && idObjetoSincronizado.Trim() != "") return;
-        idObjetoSincronizado = gameObject.name;
-    }
-
     void CadastrarSincronizavel() {
-        if (idObjetoSincronizado == null || idObjetoSincronizado == "") idObjetoSincronizado = gameObject.name;
-
-        idObjetoSincronizado = Sincronizador.instance.CertificarIDSincronizavel(idObjetoSincronizado, GetPrefixo(), GetSufixo());
+        if (identificador == null || identificador == "") GeraID();
         Sincronizador.instance.CadastrarSincronizavel(this);
     }
 
@@ -231,7 +263,7 @@ public class Sincronizavel : MonoBehaviour {
     }
 
     public virtual string GetID() {
-        return GetPrefixo() + idObjetoSincronizado + GetSufixo();
+        return GetPrefixo() + identificador + GetSufixo();
     }
 
     public virtual string GetSufixo() {
@@ -258,7 +290,7 @@ public class Sincronizavel : MonoBehaviour {
                 if (atributos.Length > 0) {
                     var atributo = (SincronizarAttribute)atributos[0];
                     if (atributo != null) {
-                        if (debugLogMetodosCadastrados) Debug.Log("Cadastrando método [" + metodo.Name + "] no objeto [" + gameObject.name + "] de ID [" + idObjetoSincronizado + "]");
+                        if (debugLogMetodosCadastrados) Debug.Log("Cadastrando método [" + metodo.Name + "] no objeto [" + gameObject.name + "] de ID [" + identificador + "]");
                         CadastrarMetodo(metodo, (Component)componente, atributo.GerarOpcoes());
                     }
                 }

@@ -111,24 +111,6 @@ public class Sincronizador : NetworkBehaviour {
 
     #region Cadastro de Sincronizaveis
 
-    /// <summary>
-    /// Chame essa função para ter certeza que o ID do objeto sincronizável é único.
-    /// Caso o ID já exista, ele irá adicionar um sufixo "_1", "_2", etc. até encontrar um ID único.
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    public string CertificarIDSincronizavel(string id, string prefixo = "", string sufixo = "") {
-        string idValidado = id;
-
-        int i = 1;
-        while (sincronizaveis.ContainsKey(prefixo + idValidado + sufixo)) {
-            idValidado = id + "_" + i;
-            i++;
-        }
-
-        return idValidado;
-    }
-
     public bool CadastrarSincronizavel(Sincronizavel obj) {
         string idOriginal = obj.GetID();
         string id = idOriginal;
@@ -299,7 +281,8 @@ public class Sincronizador : NetworkBehaviour {
                 info.metodo.Invoke(info.componenteDoMetodo, valores);
                 if (info.opcoes != null && info.opcoes.debug) Debug.Log("Método [" + info.GetNome() + "] chamado com sucesso!");
             } catch (System.Exception e) {
-                Debug.LogError("Erro ao chamar o método [" + info.GetNome() + "]: " + e.Message);
+                string valoresString = string.Join(',', valores);
+                Debug.LogError("Erro ao chamar o método [" + info.GetNome() + "] com os valores ["+ valoresString +"]: " + e.Message);
             }
         }
         currentTriggerOnCallback.Remove(nomeMetodo);

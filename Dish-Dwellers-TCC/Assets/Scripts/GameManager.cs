@@ -310,6 +310,7 @@ public class GameManager : MonoBehaviour {
     private sala sala = null;
     public sala salaAtual{ get{return sala;} }
     public TransicaoDeTela telaDeLoading;
+    public string cenaAtualNome;
 
     
     /// <summary>
@@ -322,6 +323,8 @@ public class GameManager : MonoBehaviour {
 
     private void PassaDeSalaOffline() {
         // Inicio da transição
+
+        this.cenaAtualNome = sala.NomeProximaSala();
 
         sala.enabled = false;
         cenaProx.allowSceneActivation = true;
@@ -383,6 +386,7 @@ public class GameManager : MonoBehaviour {
 
         // Determina a sala informada como a sala atual :
         this.sala = sala;
+        this.cenaAtualNome = SceneManager.GetActiveScene().name;
 
         // Evita de tentar carregar uma sala quando está voltando para o menu principal:
         if (voltandoParaMenu) return;

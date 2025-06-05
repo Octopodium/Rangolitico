@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Animations;
 
-public class Carregador: MonoBehaviour {
+public class Carregador: MonoBehaviour, SincronizaMetodo {
     public Transform carregarTransform;
     public float forcaArremesso = 5f, alturaArremesso = 1.5f;
     [Range(0, 1)] public float influenciaDaInerciaNoArremesso = 0.33f;
@@ -62,12 +62,15 @@ public class Carregador: MonoBehaviour {
 
         if (carregavelProximo == null) return;
 
-        CarregarNoAutomatico(carregavelProximo);
+        CarregarNoAutomatico(carregavelProximo.gameObject);
     }
 
     [Sincronizar]
-    public void CarregarNoAutomatico(Carregavel carregavel) {
-        gameObject.Sincronizar();
+    public void CarregarNoAutomatico(GameObject carregavelObj) {
+        Carregavel carregavel = carregavelObj.GetComponent<Carregavel>();
+        if (carregavel == null) return;
+
+        gameObject.Sincronizar(carregavelObj);
         carregavel.Carregar(this);
     }
 

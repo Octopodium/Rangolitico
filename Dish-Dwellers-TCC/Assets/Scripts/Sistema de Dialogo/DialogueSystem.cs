@@ -81,15 +81,24 @@ public class DialogueSystem : MonoBehaviour
         var link = currentDialogue.NodeLinks.Find(x => x.baseNodeGuid == currentNode.Guid);
         if(link != null && nodeLookup.ContainsKey(link.targetNodeGuid)){
             currentNode = nodeLookup[link.targetNodeGuid];
-            DisplayNextSentence();
+            if(currentNode.nodeName == "End"){
+                EndDialogue();
+            }else{
+                DisplayNextSentence();
+            }
         }else{
             EndDialogue();
         }
     }
 
     private void EndDialogue(){
-        //dialoguePanel.SetActive(false);
-        //proxima cena temporario para build3 e museu
-        SceneManager.LoadScene("1-1");
+        var exitNode = currentDialogue.DialogueNodeData.Find(x => x.nodeName == "End");
+        Debug.Log(exitNode);
+        if(exitNode._loadScene){
+            SceneManager.LoadScene(exitNode.sceneName);
+            Debug.Log("Dialogo finalizado comm cena carregada");
+        }else{
+            Debug.Log("Dialogo finalizado sem carregar cena");
+        }
     }
 }

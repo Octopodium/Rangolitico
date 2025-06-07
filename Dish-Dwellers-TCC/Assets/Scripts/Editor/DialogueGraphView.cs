@@ -22,6 +22,7 @@ public class DialogueGraphView : GraphView
         gridBackgorund.StretchToParentSize();
 
         AddElement(GenerateEntryNode());
+        AddElement(GenerateExitNode());
     }
 
     private DialogueNode GenerateEntryNode(){
@@ -113,5 +114,45 @@ public class DialogueGraphView : GraphView
         }
 
         return dialogueConversation;
+    }
+
+    public DialogueNode GenerateExitNode(){ //criando um exit node pra gente chamar a cena no final do dialogo
+        var node = new DialogueNode{
+            NodeName = "End",
+            title = "END",
+            GUID = Guid.NewGuid().ToString(),
+            DialogueText = "Exit Node",
+            _exitPoint = true,
+            sceneName = "1-1",
+            _loadScene = false
+        };
+        var toggle = new Toggle("Load Scene?") { value = node._loadScene };
+        toggle.RegisterValueChangedCallback(evt => node._loadScene = evt.newValue);
+
+        var sceneField = new TextField("Scene Name:") { value = node.sceneName };
+        sceneField.RegisterValueChangedCallback(evt => node.sceneName = evt.newValue);
+        sceneField.SetEnabled(node._loadScene);
+    
+        toggle.RegisterValueChangedCallback(evt => {
+            sceneField.SetEnabled(evt.newValue);
+        });
+
+        node.mainContainer.Add(toggle);
+        node.mainContainer.Add(sceneField);
+
+        node.capabilities &= ~Capabilities.Deletable;
+
+        node.styleSheets.Add(Resources.Load<StyleSheet>("Node"));
+        node.AddToClassList("exit-node");
+
+        var generatedPort = GeneratePort(node, Direction.Input);
+        generatedPort.portName = "End";
+        node.inputContainer.Add(generatedPort);
+
+        node.RefreshExpandedState();
+        node.RefreshPorts();
+
+        node.SetPosition(new Rect(500,200,500,200));
+        return node;
     }
 }

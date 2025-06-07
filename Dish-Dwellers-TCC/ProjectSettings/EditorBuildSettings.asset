@@ -5,11 +5,11 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainMenu.unity
     guid: 849edc10efc834541b967df60f7fed7d
   - enabled: 1
-    path: Assets/Scenes/DialogoInicial.unity
+    path: Assets/Scenes/Dialogos.unity
     guid: 808b2ac90bb0df04ab27b0c5bccbf3bc
   - enabled: 1
     path: Assets/Scenes/1-1.unity
@@ -36,5 +36,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Teste_Juan.unity
     guid: 5e7af43735717874b9e0fa3318587f08
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 5c6a0ed6645a7ae43a16a59a12008d21, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   m_UseUCBPForAssetBundles: 0

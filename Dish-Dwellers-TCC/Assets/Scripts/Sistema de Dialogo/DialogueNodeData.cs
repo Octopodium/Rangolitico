@@ -8,4 +8,7 @@ public class DialogueNodeData
     public string nodeName;
     public string dialogueText;
     public Vector2 position;
+
+    public string sceneName;
+    public bool _loadScene;
 }

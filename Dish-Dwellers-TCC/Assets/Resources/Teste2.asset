@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac7bb264a1437ea41b5a7da14ca04c2d, type: 3}
+  m_Name: Teste2
+  m_EditorClassIdentifier: 
+  NodeLinks:
+  - baseNodeGuid: 0f6631ee-216c-4cdb-ae26-d95bc2832efd
+    portName: Next
+    targetNodeGuid: 2a0b459c-2e1b-471a-ba63-307f1cbd4b1e
+  - baseNodeGuid: 2a0b459c-2e1b-471a-ba63-307f1cbd4b1e
+    portName: output
+    targetNodeGuid: 0f6631ee-216c-4cdb-ae26-d95bc2832efd
+  - baseNodeGuid: 0f6631ee-216c-4cdb-ae26-d95bc2832efd
+    portName: output
+    targetNodeGuid: b7f37b1d-b91c-435a-9090-174dd24fc746
+  DialogueNodeData:
+  - Guid: b7f37b1d-b91c-435a-9090-174dd24fc746
+    nodeName: End
+    dialogueText: Exit Node
+    position: {x: 800, y: 544}
+    sceneName: 
+    _loadScene: 0
+  - Guid: 2a0b459c-2e1b-471a-ba63-307f1cbd4b1e
+    nodeName: Text Node
+    dialogueText: Texto
+    position: {x: 220, y: 345}
+    sceneName: 
+    _loadScene: 0
+  - Guid: 0f6631ee-216c-4cdb-ae26-d95bc2832efd
+    nodeName: Text Node
+    dialogueText: "daoifja\xB4sofawpfjaeos"
+    position: {x: 586, y: 266}
+    sceneName: 
+    _loadScene: 0

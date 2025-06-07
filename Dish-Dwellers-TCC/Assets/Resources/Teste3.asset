@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac7bb264a1437ea41b5a7da14ca04c2d, type: 3}
+  m_Name: Teste3
+  m_EditorClassIdentifier: 
+  NodeLinks:
+  - baseNodeGuid: 6eb7e0fc-4c3e-485e-be10-772d93a22f6b
+    portName: Next
+    targetNodeGuid: 6e1adc6a-cc0e-4410-ab30-9286f1b82817
+  - baseNodeGuid: 6e1adc6a-cc0e-4410-ab30-9286f1b82817
+    portName: output
+    targetNodeGuid: 7a30fe20-b211-4fca-9797-71ab4cbdd92b
+  - baseNodeGuid: 7a30fe20-b211-4fca-9797-71ab4cbdd92b
+    portName: output
+    targetNodeGuid: be2c8148-829e-4f8f-b5d9-deb54ee08fa5
+  DialogueNodeData:
+  - Guid: 6e1adc6a-cc0e-4410-ab30-9286f1b82817
+    nodeName: Text Node
+    dialogueText: AAAAAAAAAAAAaaaa
+    position: {x: 219, y: 314}
+    sceneName: 
+    _loadScene: 0
+  - Guid: 7a30fe20-b211-4fca-9797-71ab4cbdd92b
+    nodeName: Text Node
+    dialogueText: bbbbbbbBBBBB
+    position: {x: 485, y: 380}
+    sceneName: 
+    _loadScene: 0

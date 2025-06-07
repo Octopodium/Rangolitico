@@ -38,13 +38,19 @@ public class GraphSaveUtility
 
         foreach (var node in Nodes.Where(node => !node._entryPoint))
         {
-            dialogueContainer.DialogueNodeData.Add(new DialogueNodeData
-            {
+            var nodeData = new DialogueNodeData{
                 Guid = node.GUID,
                 nodeName = node.NodeName,
                 dialogueText = node.DialogueText,
                 position = node.GetPosition().position
-            });
+            };
+
+            if (node._exitPoint){
+                nodeData.sceneName = node.sceneName;
+                nodeData._loadScene = node._loadScene;
+            }
+
+            dialogueContainer.DialogueNodeData.Add(nodeData);
         }
         
         if(!AssetDatabase.IsValidFolder("Assets/Resources")){
@@ -80,19 +86,26 @@ public class GraphSaveUtility
 
     private void CreateNodes(){
         foreach(var nodeData in _containerCache.DialogueNodeData){
-            var tempNode = _targetGraphView.CreateDialogueNode(nodeData.nodeName);
+            var isExitNode = nodeData.nodeName == "End";
+            var tempNode = isExitNode 
+            ? _targetGraphView.GenerateExitNode()
+            : _targetGraphView.CreateDialogueNode(nodeData.nodeName);
+
             tempNode.GUID = nodeData.Guid;
-            tempNode.DialogueText = nodeData.dialogueText;
 
-            var textField = tempNode.mainContainer.Q<TextField>();
-            if (textField != null) {
-                textField.SetValueWithoutNotify(nodeData.dialogueText);
+            if(isExitNode){
+                tempNode._loadScene = nodeData._loadScene;
+                tempNode.sceneName = nodeData.sceneName ?? "";
+            }else{
+                tempNode.DialogueText = nodeData.dialogueText;    
+                var textField = tempNode.mainContainer.Q<TextField>();
+                if (textField != null) {
+                    textField.SetValueWithoutNotify(nodeData.dialogueText);
+                }
+                var nodePorts = _containerCache.NodeLinks.Where(x => x.baseNodeGuid == nodeData.Guid).ToList();
+                nodePorts.ForEach(x => _targetGraphView.GeneratePort(tempNode, Direction.Output));
             }
-
             _targetGraphView.AddElement(tempNode);
-
-            var nodePorts = _containerCache.NodeLinks.Where(x => x.baseNodeGuid == nodeData.Guid).ToList();
-            nodePorts.ForEach(x => _targetGraphView.GeneratePort(tempNode, Direction.Output));
         }
     }
 

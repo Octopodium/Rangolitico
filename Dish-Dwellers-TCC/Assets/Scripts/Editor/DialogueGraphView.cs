@@ -123,7 +123,7 @@ public class DialogueGraphView : GraphView
             GUID = Guid.NewGuid().ToString(),
             DialogueText = "Exit Node",
             _exitPoint = true,
-            sceneName = "1-1",
+            sceneName = "",
             _loadScene = false
         };
         var toggle = new Toggle("Load Scene?") { value = node._loadScene };

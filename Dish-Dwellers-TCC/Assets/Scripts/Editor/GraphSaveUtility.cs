@@ -42,13 +42,10 @@ public class GraphSaveUtility
                 Guid = node.GUID,
                 nodeName = node.NodeName,
                 dialogueText = node.DialogueText,
-                position = node.GetPosition().position
+                position = node.GetPosition().position,
+                _loadScene = node._exitPoint ? node._loadScene : false,
+                sceneName = node._exitPoint ? node.sceneName : ""
             };
-
-            if (node._exitPoint){
-                nodeData.sceneName = node.sceneName;
-                nodeData._loadScene = node._loadScene;
-            }
 
             dialogueContainer.DialogueNodeData.Add(nodeData);
         }
@@ -92,6 +89,7 @@ public class GraphSaveUtility
             : _targetGraphView.CreateDialogueNode(nodeData.nodeName);
 
             tempNode.GUID = nodeData.Guid;
+            tempNode.SetPosition(new Rect(nodeData.position, _targetGraphView.defaultNodeSize));
 
             if(isExitNode){
                 tempNode._loadScene = nodeData._loadScene;
@@ -102,26 +100,25 @@ public class GraphSaveUtility
                 if (textField != null) {
                     textField.SetValueWithoutNotify(nodeData.dialogueText);
                 }
-                var nodePorts = _containerCache.NodeLinks.Where(x => x.baseNodeGuid == nodeData.Guid).ToList();
-                nodePorts.ForEach(x => _targetGraphView.GeneratePort(tempNode, Direction.Output));
             }
+            var nodePorts = _containerCache.NodeLinks.Where(x => x.baseNodeGuid == nodeData.Guid).ToList();
+            nodePorts.ForEach(x => _targetGraphView.GeneratePort(tempNode, Direction.Output));
             _targetGraphView.AddElement(tempNode);
         }
     }
 
     private void ConnectNodes(){
-        for(int i = 0; i < Nodes.Count; i++){
-            var connections = _containerCache.NodeLinks.Where(x => x.baseNodeGuid == Nodes[i].GUID).ToList();
-            for(int j = 0; j < connections.Count; j++){
-                var targetNodeGuid = connections[j].targetNodeGuid;
-                var targetNode = Nodes.First(x => x.GUID == targetNodeGuid);
-                LinkNodes(Nodes[i].outputContainer[j].Q<Port>(), (Port) targetNode.inputContainer[0]);
-            
-                targetNode.SetPosition(new Rect(
-                    _containerCache.DialogueNodeData.First(x => x.Guid == targetNodeGuid).position,
-                    _targetGraphView.defaultNodeSize
-                ));
-            }
+        foreach(var link in _containerCache.NodeLinks){
+            var outputNode = Nodes.FirstOrDefault(n => n.GUID == link.baseNodeGuid);
+            var inputNode = Nodes.FirstOrDefault(n => n.GUID == link.targetNodeGuid);
+        
+            if(outputNode == null || inputNode == null) continue;
+
+            var outputPort = outputNode.outputContainer.Query<Port>().Where(p => p.portName == link.portName).First();
+
+            var inputPort = (Port)inputNode.inputContainer[0];
+        
+            LinkNodes(outputPort, inputPort);
         }
     }
 

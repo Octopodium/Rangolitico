@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using System;
+using UnityEngine.Rendering;
 
 public enum ModoDeJogo {SINGLEPLAYER, MULTIPLAYER_LOCAL, MULTIPLAYER_ONLINE, INDEFINIDO}; // Indefinido: substituto para NULL (de quando não foi definido ainda)
 
@@ -307,6 +308,7 @@ public class GameManager : MonoBehaviour {
     #region Sistema de salas
     public List<Player> jogadores = new List<Player>();
     private AsyncOperation cenaProx;
+    private AsyncOperation unloading;
     private sala sala = null;
     public sala salaAtual{ get{return sala;} }
     public TransicaoDeTela telaDeLoading;
@@ -380,7 +382,7 @@ public class GameManager : MonoBehaviour {
     public void SetSala(sala sala){
 
         // Descarrega a sala anterior :
-        if (this.sala != null){
+        if (this.sala != null) {
             StartCoroutine(UnloadSala(this.sala.gameObject.scene));
         }
 
@@ -402,6 +404,8 @@ public class GameManager : MonoBehaviour {
 
     }
 
+    
+
     #region Corotinas de carregamento
 
     IEnumerator PreloadProximaSala(string salaPCarregar) {
@@ -419,10 +423,11 @@ public class GameManager : MonoBehaviour {
     }
 
     IEnumerator UnloadSala(Scene scene){
-        AsyncOperation op = SceneManager.UnloadSceneAsync(scene);
+        unloading = SceneManager.UnloadSceneAsync(scene);
         
-        yield return new WaitUntil(() => op.isDone);
-        Debug.Log("Terminou de descarregar : " + scene.name);
+        yield return new WaitUntil(() => unloading.isDone);
+
+        ProbeReferenceVolume.instance.SetActiveScene(SceneManager.GetActiveScene());
     }
 
     #endregion

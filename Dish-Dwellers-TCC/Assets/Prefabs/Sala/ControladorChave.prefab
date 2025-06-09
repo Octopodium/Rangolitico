@@ -77,7 +77,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54130edec7e63424495bf6b8e26714c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 1742485915137094490, guid: a51b9169f1f3bbf4cb8a63d7da4086e0, type: 3}
+  prefab: {fileID: 643486998801402746, guid: e8baf4cd1b16c4441a6cedbc416e2727, type: 3}
+  prefabOnline: {fileID: 1742485915137094490, guid: a51b9169f1f3bbf4cb8a63d7da4086e0, type: 3}
   respawnPos: {fileID: 1949009520377102282}
   spawnNoInicio: 0
 --- !u!114 &3059736729251123674
@@ -92,7 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: ControladorChave
+  debugLogMetodosCadastrados: 0
   cadastrarNoInicio: 1
-  exclusivoDaSala: 1
-  autoIDSeVazio: 1
+  naoUsarIDAuto: 0
+  identificador: 

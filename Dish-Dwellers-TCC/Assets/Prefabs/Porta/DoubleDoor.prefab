@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 5786580189332840596}
   - component: {fileID: 307270819419284196}
   - component: {fileID: 5926950373732738251}
+  - component: {fileID: 1663819671767324554}
   m_Layer: 7
   m_Name: DoubleDoor
   m_TagString: Untagged
@@ -224,6 +225,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.589773, y: 3.9454842, z: 0.6859941}
   m_Center: {x: 0.00000009498743, y: 1.97122, z: 0.10159388}
+--- !u!114 &1663819671767324554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5266469779556692219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugLogMetodosCadastrados: 0
+  cadastrarNoInicio: 1
+  naoUsarIDAuto: 0
+  identificador: 
 --- !u!1 &6467234283098901176
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,6 +342,7 @@ MonoBehaviour:
   finalDaDemo: 0
   canvasFinalDaDemo: {fileID: 0}
   spawnDeSaida: {fileID: 7726063650291813255}
+  cenaDoFim: Fim
 --- !u!114 &7176484666348276313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,9 +356,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugLogMetodosCadastrados: 0
-  id: Po
   cadastrarNoInicio: 1
-  autoIDSeVazio: 1
+  naoUsarIDAuto: 0
+  identificador: 
 --- !u!1 &8337210486071587480
 GameObject:
   m_ObjectHideFlags: 0

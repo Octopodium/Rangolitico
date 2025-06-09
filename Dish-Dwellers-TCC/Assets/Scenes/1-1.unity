@@ -7821,6 +7821,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1836658964}
     m_Modifications:
+    - target: {fileID: 1663819671767324554, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: identificador
+      value: $0b958883e4ca4174ae9581e6a14646ed
+      objectReference: {fileID: 0}
     - target: {fileID: 5266469779556692219, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
       propertyPath: m_Name
       value: DoubleDoor (1)
@@ -7864,6 +7868,10 @@ PrefabInstance:
     - target: {fileID: 5738875683432274772, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7176484666348276313, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: identificador
+      value: $2b7ffbdd21144e4ab8ee6e73cb688fa4
       objectReference: {fileID: 0}
     - target: {fileID: 9065545155982715143, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -14109,8 +14117,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugLogMetodosCadastrados: 0
   cadastrarNoInicio: 1
-  autoIDSeVazio: 1
-  identificador: 'Portal{1-1}[0]'
+  naoUsarIDAuto: 0
+  identificador: $9c2c2c81e2804a258d7ee01955811d4f
 --- !u!33 &262462855387208213
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -14419,6 +14427,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6752935043369674253, guid: 2f629186421c60d4ea5d4f65c526f6a2, type: 3}
+      propertyPath: identificador
+      value: $95da93c7029b455681ed048ba428ac14
+      objectReference: {fileID: 0}
+    - target: {fileID: 8226894949088415413, guid: 2f629186421c60d4ea5d4f65c526f6a2, type: 3}
+      propertyPath: identificador
+      value: $0e1bb96884424733ab1d84bbe6f19da4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14576,6 +14592,10 @@ PrefabInstance:
     - target: {fileID: 3786424657426841751, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 4145125627521940710, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: identificador
+      value: $bc7e328624fa46609113cced898d3902
       objectReference: {fileID: 0}
     - target: {fileID: 4458983155754798154, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -14994,6 +15014,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1553539559}
     m_Modifications:
+    - target: {fileID: 3059736729251123674, guid: b6dadb8b38dbe2c4d8fb5a39325c24a8, type: 3}
+      propertyPath: identificador
+      value: $da8bb5a148e14bd2a55203095916c8a2
+      objectReference: {fileID: 0}
     - target: {fileID: 4475424614925952166, guid: b6dadb8b38dbe2c4d8fb5a39325c24a8, type: 3}
       propertyPath: m_Name
       value: ControladorChave

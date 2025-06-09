@@ -3,6 +3,7 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Unity.Collections;
 
 /*
     EI, VOCÊ AÍ!
@@ -44,6 +45,7 @@ public class Sincronizador : NetworkBehaviour {
     protected HashSet<string> metodosOnCooldown = new HashSet<string>();
     protected Dictionary<string, object[]> parametrosUltimosChamados = new Dictionary<string, object[]>();
     protected HashSet<string> currentTriggerOnCallback = new HashSet<string>();
+    protected bool isOnCallbackCall = false;
 
     [Header("Debug")]
     public bool debugLogMetodos = false;
@@ -55,7 +57,7 @@ public class Sincronizador : NetworkBehaviour {
 
             if (transform.parent == null)
                 DontDestroyOnLoad(gameObject);
-            
+
         } else {
             Destroy(gameObject);
             return;
@@ -116,12 +118,12 @@ public class Sincronizador : NetworkBehaviour {
         string id = idOriginal;
 
         if (sincronizaveis.ContainsKey(id)) {
-            Debug.LogWarning("Sincronizavel de ID [" + id + "] não foi cadastrado pois já havia um com o mesmo ID!");
+            Debug.LogWarning("Sincronizavel de ID [" + id + "] não foi cadastrado pois já havia um com o mesmo ID! Ele é: " + sincronizaveis[id]?.name);
             return false;
         }
 
         if (debugLogSincronizaveis) {
-            Debug.Log("Cadastrando sincronizável [" + id + "]");
+            Debug.Log("Cadastrando sincronizável de " + obj.name + " ID[" + id + "]");
         }
 
         sincronizaveis[id] = obj;
@@ -131,8 +133,14 @@ public class Sincronizador : NetworkBehaviour {
     public void DescadastrarSincronizavel(Sincronizavel obj) {
         string id = obj.GetID();
 
-        if (sincronizaveis.ContainsKey(id))
+        bool existe = sincronizaveis.ContainsKey(id) && sincronizaveis[id] == obj;
+
+        if (existe)
             sincronizaveis.Remove(id);
+
+        if (debugLogSincronizaveis) {
+            Debug.Log("Descadastrando sincronizável de " + obj.name + " ID[" + id + "]. Encontrou e removeu: " + existe);
+        }
     }
 
     public Sincronizavel GetSincronizavel(string id) {
@@ -193,6 +201,24 @@ public class Sincronizador : NetworkBehaviour {
         }
     }
 
+    bool sincronizacaoTravada = false;
+
+    public void TravarSincronizacao(System.Action callback) {
+        sincronizacaoTravada = true;
+        callback?.Invoke();
+        sincronizacaoTravada = false;
+    }
+
+    public void TravarSincronizacao(IEnumerator callback) {
+        StartCoroutine(TravarSincronizacaoCoroutine(callback));
+    }
+
+    IEnumerator TravarSincronizacaoCoroutine(IEnumerator callback) {
+        sincronizacaoTravada = true;
+        yield return callback;
+        sincronizacaoTravada = false;
+    }
+
     /// <summary>
     /// Chama o método em outro cliente.
     /// </summary>
@@ -207,6 +233,8 @@ public class Sincronizador : NetworkBehaviour {
     /// </summary>
     /// <returns>Retorna true se o método que o chamou pode prosseguir com o funcionamento. Retorna false apenas se houver alguma restrinção;</returns>
     public bool ChamarMetodo(InformacoesMetodo info, object[] parametros = null, string id = "") {
+        if (sincronizacaoTravada) return false;
+
         string nome = info.GetNome(id);
 
         if (info.opcoes != null) {
@@ -264,7 +292,8 @@ public class Sincronizador : NetworkBehaviour {
             valores[i] = v[i].valor;
         }
 
-        currentTriggerOnCallback.Add(nomeMetodo);
+        //currentTriggerOnCallback.Add(nomeMetodo);
+        isOnCallbackCall = true;
         foreach (InformacoesMetodo info in listaMetodos) {
             if (info.componenteDoMetodo == null) {
                 Debug.LogError("O componente do método [" + info.GetNome() + "] não existe mais!");
@@ -282,10 +311,11 @@ public class Sincronizador : NetworkBehaviour {
                 if (info.opcoes != null && info.opcoes.debug) Debug.Log("Método [" + info.GetNome() + "] chamado com sucesso!");
             } catch (System.Exception e) {
                 string valoresString = string.Join(',', valores);
-                Debug.LogError("Erro ao chamar o método [" + info.GetNome() + "] com os valores ["+ valoresString +"]: " + e.Message);
+                Debug.LogError("Erro ao chamar o método [" + info.GetNome() + "] com os valores [" + valoresString + "]: " + e.Message);
             }
         }
-        currentTriggerOnCallback.Remove(nomeMetodo);
+        isOnCallbackCall = false;
+        //currentTriggerOnCallback.Remove(nomeMetodo);
     }
 
 
@@ -297,7 +327,7 @@ public class Sincronizador : NetworkBehaviour {
 
     // Se pode triggar
     public bool CanSetTrigger(string triggerName) {
-        return IsOnline() && triggerName != null && !currentTriggerOnCallback.Contains(triggerName) && metodos.ContainsKey(triggerName);
+        return IsOnline() && triggerName != null && !isOnCallbackCall /*!currentTriggerOnCallback.Contains(triggerName)*/ && metodos.ContainsKey(triggerName);
     }
 
     // Se pode cadastrar
@@ -311,5 +341,95 @@ public class Sincronizador : NetworkBehaviour {
     }
 
     #endregion
+
+    Dictionary<uint, System.Action<GameObject>> spawnHandlers = new Dictionary<uint, System.Action<GameObject>>();
+    public void InstanciarNetworkObject(System.Action<GameObject> callback, GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null, bool unico = false) {
+        if (!GameManager.instance.isOnline) return;
+
+        NetworkIdentity netId = prefab.GetComponent<NetworkIdentity>();
+        if (netId == null) {
+            Debug.LogError("O prefab [" + prefab.name + "] não possui um NetworkIdentity. Não é possível instanciar objetos de rede sem este componente.");
+            return;
+        }
+
+        uint id = netId.assetId;
+
+        if (unico && GetSpawnedObject(id) != null) {
+            Debug.LogWarning($"[Sincronizador] Já existe um objeto com AssetId: {id}. Não será instanciado novamente.");
+            return;
+        }
+
+        bool isSpawning = spawnHandlers.ContainsKey(id);
+
+        if (isSpawning) {
+            spawnHandlers[id] = callback;
+        } else {
+            spawnHandlers.Add(id, callback);
+        }
+
+        if (NetworkClient.localPlayer.isServer && (!unico || !isSpawning)) {
+            Debug.Log($"[Sincronizador] Instanciando objeto de rede com AssetId: {id}.");
+            GameObject objeto = Instantiate(prefab, position, rotation, parent);
+            NetworkServer.Spawn(objeto);
+        }
+
+    }
+
+    /// <summary>
+    /// Quando um Sincronizavel é instanciado possuindo um NetworkIdentity, chama este método para verificar se a instanciação foi através do InstanciarNetworkObject.
+    /// Se sim, chama o callback associado ao assetId do NetworkIdentity.
+    /// </summary>
+    /// <param name="netId"></param>
+    public void CheckSeAguardandoSpawn(NetworkIdentity netId) {
+        uint id = netId.assetId;
+        if (spawnHandlers.ContainsKey(id)) {
+            Debug.Log($"[Sincronizador] Encontrou o objeto spawnado com NetId: {netId.netId} e AssetId: {id}.");
+            GameObject objeto = netId.gameObject;
+            System.Action<GameObject> handler = spawnHandlers[id];
+            spawnHandlers.Remove(id);
+            handler?.Invoke(objeto);
+        }
+    }
+
+    /// <summary>
+    /// Se está no aguardo de spawn do objeto porém este foi destruído, libera o aguardo.
+    /// </summary>
+    /// <param name="netId"></param>
+    public void LiberarAguardoSpawn(NetworkIdentity netId) {
+        uint id = netId.assetId;
+        if (spawnHandlers.ContainsKey(id)) {
+            spawnHandlers.Remove(id);
+        }
+    }
+
+    public bool IsSpawning(uint assetId) {
+        return spawnHandlers.ContainsKey(assetId);
+    }
+
+    public bool IsSpawning(NetworkIdentity netId) {
+        return IsSpawning(netId.assetId);
+    }
+
+    public bool IsSpawning(GameObject obj) {
+        NetworkIdentity netId = obj.GetComponent<NetworkIdentity>();
+        if (netId == null) return false;
+        return IsSpawning(netId);
+    }
+
+    public GameObject GetSpawnedObject(uint assetId) {
+        NetworkIdentity[] allObjects = FindObjectsByType<NetworkIdentity>(FindObjectsSortMode.None);
+        foreach (NetworkIdentity netId in allObjects) {
+            if (netId.assetId == assetId) {
+                Sincronizavel sincronizavel = netId.GetComponent<Sincronizavel>();
+                
+                if (sincronizavel != null) {
+                    return sincronizavel.isDestroying ? null : netId.gameObject;
+                }
+
+                return netId.gameObject;
+            }
+        }
+        return null;
+    }
 
 }

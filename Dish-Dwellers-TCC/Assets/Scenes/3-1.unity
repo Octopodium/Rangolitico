@@ -7432,6 +7432,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6752935043369674253, guid: 2f629186421c60d4ea5d4f65c526f6a2, type: 3}
+      propertyPath: identificador
+      value: $d44dd49842424058a8e9817bf9fad419
+      objectReference: {fileID: 0}
+    - target: {fileID: 8226894949088415413, guid: 2f629186421c60d4ea5d4f65c526f6a2, type: 3}
+      propertyPath: identificador
+      value: $3a4512a1a8424425a02debc174f90108
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11606,6 +11614,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4145125627521940710, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: identificador
+      value: $e4fcf2fcdbeb42c5ac9aa974253b820d
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12657,6 +12669,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4145125627521940710, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: identificador
+      value: $643eccb399e54bda9c5eae4f0fe14a71
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13653,6 +13669,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 49898435}
     m_Modifications:
+    - target: {fileID: 3059736729251123674, guid: b6dadb8b38dbe2c4d8fb5a39325c24a8, type: 3}
+      propertyPath: identificador
+      value: $956fc2831d884ee1b4d263e41265bba0
+      objectReference: {fileID: 0}
     - target: {fileID: 4475424614925952166, guid: b6dadb8b38dbe2c4d8fb5a39325c24a8, type: 3}
       propertyPath: m_Name
       value: ControladorChave
@@ -14476,6 +14496,7 @@ GameObject:
   - component: {fileID: 1761712808}
   - component: {fileID: 1761712807}
   - component: {fileID: 1761712806}
+  - component: {fileID: 1761712811}
   m_Layer: 7
   m_Name: Alavanca
   m_TagString: Untagged
@@ -14582,6 +14603,22 @@ Transform:
   - {fileID: 1238649667}
   m_Father: {fileID: 49898435}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &1761712811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1761712804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugLogMetodosCadastrados: 0
+  cadastrarNoInicio: 1
+  naoUsarIDAuto: 0
+  identificador: $8e1629631f184d34a04b65a01fdf820d
 --- !u!1 &1776439507
 GameObject:
   m_ObjectHideFlags: 0
@@ -15979,6 +16016,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1663819671767324554, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: identificador
+      value: $1af5facf922a49549d75d0fa7a307a92
+      objectReference: {fileID: 0}
     - target: {fileID: 5266469779556692219, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
       propertyPath: m_Name
       value: DoubleDoor (1)
@@ -16022,6 +16063,10 @@ PrefabInstance:
     - target: {fileID: 5738875683432274772, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7176484666348276313, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: identificador
+      value: $4715b6c4ba53480c8aeff6e2a1186e9c
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17936,8 +17981,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugLogMetodosCadastrados: 0
   cadastrarNoInicio: 1
-  autoIDSeVazio: 1
-  identificador: 'Portal{3-1}[0]'
+  naoUsarIDAuto: 0
+  identificador: $be4fdcee99e5465aa4d9ffdb354256bd
 --- !u!1 &7294154053841658135
 GameObject:
   m_ObjectHideFlags: 0

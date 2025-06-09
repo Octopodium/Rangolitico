@@ -1,9 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection;
-using UnityEngine.SceneManagement;
 using System.Runtime.CompilerServices;
 using UnityEditor;
+using Mirror;
+using System;
+using UnityEditor.SceneManagement;
+using System.Collections;
 
 /*
     COMO UTILIZAR A SINCRONIZAÇÃO POR ATRIBUTO:
@@ -112,6 +115,16 @@ public static class SincronizavelExtensions {
 
         return Sincronizar(obj, argsList.ToArray(), triggerName);
     }
+
+    public static void NaoSincronizar(this GameObject obj, System.Action action) {
+        if (obj == null) return;
+        if (!GameManager.instance.isOnline) {
+            action?.Invoke();
+            return;
+        }
+
+        Sincronizador.instance.TravarSincronizacao(action);
+    }
 }
 
 
@@ -154,20 +167,38 @@ public class Sincronizavel : MonoBehaviour {
     [Tooltip("Caso o objeto possua métodos sincronizados, eles serão cadastrados no Awake. Se desativado, deve ser chamado manualmente pelo LateSetup.")]
     public bool cadastrarNoInicio = true;
     private bool cadastrouUmaVez = false;
+    public bool naoUsarIDAuto = false;
 
-    public bool autoIDSeVazio = true;
 
 
     private List<(Component, MethodInfo)> metodos = new List<(Component, MethodInfo)>();
+    NetworkIdentity networkIdentity = null;
 
     void Awake() {
+        networkIdentity = GetComponent<NetworkIdentity>();
+        if (networkIdentity != null) {
+            StartCoroutine(EsperandoNetID());
+            return;
+        }
+
+        if (Sincronizador.instance == null) Sincronizador.onInstanciaCriada += Setup;
+        else Setup();
+    }
+
+    IEnumerator EsperandoNetID() {
+        yield return new WaitUntil(() => networkIdentity != null && networkIdentity.netId != 0);
+        
+        Sincronizador.instance.CheckSeAguardandoSpawn(networkIdentity);
+
+        identificador = networkIdentity.netId + "";
+        naoUsarIDAuto = true;
+
         if (Sincronizador.instance == null) Sincronizador.onInstanciaCriada += Setup;
         else Setup();
     }
 
     void OnDestroy() {
-        DescadastrarSincronizavel();
-        DescadastrarMetodos();
+        PreDestroy();
     }
 
     void Setup() {
@@ -183,46 +214,68 @@ public class Sincronizavel : MonoBehaviour {
         CadastrarSincronizavel();
         CadastrarMetodos();
     }
-   
+
+    public bool isDestroying { get;  protected set; } = false;
+
+    public void PreDestroy() {
+        if (isDestroying) return;
+        isDestroying = true;
+
+        DescadastrarSincronizavel();
+        DescadastrarMetodos();
+
+        if (networkIdentity != null) {
+            Sincronizador.instance.LiberarAguardoSpawn(networkIdentity);
+        }
+    }
+
+
+
+#if UNITY_EDITOR
+
+    public bool IsPrefab() {
+        return EditorSceneManager.IsPreviewScene(gameObject.scene) || EditorUtility.IsPersistent(gameObject);
+    }
 
     void OnValidate() {
-        string goName = gameObject.name;
-        if (identificador != null && identificador.StartsWith(goName)) return;
+        if (IsPrefab()) {
+            identificador = "";
+            return;
+        }
+
+        if (identificador != null && !string.IsNullOrEmpty(identificador)) return;
         GeraID();
     }
 
-    [MenuItem("MyMenu/Re-gerar todos os IDS")]
-    public static void RegerarIDS() {
-        Sincronizavel[] sincronizaveis = FindObjectsByType<Sincronizavel>(FindObjectsSortMode.None);
+
+
+    [ContextMenu("Re-gerar todos os IDS")]
+    public void RegerarIDS() {
+        Sincronizavel[] sincronizaveis = FindObjectsByType<Sincronizavel>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
         foreach (Sincronizavel sinc in sincronizaveis) {
             sinc.GeraID();
+            EditorUtility.SetDirty(sinc);
         }
     }
 
+#endif
 
+    public string AlgoritmoDoID() {
+        return "$" + Guid.NewGuid().ToString("N");
+    }
+
+    [HideInInspector]
     public string identificador = "";
 
-    public string AlgoritmoDoID(string nomeGameObject, string nomeDaCena, int ocorrencia = 0) {
-        return nomeGameObject +"{"+nomeDaCena+"}[" + ocorrencia + "]";
-    }
-
     public void GeraID() {
-        string cenaAtual = SceneManager.GetActiveScene().name;
-        string goName = gameObject.name;
+        if (naoUsarIDAuto) return;
         identificador = "";
 
-        Sincronizavel[] sincronizaveis = FindObjectsByType<Sincronizavel>(FindObjectsSortMode.None);
+        Sincronizavel[] sincronizaveis = FindObjectsByType<Sincronizavel>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
-        for (int j = 0; j < sincronizaveis.Length; j++) {
-            if (sincronizaveis[j].name != goName)
-                sincronizaveis[j] = null;
-        }
-
-
-        int i = 0;
         while (identificador == "") {
-            identificador = AlgoritmoDoID(goName, cenaAtual, i);
+            identificador = AlgoritmoDoID();
 
             bool achou = false;
             foreach (Sincronizavel sincronizavel in sincronizaveis) {
@@ -235,14 +288,10 @@ public class Sincronizavel : MonoBehaviour {
 
             if (achou) {
                 identificador = "";
-                i++;
-            }
-
-            if (i > 10) {
-                Debug.LogError("Filhão, deu errado no " + goName);
-                return;
             }
         }
+
+        Debug.Log("Gerando ID [" + identificador + "] para o objeto [" + gameObject.name + "]", gameObject);
     }
 
 

@@ -506,13 +506,23 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     private void OnRequestedPassaDeSalaOnline(DishNetworkManager.AcaoPassaDeSalaMessage msg) {
         if (isOnline && msg.passarDeSala) {
+            DestruirNetworkIdentityPassaCena();
             PassaDeSalaOffline();
+        }
+    }
+
+    public void DestruirNetworkIdentityPassaCena() {
+        if (!isOnline) return;
+
+        foreach (NetworkIdentity identity in FindObjectsByType<NetworkIdentity>(FindObjectsInactive.Include, FindObjectsSortMode.None)) {
+            if (identity.gameObject.scene.name == "DontDestroyOnLoad") continue; // Não destrói objetos que estão na cena DontDestroyOnLoad
+            DestroyImmediate(identity.gameObject);
         }
     }
 
     public void DesligarOOnline() {
         if (!isOnline) return;
-        
+
         NetworkManager networkManager = NetworkManager.singleton;
         if (networkManager != null) {
             networkManager.StopHost();

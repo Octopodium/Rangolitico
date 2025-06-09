@@ -11,6 +11,8 @@ public class ConnectionUI : MonoBehaviour {
     public string menuInicialScene = "MenuInicial";
     public DishNetworkManager networkManager;
 
+    public Transform canvasDaConexao;
+
 
     [Header("Configuração de Conexão")]
     public TipoDeTransport tipoDeTransport = TipoDeTransport.IP;
@@ -189,6 +191,10 @@ public class ConnectionUI : MonoBehaviour {
 
         if (p1.isLocalPlayer) p1.TentarComecar();
         else p2.TentarComecar();
+    }
+
+    void OnDestroy() {
+        Destroy(canvasDaConexao.gameObject);
     }
 
     #endregion

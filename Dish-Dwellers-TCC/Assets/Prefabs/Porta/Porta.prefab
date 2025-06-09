@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8361628725726289686}
   - component: {fileID: 660405495318688198}
   - component: {fileID: 3119353026472110044}
+  - component: {fileID: 6752935043369674253}
   m_Layer: 7
   m_Name: Porta
   m_TagString: Untagged
@@ -85,9 +86,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   portal: {fileID: 4017300163315922825}
+  animator: {fileID: 0}
   OnDestrancaPorta:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &6752935043369674253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3902765538347054854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugLogMetodosCadastrados: 0
+  cadastrarNoInicio: 1
+  naoUsarIDAuto: 0
+  identificador: 
 --- !u!1 &4017300163315922825
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,6 +176,7 @@ MonoBehaviour:
   finalDaDemo: 0
   canvasFinalDaDemo: {fileID: 0}
   spawnDeSaida: {fileID: 3615267698338618392}
+  cenaDoFim: Fim
 --- !u!114 &8226894949088415413
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,9 +190,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugLogMetodosCadastrados: 0
-  id: Po
   cadastrarNoInicio: 1
-  autoIDSeVazio: 1
+  naoUsarIDAuto: 0
+  identificador: 
 --- !u!1 &5514292207776615922
 GameObject:
   m_ObjectHideFlags: 0

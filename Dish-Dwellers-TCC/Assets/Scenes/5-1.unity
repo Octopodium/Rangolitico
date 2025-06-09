@@ -965,6 +965,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6752935043369674253, guid: 2f629186421c60d4ea5d4f65c526f6a2, type: 3}
+      propertyPath: identificador
+      value: $e02e6655f2324e909bcf068d1ba3b0c1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8226894949088415413, guid: 2f629186421c60d4ea5d4f65c526f6a2, type: 3}
+      propertyPath: identificador
+      value: $59d553d5767b497697a8b090d5710947
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1742,6 +1750,7 @@ GameObject:
   - component: {fileID: 226067389}
   - component: {fileID: 226067388}
   - component: {fileID: 226067393}
+  - component: {fileID: 226067394}
   m_Layer: 7
   m_Name: Alavanca
   m_TagString: Untagged
@@ -1874,6 +1883,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
+--- !u!114 &226067394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 226067386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugLogMetodosCadastrados: 0
+  cadastrarNoInicio: 1
+  naoUsarIDAuto: 0
+  identificador: $f26d069b0253480eb31035bbe1da18dc
 --- !u!1 &236933270
 GameObject:
   m_ObjectHideFlags: 0
@@ -3278,6 +3303,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 4145125627521940710, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: identificador
+      value: $aca26434bc2246618f85e0f09cc2f1ee
+      objectReference: {fileID: 0}
     - target: {fileID: 4458983155754798154, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: m_ReceiveGI
       value: 1
@@ -3648,6 +3677,10 @@ PrefabInstance:
     - target: {fileID: 3420029047754408677, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4145125627521940710, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: identificador
+      value: $834c98f7c74e488188a2571c007926dd
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6759,6 +6792,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 49898435}
     m_Modifications:
+    - target: {fileID: 3059736729251123674, guid: b6dadb8b38dbe2c4d8fb5a39325c24a8, type: 3}
+      propertyPath: identificador
+      value: $a580fe69df2a4fa8a6f68163774b99f3
+      objectReference: {fileID: 0}
     - target: {fileID: 4475424614925952166, guid: b6dadb8b38dbe2c4d8fb5a39325c24a8, type: 3}
       propertyPath: m_Name
       value: ControladorChave
@@ -8001,6 +8038,10 @@ PrefabInstance:
     - target: {fileID: 3420029047754408677, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4145125627521940710, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: identificador
+      value: $44980692f09e48a1ac2c56aebb1235f0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9756,6 +9797,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1489110783}
     m_Modifications:
+    - target: {fileID: 1663819671767324554, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: identificador
+      value: $a4062037620b4a8c8dc64835538894ed
+      objectReference: {fileID: 0}
     - target: {fileID: 3471890769104003802, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
       propertyPath: finalDaDemo
       value: 1
@@ -9803,6 +9848,10 @@ PrefabInstance:
     - target: {fileID: 5738875683432274772, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7176484666348276313, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: identificador
+      value: $8030cffde49c40428748712960114b01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

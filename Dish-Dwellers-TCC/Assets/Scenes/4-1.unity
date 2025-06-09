@@ -4340,6 +4340,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3059736729251123674, guid: b6dadb8b38dbe2c4d8fb5a39325c24a8, type: 3}
+      propertyPath: identificador
+      value: $9e3189dfe50940ef9b6f4a469d91521d
+      objectReference: {fileID: 0}
     - target: {fileID: 4475424614925952166, guid: b6dadb8b38dbe2c4d8fb5a39325c24a8, type: 3}
       propertyPath: m_Name
       value: ControladorChave
@@ -10666,6 +10670,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4145125627521940710, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: identificador
+      value: $198be7f7cb3541968ba039ea260ebcd3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11971,6 +11979,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1230891192}
     m_Modifications:
+    - target: {fileID: 1663819671767324554, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: identificador
+      value: $f953f53299b94ca593cd1a6c02676cad
+      objectReference: {fileID: 0}
     - target: {fileID: 3471890769104003802, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
       propertyPath: spawnDeSaida
       value: 
@@ -12030,6 +12042,10 @@ PrefabInstance:
     - target: {fileID: 6744491775156113356, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
       propertyPath: m_Center.z
       value: -0.14884162
+      objectReference: {fileID: 0}
+    - target: {fileID: 7176484666348276313, guid: 951caea02fc83a443ab847eb9e185548, type: 3}
+      propertyPath: identificador
+      value: $f466368f16a74e0c8ab9c90170b663a0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -17343,6 +17359,7 @@ GameObject:
   - component: {fileID: 8361628725080971906}
   - component: {fileID: 660405496030098514}
   - component: {fileID: 3119353026025988680}
+  - component: {fileID: 8361628725080971907}
   m_Layer: 7
   m_Name: Porta
   m_TagString: Untagged
@@ -18061,6 +18078,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.5, y: 4.5, z: 0.125}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8361628725080971907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3902765538710303378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugLogMetodosCadastrados: 0
+  cadastrarNoInicio: 1
+  naoUsarIDAuto: 0
+  identificador: $0589a2d4656247329ce5bd275f5bb1e6
 --- !u!1 &8369797701007495238
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class InimigoTorreta : Inimigo
@@ -26,12 +27,14 @@ public class InimigoTorreta : Inimigo
     private bool isStunned = false;
     private float stunTimer = 0f;
 
+    [Header("Animação :")]
     [SerializeField] private AnimatorTorreta animator;
+    [Tooltip("Tempo que demora para cospir a bola de fogo depois de iniciar a animação")]
+    [SerializeField] private float delayDoTiro;
 
     #endregion
 
-    private void Awake()
-    {
+    private void Awake() {
         animator = GetComponentInChildren<AnimatorTorreta>();
     }
 
@@ -76,15 +79,31 @@ public class InimigoTorreta : Inimigo
 
     public override void Atacar()
     {
-        if(!isStunned && _playerNaZonaDeAtaque && target != null && Time.time > nextFire)
-        {
+        if (!isStunned && _playerNaZonaDeAtaque && target != null && Time.time > nextFire) {
+            /*
             nextFire = Time.time + fireRate;
             animator.Cospe();
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             GameObject newProjectile = Instantiate(projectile, fireAction.transform.position, targetRotation);
             newProjectile.GetComponent<Projectile>().owner = this.gameObject;
             base.Atacar();
+            */
+            StartCoroutine(Cospir(delayDoTiro));
         }
+    }
+
+    IEnumerator Cospir(float tempoParaCospir) {
+        nextFire = Time.time + fireRate;
+        animator.Cospe();
+
+        // Sincroniza a animação e a criação do projetil
+        yield return new WaitForSeconds(tempoParaCospir);
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        GameObject newProjectile = Instantiate(projectile, fireAction.transform.position, targetRotation);
+        newProjectile.transform.LookAt(target);
+        newProjectile.GetComponent<Projectile>().owner = this.gameObject;
+        base.Atacar();
     }
 
      /// <summary>
@@ -93,16 +112,13 @@ public class InimigoTorreta : Inimigo
     /// percepção, retornar o player mais próximo na área para poder focar nele por um periodo de tempo.
     /// </summary>
     /// <returns></returns>
-    private Transform EncontrarPlayerMaisProximo()
-    {
+    private Transform EncontrarPlayerMaisProximo() {
         Transform maisProximo = null;
         float menorDistancia = Mathf.Infinity;
 
-        foreach (var jogador in GameManager.instance.jogadores)
-        {
+        foreach (var jogador in GameManager.instance.jogadores) {
             float distancia = Vector3.Distance(transform.position, jogador.transform.position);
-            if (distancia <= zonaDeAtaque && distancia < menorDistancia)
-            {
+            if (distancia <= zonaDeAtaque && distancia < menorDistancia) {
                 menorDistancia = distancia;
                 maisProximo = jogador.transform;
             }

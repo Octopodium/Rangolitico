@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Animations;
 
-public class Carregador: MonoBehaviour {
+public class Carregador: MonoBehaviour, SincronizaMetodo {
     public Transform carregarTransform;
     public float forcaArremesso = 5f, alturaArremesso = 1.5f;
     [Range(0, 1)] public float influenciaDaInerciaNoArremesso = 0.33f;
@@ -62,7 +62,16 @@ public class Carregador: MonoBehaviour {
 
         if (carregavelProximo == null) return;
 
-        carregavelProximo.Carregar(this);
+        CarregarNoAutomatico(carregavelProximo.gameObject);
+    }
+
+    [Sincronizar]
+    public void CarregarNoAutomatico(GameObject carregavelObj) {
+        Carregavel carregavel = carregavelObj.GetComponent<Carregavel>();
+        if (carregavel == null) return;
+
+        gameObject.Sincronizar(carregavelObj);
+        carregavel.Carregar(this);
     }
 
     /// <summary>
@@ -127,6 +136,21 @@ public class Carregador: MonoBehaviour {
     }
 
     /// <summary>
+    /// Solta o objeto carregado sem arremessar, apenas o solta.
+    /// Usada para casos especificos, não é uma mecânica planejada do player até então.
+    /// </summary>
+    public void Soltar() {
+        OnSoltar?.Invoke(carregado);
+
+        carregado.parentConstraint.constraintActive = false; // Desativa o ParentConstraint
+        carregado.parentConstraint.RemoveSource(carregandoParentSourceId); // Remove a fonte do ParentConstraint
+        carregado.HandleSolto();
+
+        carregado = null;
+        timerLimparUltimoCarregado = tempoLimpaUltimoCarregado;
+    }
+
+    /// <summary>
     /// Previsão da trajetória de arremesso de um objeto sem considerar colisões.
     /// </summary>
     /// <param name="rigidbody">Rigidbody do objeto a ser arremessado</param>
@@ -136,7 +160,7 @@ public class Carregador: MonoBehaviour {
     /// <returns>Retorna um vetor de posições da trajetória, sem considerar posiveis colisões no caminho.</returns>
     public Vector3[] PreverArremesso(Rigidbody rigidbody, Vector3 direcao, float forca, Vector3 velocidadeInicial) {
         if (rigidbody == null) return null;
-        
+
         int quantidadeMaxPontos = 20;
         float tempo = 10 * Time.fixedDeltaTime; // Intervalos de tempo
 

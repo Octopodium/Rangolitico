@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Gancho : MonoBehaviour, Ferramenta {
     public LineRenderer lineRenderer;
@@ -9,7 +10,7 @@ public class Gancho : MonoBehaviour, Ferramenta {
     public LayerMask layerCortante;
     public float distanciaMaxima = 10f;
     public float velocidadeGancho = 20f;
-    
+
     public Gradient gradienteCorda;
 
     [Header("Configurações de Puxada")]
@@ -20,14 +21,23 @@ public class Gancho : MonoBehaviour, Ferramenta {
     Ganchavel ganchado;
     Player jogador;
 
-
+    public bool acionada { get; protected set; } = false;
     bool acabouDePuxar = false;
 
+    /// <summary>
+    /// Chamado no Awake do Player. Seta o jogador que está usando o gancho.
+    /// </summary>
+    /// <param name="jogador"></param>
     public void Inicializar(Player jogador) {
         this.jogador = jogador;
     }
 
+    /// <summary>
+    /// Chamado quando o jogador pressiona o botão de ação do gancho.
+    /// </summary>
     public void Acionar() {
+        if (acionada) return;
+
         if (ganchado != null) {
             PuxarGancho();
             acabouDePuxar = true;
@@ -36,15 +46,41 @@ public class Gancho : MonoBehaviour, Ferramenta {
         } else {
             DestruirGancho();
         }
+
+        acionada = true;
     }
 
+    /// <summary>
+    /// Chamado quando o jogador solta o botão de ação do gancho.
+    /// </summary>
     public void Soltar() {
+        if (!acionada) return;
+
         this.jogador.MostrarDirecional(false);
-        
+
         if (gancho == null && ganchado == null && !acabouDePuxar) {
             AtirarGancho();
         }
 
+        acionada = false;
+        acabouDePuxar = false;
+    }
+
+    public void Cancelar() {
+        if (!acionada) return;
+
+        this.jogador.MostrarDirecional(false);
+        
+        if (ganchado != null) {
+            ganchado.HandleDesganchado();
+            ganchado = null;
+        }
+
+        if (gancho != null) {
+            DestruirGancho();
+        }
+
+        acionada = false;
         acabouDePuxar = false;
     }
 
@@ -58,9 +94,25 @@ public class Gancho : MonoBehaviour, Ferramenta {
     }
 
     /// <summary>
-    /// Destroi o gancho (as vezes chamado pelo próprio projetil de gancho)
+    /// Chama corotina que destroi o gancho (as vezes chamado pelo próprio projetil de gancho) [ver: DestruirGanchoCoroutine]
     /// </summary>
     public void DestruirGancho() {
+        if (gancho != null) {
+            StartCoroutine(DestruirGanchoCoroutine());
+        }
+    }
+
+    /// <summary>
+    /// Destroi o gancho (as vezes chamado pelo próprio projetil de gancho)
+    /// </summary>
+    public IEnumerator DestruirGanchoCoroutine() {
+        if (gancho == null) yield break;
+
+        if (ganchado != null) {
+            IGanchavelAntesDesganchar ganchavelAntesDesganchar = ganchado.GetComponent<IGanchavelAntesDesganchar>();
+            if (ganchavelAntesDesganchar != null) yield return ganchavelAntesDesganchar.GanchavelAntesDesganchar();
+        }
+
         Destroy(gancho);
         lineRenderer.enabled = false;
 
@@ -71,20 +123,41 @@ public class Gancho : MonoBehaviour, Ferramenta {
     }
 
     /// <summary>
-    /// Gancha um objeto ganhavel
+    /// Chama corotina que gancha um objeto ganchavel [ver: SetarGanchadoCoroutine]
     /// </summary>
     /// <param name="ganchavel">Objeto ganchavel</param>
     public void SetarGanchado(Ganchavel ganchavel) {
+        StartCoroutine(SetarGanchadoCoroutine(ganchavel));
+    }
+
+    /// <summary>
+    /// Gancha um objeto ganchavel
+    /// </summary>
+    /// <param name="ganchavel">Objeto ganchavel</param>
+    public IEnumerator SetarGanchadoCoroutine(Ganchavel ganchavel) {
+        IGanchavelAntesGanchar ganchavelAntesGanchar = ganchavel.GetComponent<IGanchavelAntesGanchar>();
+        if (ganchavelAntesGanchar != null) yield return ganchavelAntesGanchar.GanchavelAntesGanchar();
+
         ganchado = ganchavel;
         gancho.transform.SetParent(ganchavel.transform);
         ganchado.HandleGanchado();
     }
 
     /// <summary>
-    /// Puxa o gancho
+    /// Chama corotina que puxa o gancho [ver: PuxarGanchoCoroutine]
     /// </summary>
     public void PuxarGancho() {
+        StartCoroutine(PuxarGanchoCoroutine());
+    }
+
+
+    /// <summary>
+    /// Puxa o gancho (e por consequência o objeto ganchado) em direção ao inicio da corda do gancho.
+    /// </summary>
+    public virtual IEnumerator PuxarGanchoCoroutine() {
         if (ganchado != null) {
+            IGanchavelAntesPuxar ganchavelAntesPuxar = ganchado.GetComponent<IGanchavelAntesPuxar>();
+            if (ganchavelAntesPuxar != null) yield return ganchavelAntesPuxar.GanchavelAntesPuxar();
 
             ganchado.HandlePuxado();
 
@@ -95,12 +168,18 @@ public class Gancho : MonoBehaviour, Ferramenta {
 
                 Vector3 direcao = (ganchoSpawn.position - ganchado.meio).normalized;
                 Vector3 arremeco = Vector3.up * alturaDePuxada;
+                Vector3 puxada = (direcao * distancia * forcaDePuxada) + arremeco;
 
-                rb.AddForce((direcao * distancia * forcaDePuxada) + arremeco, ForceMode.Impulse);
+                rb.AddForce(puxada * rb.mass , ForceMode.Impulse);
             }
+
+            ganchado.HandleDesganchado();
+            ganchado = null;
         }
-        
+
         if (gancho != null) DestruirGancho();
+
+        yield return null;
     }
 
 }

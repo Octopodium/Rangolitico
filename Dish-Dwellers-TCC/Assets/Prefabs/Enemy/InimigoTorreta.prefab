@@ -59,12 +59,13 @@ MonoBehaviour:
   projectile: {fileID: 8089034994045674464, guid: e936e0edeb54bfc45a893fcdfed42a5e, type: 3}
   fireAction: {fileID: 8156304672999222061}
   projectileSpeed: 3
-  fireRate: 1
+  fireRate: 2
   nextFire: 0
   direction: {x: 0, y: 0, z: 0}
   tempoDeFoco: 3
-  stunDuration: 3
+  stunDuration: 5
   animator: {fileID: 3265054877791214882}
+  delayDoTiro: 0.825
 --- !u!1 &5390797750090950024
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,7 +148,7 @@ PrefabInstance:
     - target: {fileID: -8498569787993240506, guid: 482d265de29c92e4b921ef0f4fc34d2a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 7674804a06cb57d41b30df18f6fb2ee4, type: 2}
+      objectReference: {fileID: 2100000, guid: 88caacbc10930f543bf86626f9086213, type: 2}
     - target: {fileID: 919132149155446097, guid: 482d265de29c92e4b921ef0f4fc34d2a, type: 3}
       propertyPath: m_Name
       value: Turret V2

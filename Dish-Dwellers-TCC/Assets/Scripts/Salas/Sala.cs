@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -10,17 +8,18 @@ public class sala : MonoBehaviour{
     [Space(10)][Header("<color=yellow>Referências manuais: </color>")][Space(10)]
     public Transform[] spawnPoints = new Transform[2];
     public List<OnTriggerEvent> triggers = new List<OnTriggerEvent>();
-    private List<IResetavel> resetaveis = new List<IResetavel>();
+    public List<IResetavel> resetaveis = new List<IResetavel>();
     public UnityEvent onResetSala;
 
     [HideInInspector]public int nSala, nFase;
 
-    private void Start(){
-        resetaveis = FindObjectsByType<IResetavel>(FindObjectsSortMode.None).ToList();
+    private void Start() {
 
         GetNomeDaSala();
         PosicionarJogador();
         GameManager.instance.SetSala(this);
+        Debug.Log("Lista formada");
+        ResetSala();
     }
 
     /// <summary>
@@ -31,7 +30,7 @@ public class sala : MonoBehaviour{
         // Reposiciona o jogador na sua posição inicial, e restaura sua vida.
         PosicionarJogador();
         foreach( var player in GameManager.instance.jogadores){
-            player.MudarVida(3);
+            player.Resetar();
         }
 
         // Reativa todos os triggers da sala.
@@ -41,12 +40,7 @@ public class sala : MonoBehaviour{
 
         onResetSala?.Invoke();
         foreach(var data in resetaveis){ 
-            try{
-                data.OnReset();
-            }
-            catch{
-                
-            }
+            data.OnReset();
         }
         
     }
@@ -97,10 +91,10 @@ public class sala : MonoBehaviour{
         }
     }
 
-    private void Osable()
-    {
-        onResetSala = null;
-        resetaveis.Clear();
+    /// </summary>
+    /// Retorna o nome da sala atual, no formato "sala-fase".
+    /// <summary>
+    public string GetNome() {
+        return $"{nSala}-{nFase}";
     }
-
 }

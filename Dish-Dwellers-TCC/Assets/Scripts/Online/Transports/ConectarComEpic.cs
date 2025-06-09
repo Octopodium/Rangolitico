@@ -22,7 +22,7 @@ public class ConectarComEpic : ConectorDeTransport {
         mostrarID.text = "";
         mostrarID.gameObject.SetActive(true);
 
-        beOSLobby.OnLobbyEncontrado += idLobby => mostrarID.text = "ID: " + idLobby;;
+        beOSLobby.OnLobbyEncontrado += idLobby => mostrarID.text = "ID: " + idInput.text.Trim().ToUpper();
         beOSLobby.OnLobbyCriado += idLobby => { 
             mostrarID.text = "ID: " + idLobby;
             callbackHostear?.Invoke(true);

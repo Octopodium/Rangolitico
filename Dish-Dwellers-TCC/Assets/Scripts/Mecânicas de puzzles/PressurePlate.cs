@@ -1,7 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PressurePlate : IResetavel
+public class PressurePlate : IResetavel, SincronizaMetodo
 {
     [Space(10)][Header("<color=green> Info </color>")][Space(10)]
     [SerializeField] private Collider[] emCimaDaPlaca = new Collider[5];
@@ -18,26 +19,37 @@ public class PressurePlate : IResetavel
     [SerializeField] private Vector3 offset;
     public UnityEvent OnAtivado, OnDesativado;
 
+    [Header("Decalque")]
+    [SerializeField] private Renderer decalRender;
+    [SerializeField][ColorUsage(true, true)] private Color corAtivado, corDesativado;
+    private MaterialPropertyBlock decalMPB;
+
+    private Coroutine corotinaQuandoAtivo = null;
+
     // Animação:
     private Animator animator;
     public static readonly int pressureID = Animator.StringToHash("Pressure");
 
 
-    private void Awake(){
+    private void Awake() {
         animator = GetComponentInChildren<Animator>();
+        decalMPB = new MaterialPropertyBlock();
     }
 
     public override void OnReset(){
         // Faz a checagem pra desativar o botão depois que a sala reseta.
         ChecarAtivacao();
     }
-
-    //Precisa ser onTriggerStay pra caso algum objeto com peso caia em cima do player, sem passar pelo colisor
-    private void OnTriggerStay(Collider other){
+    
+    private void OnTriggerEnter(Collider other){
         ChecarAtivacao();
     }
 
-    private void OnTriggerExit(Collider other){
+    private void OnTriggerStay(Collider other) {
+        ChecarAtivacao();
+    }
+
+    private void OnTriggerExit(Collider other) {
         ChecarAtivacao();
     }
 
@@ -46,22 +58,58 @@ public class PressurePlate : IResetavel
         pesoAtual = CalcularPeso();
 
         if(pesoAtual >= pesoDesejado){
-            if(ativado) return;
-
-            Debug.Log("<color=green>Botão ativado.</color>");
-            ativado = true;
-
-            OnAtivado?.Invoke();
-            
+            Ativar();
         }
         else if(ativado){
-            Debug.Log("<color=red>Botão desativado.</color>");
-            ativado = false;
-
-            OnDesativado?.Invoke();
+            Desativar();
         }
 
         animator.SetFloat(pressureID, pesoAtual/pesoDesejado);
+    }
+
+    [Sincronizar]
+    public void Ativar() {
+        if (ativado) return;
+
+        gameObject.Sincronizar();
+
+        Debug.Log("<color=green>Botão ativado.</color>");
+        ativado = true;
+
+        OnAtivado?.Invoke();
+
+        corotinaQuandoAtivo = StartCoroutine(CheckSeAindaEmCima());
+        TrocarCorDoDecalque(corAtivado);
+    }
+
+    private void TrocarCorDoDecalque(Color col) {
+        decalMPB.SetColor("_EmissionColor", col);
+        decalRender.SetPropertyBlock(decalMPB);
+    }
+
+    IEnumerator CheckSeAindaEmCima() {
+        do {
+            yield return new WaitForEndOfFrame();
+            ChecarAtivacao();
+        } while (corotinaQuandoAtivo != null);
+    }
+
+    [Sincronizar]
+    public void Desativar() {
+        if (!ativado) return;
+
+        gameObject.Sincronizar();
+
+        Debug.Log("<color=red>Botão desativado.</color>");
+        ativado = false;
+
+        OnDesativado?.Invoke();
+
+        if (corotinaQuandoAtivo != null) {
+            StopCoroutine(corotinaQuandoAtivo);
+        }
+
+        TrocarCorDoDecalque(corDesativado);
     }
 
     // Para cada objeto com um rigidbody em cima do botão, adiciona o peso dele ao peso total.

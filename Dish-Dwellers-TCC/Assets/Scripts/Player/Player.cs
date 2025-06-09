@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement; // Titi: Adição temporaria pra reset de sala
 using System.Collections.Generic;
 using System.Collections;
 using Mirror;
@@ -10,10 +9,10 @@ public enum QualPlayer { Player1, Player2, Desativado }
 public enum QualPersonagem { Heater, Angler }
 
 [RequireComponent(typeof(Carregador)), RequireComponent(typeof(Carregavel))]
-public class Player : NetworkBehaviour {
+public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     public QualPersonagem personagem = QualPersonagem.Heater;
     public QualPlayer qualPlayer = QualPlayer.Player1;
-    public InputActionMap inputActionMap {get; protected set;}
+    [HideInInspector] public PlayerInput playerInput => GameManager.instance.GetPlayerInput(this);
 
 
 
@@ -21,9 +20,13 @@ public class Player : NetworkBehaviour {
     public float velocidade = 14f;
     public float velocidadeRB = 14f; // Velocidade do Rigidbody
     public LayerMask layerChao;
+    public float distanciaCheckChao = 0.5f;
+    bool sendoPuxado = false; // Se o jogador está sendo puxado por um gancho (definido no GanchavelAntesPuxar)
 
+    [HideInInspector] public Vector3 direcao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
+    [HideInInspector] public Vector3 mira;
+    [HideInInspector] public Vector3 movimentacao;
 
-    [HideInInspector] public Vector3 direcao, mira, movimentacao; // Direção que o jogador está olhando e movimentação atual (enquanto anda direcao = movimentacao)
     private int _playerVidas = 3;
     public int playerVidas {
         get { return _playerVidas; }
@@ -32,8 +35,7 @@ public class Player : NetworkBehaviour {
             OnVidaMudada?.Invoke(this, _playerVidas);
 
             if (_playerVidas == 0){
-                GameManager.instance.ResetSala();
-                Debug.Log("morreu");
+                Morrer();
             }
         }
     }
@@ -45,6 +47,7 @@ public class Player : NetworkBehaviour {
     public int maxInteragiveisEmRaio = 8;
     public float raioInteracao = 1f;
     public LayerMask layerInteragivel;
+    public float velocidadeCarregandoMult = 0.85f;
     Interagivel ultimoInteragivel;
     Collider[] collidersInteragiveis;
     public List<Collider> collidersIgnoraveis = new List<Collider>(); // Lista de colisores que o jogador não pode interagir
@@ -61,12 +64,19 @@ public class Player : NetworkBehaviour {
     [Header("Config do Escudo")] [Space(10)]
     public bool escudo;
     public bool escudoAtivo {get; set;}
-    public float velocidadeComEscudo = 4f;
+    public float velocidadeComEscudoMult = 0.65f;
 
     [Header("Config de Mira")] [Space(10)]
+    public float velocidadeGanchadoMult = 0.75f;
     public bool estaMirando = false;
     private Vector2 inputMira;
     public float deadzoneMira = 0.1f; // Zona morta para evitar mira acidental
+
+    [Header("Configurações de Knockback")] [Space(10)]
+    public float forcaKnockback = 5f;
+    public float duracaoKnockback = 0.3f;
+    public float componenteVerticalKnockback = 0.2f;
+    private bool estaSofrendoKnockback = false;
 
 
 
@@ -77,6 +87,8 @@ public class Player : NetworkBehaviour {
     public Carregavel carregando => carregador.carregado; // O que o jogador está carregando
     Carregavel carregavel; // O que permite o jogador a ser carregado
     public bool sendoCarregado => carregavel.sendoCarregado; // Se o jogador está sendo carregado
+    Ganchavel ganchavel; // O que permite o jogador ser puxado pelo gancho
+    public bool ganchado => ganchavel != null && ganchavel.ganchado; // Se o jogador está ganchado
     AnimadorPlayer animacaoJogador;
 
     public bool estaNoChao = true;
@@ -84,18 +96,19 @@ public class Player : NetworkBehaviour {
     Rigidbody rb; // Rigidbody do jogador (se houver)
     Collider col;
 
-    public bool estaGanchado {get; set;}
-
 
     // Awake: trata de referências/configurações internas
     void Awake() {
         collidersInteragiveis = new Collider[maxInteragiveisEmRaio];
+
+        direcao = new Vector3(0, 0, -1);
 
         rb = GetComponent<Rigidbody>();
         col = GetComponent<CapsuleCollider>();
         characterController = GetComponent<CharacterController>();
         carregador = GetComponent<Carregador>();
         carregavel = GetComponent<Carregavel>();
+        ganchavel = GetComponent<Ganchavel>();
         ferramenta = GetComponentInChildren<Ferramenta>();
         ferramenta.Inicializar(this);
 
@@ -105,15 +118,15 @@ public class Player : NetworkBehaviour {
         foreach (var col in colliders) {
             collidersIgnoraveis.Add(col);
         }
-        
 
         // Se está carregando algo, ignora a interação com esta coisa
-        carregador.OnCarregar += (carregavel) => { if (carregavel != null)  collidersIgnoraveis.Add(carregavel.GetComponent<Collider>()); };
-        carregador.OnSoltar += (carregavel) => { if (carregavel != null)  collidersIgnoraveis.Remove(carregavel.GetComponent<Collider>()); };
+        carregador.OnCarregar += (carregavel) => { if (carregavel != null) collidersIgnoraveis.Add(carregavel.GetComponent<Collider>()); ResetarFerramenta(); };
+        carregador.OnSoltar += (carregavel) => { if (carregavel != null) collidersIgnoraveis.Remove(carregavel.GetComponent<Collider>()); };
 
         // Se o jogador está sendo carregado, ignora a interação com o carregador
-        carregavel.OnCarregado += (carregador) => { if (carregador != null)  collidersIgnoraveis.Add(carregador.GetComponent<Collider>()); UsarRB(true); };
-        carregavel.OnSolto += (carregador) => {  if (carregador != null)  collidersIgnoraveis.Remove(carregador.GetComponent<Collider>()); };
+        carregavel.OnCarregado += (carregador) => { if (carregador != null) collidersIgnoraveis.Add(carregador.GetComponent<Collider>()); };
+        carregavel.OnSolto += (carregador) => { if (carregador != null) collidersIgnoraveis.Remove(carregador.GetComponent<Collider>()); };
+        
     }
 
     // Start: trata de referências/configurações externas
@@ -125,22 +138,8 @@ public class Player : NetworkBehaviour {
 
             qualPlayer = isLocalPlayer ? QualPlayer.Player1 : QualPlayer.Desativado;
         }
-        
-        inputActionMap = GameManager.instance.GetPlayerInput(qualPlayer);
 
-        if (!GameManager.instance.isOnline) {
-            inputActionMap["Interact"].performed += Interagir;
-            inputActionMap["Attack"].performed += ctx => AcionarFerramenta();
-            inputActionMap["Attack"].canceled += ctx => SoltarFerramenta();
-            inputActionMap["Aim"].performed += cnt => Mira();
-            inputActionMap["Aim"].canceled += cnt => Mira();
-        } else if (isLocalPlayer) {
-            inputActionMap["Interact"].performed += ctx => InteragirOnlineCmd();
-            inputActionMap["Attack"].performed += ctx => AcionarFerramentaOnlineCmd();
-            inputActionMap["Attack"].canceled += ctx => SoltarFerramentaOnlineCmd();
-            inputActionMap["Aim"].performed += cnt => Mira();
-            inputActionMap["Aim"].canceled += cnt => Mira();
-        }
+        GameManager.instance.OnInputTriggered += OnInputTriggered; // Registra o evento de input do GameManager
 
         estaNoChao = CheckEstaNoChao(); // Verifica se o jogador está no chão
         if (estaNoChao){ 
@@ -153,52 +152,69 @@ public class Player : NetworkBehaviour {
         }
     }
 
-    void OnEnable() {
-        if (GameManager.instance != null && GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap != null && inputActionMap.enabled) {
-            GameManager.instance.TrocarControleSingleplayer(qualPlayer);
-        }
+    public void OnInputTriggered(InputAction.CallbackContext ctx, QualPlayer qualPlayer) {
+        if (qualPlayer != this.qualPlayer) return;
+        if (!ehJogadorAtual) return; // Se não é o jogador atual, não faz nada
 
-        if (inputActionMap != null) inputActionMap.Enable();
+        switch (ctx.action.name) {
+            case "Interact":
+                if (ctx.performed) Interagir(ctx);
+                break;
+            case "Attack":
+                if (ctx.performed) AcionarFerramenta(ctx);
+                else SoltarFerramenta(ctx);
+                break;
+            case "Aim":
+                Mira();
+                break;
+        }
     }
 
-    void OnDisable(){
-        /*
-        if (inputActionMap != null) {
-            inputActionMap["Interact"].performed -= Interagir;
-            inputActionMap["Attack"].performed -= AcionarFerramenta;
-            inputActionMap["Attack"].canceled -= SoltarFerramenta;
+    void OnEnable() {
+        if (GameManager.instance != null && GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER) {
+            GameManager.instance.AtualizarControleSingleplayer();
         }
-        */
+    }
 
+    void OnDisable() {
         if (ultimoInteragivel != null) {
             ultimoInteragivel.MostarIndicador(false);
             ultimoInteragivel = null;
         }
 
-        if (GameManager.instance != null && GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && inputActionMap.enabled) {
+        if (GameManager.instance != null && GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && playerInput != null && playerInput.enabled) {
             GameManager.instance.TrocarControleSingleplayer();
         }
     }
 
-    void FixedUpdate() {
-        bool estaJogando = true;
-
-        if (GameManager.instance.isOnline && !isLocalPlayer) {
-            estaJogando = false; // Não atualiza a movimentação do jogador se não for o jogador local
+    public bool ehJogadorAtual { get {
+            if (GameManager.instance == null) return true;
+            
+            switch (GameManager.instance.modoDeJogo) {
+                case ModoDeJogo.SINGLEPLAYER:
+                    return playerInput != null && playerInput.enabled;
+                case ModoDeJogo.MULTIPLAYER_ONLINE:
+                    return isLocalPlayer;
+                default:
+                    return true;
+            }
         }
+    }
 
+    void FixedUpdate() {
         // No modo singleplayer, caso este jogador não seja o atual, não faz nada
-        if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && !inputActionMap.enabled) {
+        if (GameManager.instance.modoDeJogo == ModoDeJogo.SINGLEPLAYER && (playerInput == null || !playerInput.enabled)) {
             if (ultimoInteragivel != null) {
                 ultimoInteragivel.MostarIndicador(false);
                 ultimoInteragivel = null;
             }
 
-            estaJogando = false; // Não atualiza a movimentação do jogador se não for o jogador local
+            direcao = Vector3.zero;
+            movimentacao = Vector3.zero;
         }
 
-        if (estaJogando) ChecarInteragiveis();
-        Movimentacao(estaJogando);
+        if (ehJogadorAtual) ChecarInteragiveis();
+        Movimentacao();
     }
 
 
@@ -210,11 +226,27 @@ public class Player : NetworkBehaviour {
         playerVidas += valor;
     }
 
+    /// <summary>
+    /// Chamado quando o jogador morre
+    /// </summary>
+    [Sincronizar]
+    public void Morrer() {
+        gameObject.Sincronizar();
+        GameManager.instance.ResetSala();
+        Debug.Log("morreu");
+    }
+
+    public void Resetar() {
+        MudarVida(3);
+
+        if (sendoCarregado) carregavel.carregador.Soltar(); // Se o jogador está sendo carregado, se solta
+        if (carregando != null) carregador.Soltar(); // Se o jogador está carregando algo, se solta
+    }
 
 
     #region Online
 
-    [HideInInspector, SyncVar(hook=nameof(AtualizarStatusConectado))] public bool conectado = false;
+    [HideInInspector, SyncVar(hook = nameof(AtualizarStatusConectado))] public bool conectado = false;
     void AtualizarStatusConectado(bool oldValue, bool newValue) {
         if (isLocalPlayer) {
             if (!oldValue && newValue) {
@@ -227,55 +259,49 @@ public class Player : NetworkBehaviour {
 
     public override void OnStopClient (){
         base.OnStopClient();
-        GameManager.instance.VoltarParaMenu();
+        GameManager.instance?.VoltarParaMenu();
     }
 
 
     [Command]
-    void AtualizarDirecaoCmd(Vector3 valor) {
-        AtualizarDirecaoClientRpc(valor);
+    void AtualizarDirecaoCmd(Vector3 valor, bool isMira, bool estaMirando) {
+        AtualizarDirecaoClientRpc(valor, isMira, estaMirando);
     }
 
     [ClientRpc]
-    void AtualizarDirecaoClientRpc(Vector3 valor) {
+    void AtualizarDirecaoClientRpc(Vector3 valor, bool isMira, bool estaMirando) {
         if (isLocalPlayer) return; // Não atualiza a direção do jogador local
 
-        direcao = valor;
-        visualizarDirecao.transform.forward = direcao;
-    }
+        this.estaMirando = estaMirando;
 
+        if (estaMirando || direcao.magnitude != 0) {
+            direcao = valor;
+            visualizarDirecao.transform.forward = direcao;
+        } else if (movimentacao.magnitude != 0) {
+            direcao = movimentacao;
+        }
 
-    // Respota para inputs na versão Online (é uma gambiarra que funciona)
-
-    [Command]
-    void InteragirOnlineCmd() {
-        InteragirOnlineClientRpc();
-    }
-
-    [ClientRpc]
-    void InteragirOnlineClientRpc() {
-        ChecarInteragiveis();
-        Interagir();
+        if (!isMira)
+            animacaoJogador.Mover(direcao);
     }
 
     [Command]
-    void AcionarFerramentaOnlineCmd() {
-        AcionarFerramentaOnlineClientRpc();
+    void AtualizarMovimentoCmd(Vector3 movimento) {
+        AtualizarMovimentoClientRpc(movimento);
     }
 
     [ClientRpc]
-    void AcionarFerramentaOnlineClientRpc() {
-        AcionarFerramenta();
-    }
+    void AtualizarMovimentoClientRpc(Vector3 movimento) {
+        if (isLocalPlayer) return; // Não atualiza a direção do jogador local
 
-    [Command]
-    void SoltarFerramentaOnlineCmd() {
-        SoltarFerramentaOnlineClientRpc();
-    }
+        movimentacao = movimento;
 
-    [ClientRpc]
-    void SoltarFerramentaOnlineClientRpc() {
-        SoltarFerramenta();
+        if (!estaMirando && movimentacao.magnitude > 0) {
+            direcao = movimentacao;
+            visualizarDirecao.transform.forward = direcao;
+        }
+
+        animacaoJogador.Mover(movimentacao);
     }
 
     #endregion
@@ -287,7 +313,9 @@ public class Player : NetworkBehaviour {
     /// <summary>
     /// Chamado quando o botão de "ataque" é pressionado
     /// </summary>
-    void AcionarFerramenta() {
+    [Sincronizar]
+    public void AcionarFerramenta() {
+        gameObject.Sincronizar();
         if (!carregador.estaCarregando && ferramenta != null) ferramenta.Acionar();
     }
 
@@ -298,12 +326,25 @@ public class Player : NetworkBehaviour {
     /// <summary>
     /// Chamado quando o botão de "ataque" é solto
     /// </summary>
-    void SoltarFerramenta() {
+    [Sincronizar]
+    public void SoltarFerramenta() {
+        gameObject.Sincronizar();
         if (!carregador.estaCarregando && ferramenta != null) ferramenta.Soltar();
     }
 
     void SoltarFerramenta(InputAction.CallbackContext ctx) {
         SoltarFerramenta();
+    }
+
+    /// <summary>
+    /// Chamado quando o jogador não pode estar com a ferramenta acionada porém está
+    /// </summary>
+    [Sincronizar]
+    public void ResetarFerramenta() {
+        if (!ferramenta.acionada) return;
+
+        gameObject.Sincronizar();
+        ferramenta.Cancelar();
     }
 
     /// <summary>
@@ -313,8 +354,24 @@ public class Player : NetworkBehaviour {
     /// <param name="mostrar">Se irá mostrar ou não</param>
     public void MostrarDirecional(bool mostrar) {
         visualizarDirecao.SetActive(mostrar);
-        if(personagem == QualPersonagem.Heater) return;
+        if (personagem == QualPersonagem.Heater) return;
         podeMovimentar = !mostrar;
+    }
+
+    /// <summary>
+    /// Garante que o jogador será um Rigidbody ao ser puxado pelo gancho
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator GanchavelAntesPuxar() {
+        UsarRB(true);
+        StartCoroutine(SendoPuxadoCoroutine());
+        yield return new WaitForEndOfFrame();
+    }
+
+    IEnumerator SendoPuxadoCoroutine() {
+        sendoPuxado = true;
+        yield return new WaitForSeconds(0.1f); // Espera um pouco para garantir que deu tempo de sair do chão
+        sendoPuxado = false;
     }
 
 
@@ -326,91 +383,146 @@ public class Player : NetworkBehaviour {
     /// <summary>
     /// Trata da movimentação do jogador
     /// </summary>
-    
+
     //Titi: Fiz algumas alterações aqui na movimentação pro escudo ok :3
-    void Movimentacao(bool permitidoMover) {
-        CalcularDirecao();
+    void Movimentacao() {
+        if (!GameManager.instance.isOnline || isLocalPlayer)
+            CalcularDirecao();
 
         estaNoChao = CheckEstaNoChao();
 
-        if(estaGanchado || !estaNoChao) MovimentacaoNoAr(permitidoMover);
-        else MovimentacaoNoChao(permitidoMover);
+        if(!estaNoChao) MovimentacaoNoAr();
+        else MovimentacaoNoChao();
 
         UsarAtrito(estaNoChao);
 
-        animacaoJogador.Mover(movimentacao);
+        if (!GameManager.instance.isOnline || isLocalPlayer)
+            animacaoJogador.Mover(movimentacao);
     }
 
     void CalcularDirecao() {
+        if (playerInput == null || !playerInput.enabled) return;
 
-        Vector2 input = inputActionMap["Move"].ReadValue<Vector2>();
+        Vector2 input = playerInput.currentActionMap["Move"].ReadValue<Vector2>();
         float x = input.x;
         float z = input.y;
 
+        Vector3 ultimaMovimentacao = movimentacao;
         movimentacao = (transform.right * x + transform.forward * z).normalized;
 
-        if (!estaMirando && movimentacao.magnitude > 0) 
-        {
+        if (!estaMirando && movimentacao.magnitude > 0) {
             direcao = movimentacao;
             visualizarDirecao.transform.forward = direcao;
-
-        if (GameManager.instance.isOnline && isLocalPlayer) 
-            AtualizarDirecaoCmd(direcao);
         }
+
+        if (ultimaMovimentacao != movimentacao && GameManager.instance.isOnline && isLocalPlayer)
+            AtualizarMovimentoCmd(movimentacao);
+    }
+
+    float GetVelocidade(bool isRb = false) {
+        float v = isRb ? velocidadeRB : velocidade;
+
+        if (escudoAtivo) v *= velocidadeComEscudoMult;
+        else if (carregando) v *= velocidadeCarregandoMult;
+        if (ganchado) v *= velocidadeGanchadoMult;
+
+        return v;
     }
 
     // Chamado automaticamente pelo método Movimentacao
-    void MovimentacaoNoChao(bool permitidoMover) {
-        
+    void MovimentacaoNoChao() {
         UsarCC();
 
         Vector3 movimentacaoEfetiva = Vector3.zero; 
 
-        if (permitidoMover && !sendoCarregado && podeMovimentar && movimentacao.magnitude > 0) 
-            movimentacaoEfetiva += movimentacao * velocidade;
+        if (ehJogadorAtual && !sendoCarregado && podeMovimentar && movimentacao.magnitude > 0) 
+            movimentacaoEfetiva += movimentacao * GetVelocidade();
         
-        if (!characterController.isGrounded && !sendoCarregado)
-            movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
+        movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
+        /*
+        if (!characterController.isGrounded && !sendoCarregado) {
+
+        }*/
+            
         
-        characterController.Move(movimentacaoEfetiva * Time.fixedDeltaTime);
+        if (movimentacaoEfetiva != Vector3.zero) {
+            characterController.Move(movimentacaoEfetiva * Time.fixedDeltaTime);
+        }
     }
 
     // Chamado automaticamente pelo método Movimentacao
-    void MovimentacaoNoAr(bool permitidoMover) {
+    void MovimentacaoNoAr() {
         UsarRB();
 
-        if (!permitidoMover || sendoCarregado || !podeMovimentar || movimentacao.magnitude == 0)  return;
+        if (!ehJogadorAtual || sendoCarregado || !podeMovimentar || movimentacao.magnitude == 0)  return;
 
-        rb.AddForce(movimentacao.normalized * velocidadeRB , ForceMode.Force);
-
-        /*
-        Vector3 velocity = rb.linearVelocity;
-        velocity.y = 0; // Mantém a velocidade vertical do Rigidbody
-        if (velocity.magnitude > velocidadeRB) {
-            velocity = velocity.normalized * velocidadeRB;
-            velocity.y = rb.linearVelocity.y;
-            rb.linearVelocity = velocity.normalized * velocidadeRB; // Limita a velocidade do jogador
-        }
-        */
+        rb.AddForce(movimentacao.normalized * GetVelocidade(true) , ForceMode.Force);
     }
 
-    // Código para fazer o player mirar a direção do escudo e gancho de forma separada da movimentação 
+    /// <summary>
+    /// Código para fazer o player mirar a direção do escudo e gancho de forma separada da movimentação 
+    /// </summary>
     void Mira()
     {
-        inputMira = inputActionMap["Aim"].ReadValue<Vector2>();
+        if (playerInput == null || !playerInput.enabled) return;
+
+        inputMira = playerInput.currentActionMap["Aim"].ReadValue<Vector2>();
         
+        bool estavaMirando = estaMirando;
         estaMirando = inputMira.magnitude > deadzoneMira;
-        
-        if (estaMirando)
-        {
+
+        if (estaMirando) {
             Vector3 novaDirecao = new Vector3(inputMira.x, 0, inputMira.y).normalized;
-            
+            bool houveMudanca = (direcao != novaDirecao) || (estavaMirando != estaMirando);
+
             direcao = novaDirecao;
             visualizarDirecao.transform.forward = direcao;
-            
-            if (GameManager.instance.isOnline && isLocalPlayer) // Pelo que eu vi as coisas do Juan ACHO que é só fazer isso aqui mesmo pro online, se der merda tem que mudar aqui 
-                AtualizarDirecaoCmd(direcao);
+
+            if (houveMudanca && GameManager.instance.isOnline && isLocalPlayer)
+                AtualizarDirecaoCmd(direcao, true, estaMirando);
+        } else if (GameManager.instance.isOnline && isLocalPlayer) {
+            AtualizarDirecaoCmd(direcao, true, estaMirando);
         }
+    }
+
+    /// <summary>
+    /// Coisas de knockback do player que foram mudadas 
+    /// devido as complicações com a física atualmente 
+    /// </summary>
+    /// <param name="executaEmpurrar"></param>
+    public void AplicarKnockback(Transform origem)
+    {
+        if (estaSofrendoKnockback) return;
+        
+        StartCoroutine(ProcessarKnockback(origem));
+    }
+
+    private IEnumerator ProcessarKnockback(Transform origem)
+    {
+        estaSofrendoKnockback = true;
+        bool podiaSeMover = podeMovimentar;
+        podeMovimentar = false;
+
+        Vector3 direcao = (transform.position - origem.position).normalized;
+        direcao.y = componenteVerticalKnockback;
+        direcao.Normalize();
+
+        float tempo = 0f;
+        Vector3 velocidadeInicial = direcao * forcaKnockback;
+        Vector3 velocidadeFinal = Vector3.zero;
+
+        while (tempo < duracaoKnockback)
+        {
+            tempo += Time.deltaTime;
+            float progresso = tempo / duracaoKnockback;
+            Vector3 velocidadeAtual = Vector3.Lerp(velocidadeInicial, velocidadeFinal, progresso);
+            
+            characterController.Move(velocidadeAtual * Time.deltaTime);
+            yield return null;
+        }
+
+        podeMovimentar = podiaSeMover;
+        estaSofrendoKnockback = false;
     }
 
     bool usandoRb = true;
@@ -440,7 +552,8 @@ public class Player : NetworkBehaviour {
 
 
     public bool CheckEstaNoChao() {
-        return Physics.Raycast(transform.position, Vector3.down, 0.5f, layerChao);
+        if (sendoPuxado) return false; // Se o jogador está sendo puxado, não está no chão
+        return Physics.Raycast(transform.position, Vector3.down, distanciaCheckChao, layerChao);
     }
 
     public void Teletransportar(Vector3 posicao) {
@@ -487,7 +600,7 @@ public class Player : NetworkBehaviour {
         int quant = 0;
 
         for (int i = 0; i < colliders.Length; i++) {
-            if (collidersIgnoraveis.Contains(colliders[i])) {
+            if (collidersIgnoraveis.Contains(colliders[i]) || colliders[i] == null) {
                 colliders[i] = null;
             } else {
                 quant++;
@@ -521,7 +634,7 @@ public class Player : NetworkBehaviour {
         int quantFiltrada = RemoveColisoresIgnoraveis(collidersInteragiveis);
 
         // Na maioria das vezes, não haverá interagíveis
-        if (quantFiltrada == 0) { 
+        if (quantFiltrada == 0) {
             if (ultimoInteragivel != null) ultimoInteragivel.MostarIndicador(false);
             ultimoInteragivel = null;
             cache_interagiveisProximos.Clear();
@@ -607,24 +720,33 @@ public class Player : NetworkBehaviour {
     /// </summary>
     void Interagir() {
         // Prioriza interações ao invés de soltar o que carrega (caso a interação necessite de um objeto carregado)
-        if (ultimoInteragivel != null) ultimoInteragivel.Interagir(this);
-        else if (carregador.estaCarregando) carregador.Soltar(direcao, velocidade, movimentacao.magnitude > 0);
+        if (ultimoInteragivel != null) InteragirCom(ultimoInteragivel.gameObject);
+        else if (carregador.estaCarregando) SoltarCarregando();
     }
 
     void Interagir(InputAction.CallbackContext ctx){
         Interagir();
     }
 
-    #endregion
+    [Sincronizar]
+    public void InteragirCom(GameObject interagivelObj) {
+        Interagivel interagivel = interagivelObj.GetComponent<Interagivel>();
+        if (interagivel == null) return;
+        gameObject.Sincronizar(interagivelObj);
 
-    // IEnumerator pra desativar o ganchado so depois que puxar
-    public void FalsearGanchado(){
-        StartCoroutine("WaitForDesganchado");
+        ultimoInteragivel = interagivel;
+        interagivel.Interagir(this);
     }
-    IEnumerator WaitForDesganchado(){
-        yield return new WaitForSeconds(0.1f);
-        estaGanchado = false;
+
+    [Sincronizar]
+    public void SoltarCarregando() {
+        if (!carregador.estaCarregando) return;
+        gameObject.Sincronizar();
+
+        carregador.Soltar(direcao, velocidade, movimentacao.magnitude > 0);
     }
+
+    #endregion
     
     void OnDrawGizmos() {
         Gizmos.color = Color.green;

@@ -22,6 +22,10 @@ public class Carregavel : MonoBehaviour, InteracaoCondicional {
         parentConstraint.rotationAxis = Axis.None; // Desabilita rotação ao ser pego
     }
 
+    void OnDisable() {
+        carregador?.Soltar();
+    }
+
     /// <summary>
     /// Condições para que o jogador possa interagir com o objeto. 
     /// Se o jogador estiver carregando outro objeto, não poderá interagir com este.

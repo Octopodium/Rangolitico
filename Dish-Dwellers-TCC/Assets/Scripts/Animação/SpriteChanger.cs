@@ -36,9 +36,9 @@ public class SpriteChanger : MonoBehaviour{
     /// Muda o sprite utilizado ao alterar o canal de UV sendo lido pelo material. Somente valores de 0 a 3 são aceitos.
     /// </summary>
     /// <param name="sprite"></param>
-    public void ChangeSprite(int sprite){
+    public void ChangeSprite(int sprite) {
         Math.Clamp(sprite, 0, 3);
-        
+
         SelectKeyword(sprite);
 
         this.sprite = sprite;

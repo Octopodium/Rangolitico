@@ -158,13 +158,20 @@ public class DishNetworkManager : NetworkManager {
 
     #endregion No Lobby
 
+    [Client]
+    public int GetCurrentPingInMs() {
+        return (int) System.Math.Round(NetworkTime.rtt * 1000, 0);
+    }
+
     #region In Game
 
     public struct RequestPassaDeSalaMessage : NetworkMessage {
         public bool passarDeSala;
+        public string salaAtual;
 
-        public RequestPassaDeSalaMessage(bool passarDeSala = true) {
+        public RequestPassaDeSalaMessage(bool passarDeSala = true, string salaAtual = "") {
             this.passarDeSala = passarDeSala;
+            this.salaAtual = salaAtual;
         }
     }
 
@@ -176,10 +183,14 @@ public class DishNetworkManager : NetworkManager {
         }
     }
 
+    private string salaAtual = "";
+
     // Recebe a requisição de passar de sala e avisa todos os clientes para passar de sala
     private void OnRequestedPassaDeSala(NetworkConnectionToClient conn, RequestPassaDeSalaMessage msg) {
         if (players == null || players.Length == 0) return;
         if (players[0] == null || players[1] == null) return;
+        if (msg.salaAtual == salaAtual) return; // Se chamou duas vezes para a mesma sala, não faz nada.
+        salaAtual = msg.salaAtual;
 
         NetworkServer.SendToAll(new AcaoPassaDeSalaMessage(msg.passarDeSala));
     }

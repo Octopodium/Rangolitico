@@ -1,17 +1,27 @@
 using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoBehaviour
 {
     [SerializeField] GameObject[] coracoesEsquerda;
     [SerializeField] GameObject[] coracoesDireita;
-    public GameObject telaPause;
 
-    void Awake(){
+    public GameObject telaPause;
+    private Image img;
+
+    [Header("Event System")]
+    public EventSystem eventSystem;
+    public GameObject primeiroSelecionadoPause;
+
+    void Awake() {
         Player.OnVidaMudada += HandleDisplayVida;
         GameManager.OnPause += HandlePausa;
+
+        if (eventSystem == null) {
+            eventSystem = FindFirstObjectByType<EventSystem>();
+        }
     }
 
     private void OnDestroy(){
@@ -31,39 +41,29 @@ public class UIManager : MonoBehaviour
         GameObject[] coracoes = player.qualPlayer == QualPlayer.Player1 ? coracoesEsquerda : coracoesDireita;
 
         for (int i = 0; i < coracoes.Length; i++){ 
-            //percorre pela array de coracoes e ativa caso ele for menor que as vidas, ele ativa
+            //percorre pela array de coracoes e ativa caso ele for menor que as vidas
             //como temos 3 de vida e a array tem 0,1,2 ele trata por i e nao pelo numero de vida
-            coracoes[i].SetActive(i < player.playerVidas);
+            img = coracoes[i].GetComponent<Image>();
+            
+            img.color = i < player.playerVidas ? Color.red : Color.white;
+            //coracoes[i].SetActive(i < player.playerVidas);
         }
     }
 
     public void HandlePausa(bool estado){
+        if (estado) eventSystem.SetSelectedGameObject(primeiroSelecionadoPause);
         AtivarEDesativarObjeto(telaPause);
     }
 
     public void DespauseNoResume(){ 
-    //Juan eu preciso que o botao Resumo funcione de algum jeito
-    //colocando o GM no OnClick ou fazendo uma
-    //funcao, escolhi a funcao pois posso comentar
         if(GameManager.instance != null){
             GameManager.instance.Pause();
         }
     }
 
     public void VoltarParaMenu() {
-        // Eu não devia ter que chamar nessa função,
-        // mas se eu referenciar o GameManager 
         if(GameManager.instance != null){
             GameManager.instance.VoltarParaMenu();
         }
-    }
-
-    public void QuitJogo(){
-        Application.Quit();
-    }
-
-    public void IrParaLink(string link) {
-        // Abre o link no navegador padrão do dispositivo
-        Application.OpenURL(link);
     }
 }

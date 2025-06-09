@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Users;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using System;
+using UnityEngine.Rendering;
 
 public enum ModoDeJogo {SINGLEPLAYER, MULTIPLAYER_LOCAL, MULTIPLAYER_ONLINE, INDEFINIDO}; // Indefinido: substituto para NULL (de quando não foi definido ainda)
 
@@ -14,6 +16,7 @@ public class GameManager : MonoBehaviour {
 
     public static GameManager instance;
     public Actions input;
+    public PlayerInputManager playerInputManager; // Gerencia os inputs dos jogadores locais
 
 
     public LeitorDeControle controle;
@@ -42,14 +45,12 @@ public class GameManager : MonoBehaviour {
     public string menuPrincipalSceneName = "MainMenu"; // Cena do menu do jogo
     bool voltandoParaMenu = false; // Evitar fadiga
 
+    
+
 
     [Header("Opção Offline")]
     public GameObject offlineAnglerPrefab;
     public GameObject offlineHeaterPrefab;
-
-    public void AAAa(string teste){
-        Debug.Log("aaa: " + teste);
-    }
 
 
     void Awake() {
@@ -59,7 +60,7 @@ public class GameManager : MonoBehaviour {
             Destroy(gameObject);
             return;
         }
-        
+
         DontDestroyOnLoad(gameObject);
 
         // Lê o modo de jogo escolhido pelo jogador (é definido na escolha do menu)
@@ -72,11 +73,8 @@ public class GameManager : MonoBehaviour {
         input = new Actions();
         input.Enable();
 
-        input.UI.Pause.started += ctx => Pause();
+        input.UI.Pause.started += Pause;
         input.Geral.TrocarPersonagens.performed += ctx => TrocarControleSingleplayer();
-        
-        SetarInputs();
-
 
         // Referencia interna
         controle = GetComponent<LeitorDeControle>();
@@ -91,98 +89,217 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void Pause(){
-        if(Time.timeScale == 1){
+    void Start() {
+        ConfigurarInputs();
+    }
+
+    void OnDestroy() {
+        if (input != null) {
+            input.Disable();
+            input.UI.Pause.started -= Pause;
+            input.Geral.TrocarPersonagens.performed -= TrocarControleSingleplayer;
+        }
+
+        if (isOnline)
+            DesligarOOnline();
+
+        if (DialogueSystem.instance != null) {
+            Destroy(DialogueSystem.instance.gameObject);
+        }
+    }
+
+    public void Pause(InputAction.CallbackContext ctx) {
+        Pause();
+    }
+
+    public void Pause() {
+        if (Time.timeScale == 1) {
             OnPause?.Invoke(true);
             Time.timeScale = 0;
-        }else{
+        } else {
             OnPause?.Invoke(false);
             Time.timeScale = 1;
         }
     }
-    
+
+    public void Pause(bool pausar) {
+        if (pausar) {
+            OnPause?.Invoke(true);
+            Time.timeScale = 0;
+        } else {
+            OnPause?.Invoke(false);
+            Time.timeScale = 1;
+        }
+    }
 
     #region Input
 
-    Actions input2_singleplayer;
-    public QualPlayer playerAtual {get; private set;} = QualPlayer.Player1;
+    public PlayerInput player1Input, player2Input;
+    public InputDevice player1Device, player2Device;
 
-    public InputActionMap GetPlayerInput(QualPlayer player = QualPlayer.Player1){
-        switch(modoDeJogo){
-            case ModoDeJogo.SINGLEPLAYER:
-                return player == QualPlayer.Player1 ? input.Player.Get() : input2_singleplayer.Player.Get();
-            case ModoDeJogo.MULTIPLAYER_LOCAL:
-                return player == QualPlayer.Player1 ? input.Player.Get() : input.Player2.Get();
-            case ModoDeJogo.MULTIPLAYER_ONLINE:
-                return input.Player.Get();
-            default:
-                return null;
+    public QualPlayer playerAtual { get; private set; } = QualPlayer.Player1;
+    public Action<InputAction.CallbackContext, QualPlayer> OnInputTriggered;
+
+    protected void ConfigurarInputs() {
+        player1Input.gameObject.SetActive(true);
+        player1Input.onActionTriggered += ctx => HandleOnInputTriggered(ctx, QualPlayer.Player1);
+        player1Input.onDeviceLost += ctx => OnDeviceLost(player1Input, QualPlayer.Player1);
+
+        if (modoDeJogo == ModoDeJogo.MULTIPLAYER_LOCAL) {
+            player2Input.gameObject.SetActive(true);
+            player2Input.onActionTriggered += ctx => HandleOnInputTriggered(ctx, QualPlayer.Player2);
+            player2Input.onDeviceLost += ctx => OnDeviceLost(player2Input, QualPlayer.Player2);
+
+            CadastrarDevices();
+        } else {
+            Destroy(player2Input.gameObject);
+            player2Input = null;
         }
     }
 
-    void SetarInputs() {
-        switch(modoDeJogo){
-            case ModoDeJogo.SINGLEPLAYER:
-                if (input2_singleplayer == null) {
-                    input2_singleplayer = new Actions();
-                    input2_singleplayer.Enable();
-                }
+    protected void OnDeviceLost(PlayerInput playerInput, QualPlayer qualPlayer) {
+        Debug.Log($"Dispositivo perdido para {qualPlayer}: {playerInput.currentControlScheme}");
 
-                input.Player2.Disable();
-                input2_singleplayer.Player2.Disable();
+        if (qualPlayer == QualPlayer.Player1) {
+            player1Device = null;
+            player1Input.user.UnpairDevices();
+            player1Input.DeactivateInput();
+        } else if (qualPlayer == QualPlayer.Player2) {
+            player2Device = null;
+            player2Input.user.UnpairDevices();
+            player2Input.DeactivateInput();
+        }
 
-                if (playerAtual == QualPlayer.Player1) {
-                    input.Player.Enable();
-                    input2_singleplayer.Player.Disable();
-                } else {
-                    input.Player.Disable();
-                    input2_singleplayer.Player.Enable();
-                }
+        UIConexaoInGame.instancia.SetConectando(qualPlayer);
+        input.Player.Get().actionTriggered += OuveAcoesParaCadastrarDevices;
+    }
 
-                break;
-            case ModoDeJogo.MULTIPLAYER_LOCAL:
-                input.Player.Enable();
-                input.Player2.Enable();
-                break;
-            case ModoDeJogo.MULTIPLAYER_ONLINE:
-                input.Player.Enable();
-                input.Player2.Disable();
-                break;
-            default:
+    protected void HandleOnInputTriggered(InputAction.CallbackContext ctx, QualPlayer qualPlayer) {
+        if (modoDeJogo == ModoDeJogo.SINGLEPLAYER) {
+            qualPlayer = playerAtual;
+        } else if (modoDeJogo == ModoDeJogo.MULTIPLAYER_ONLINE) {
+            qualPlayer = QualPlayer.Player1;
+        }
+
+        if (OnInputTriggered != null) {
+            OnInputTriggered(ctx, qualPlayer);
+        }
+    }
+
+    public PlayerInput GetPlayerInput(Player player) {
+        if (modoDeJogo == ModoDeJogo.MULTIPLAYER_LOCAL) {
+            return (player.qualPlayer == QualPlayer.Player1) ? player1Input : player2Input;
+        } else {
+            return (player.qualPlayer == playerAtual) ? player1Input : null;
+        }
+    }
+
+    protected void CadastrarDevices() {
+        if (modoDeJogo != ModoDeJogo.MULTIPLAYER_LOCAL) return;
+
+        player1Device = null;
+        player2Device = null;
+
+        if (player1Input.user.valid) player1Input.user.UnpairDevices();
+        if (player2Input.user.valid) player2Input.user.UnpairDevices();
+
+        player1Input.DeactivateInput();
+        player2Input.DeactivateInput();
+
+        UIConexaoInGame.instancia.SetConectando(QualPlayer.Player1);
+        UIConexaoInGame.instancia.SetConectando(QualPlayer.Player2);
+
+        input.Player.Get().actionTriggered += OuveAcoesParaCadastrarDevices;
+    }
+
+    protected void OuveAcoesParaCadastrarDevices(InputAction.CallbackContext ctx) {
+        InputDevice device = ctx.control.device;
+        if (device == null) return;
+
+        if (player1Device != null && player2Device != null) {
+            input.Player.Get().actionTriggered -= OuveAcoesParaCadastrarDevices;
+            return;
+        }
+
+        if (player1Device == null) {
+            CadastrarDevice(QualPlayer.Player1, device);
+        } else if (player2Device == null && player1Device != device) {
+            CadastrarDevice(QualPlayer.Player2, device);
+        }
+    }
+
+    protected void CadastrarDevice(QualPlayer player, InputDevice device) {
+        if (device == null) return;
+
+        bool isPlayer1 = player == QualPlayer.Player1;
+
+        if (isPlayer1) {
+            if (player2Device != null && player2Device == device) {
+                // Se o dispositivo já estiver registrado para o Player2, não faz nada
                 return;
+            }
+
+            player1Device = device;
+        } else {
+            if (player1Device != null && player1Device == device) {
+                // Se o dispositivo já estiver registrado para o Player1, não faz nada
+                return;
+            }
+
+            player2Device = device;
+        }
+
+        PlayerInput playerInput = isPlayer1 ? player1Input : player2Input;
+        playerInput.user.UnpairDevices();
+        InputUser.PerformPairingWithDevice(device, playerInput.user);
+
+        // O Input System não reconhece automaticamente o esquema de controle, então é necessário definir manualmente... (??????)
+        string controlScheme = GetControlSchemeName(device);
+        playerInput.SwitchCurrentControlScheme(controlScheme, device);
+        playerInput.ActivateInput();
+
+        UIConexaoInGame.instancia.SetConectado(player);
+
+        Debug.Log($"Dispositivo {device.displayName} cadastrado para o {player}. Device: {device}. Control Scheme: {controlScheme}");
+    }
+
+    string GetControlSchemeName(InputDevice device) {
+        switch (device) {
+            case Gamepad:
+                return "Gamepad";
+            case Keyboard:
+                return "Keyboard&Mouse";
+            case Touchscreen:
+                return "Touch";
+            case Joystick:
+                return "Joystick";
+            default:
+                return "Unknown";
         }
     }
 
-    public void TrocarControleSingleplayer(){
+    public void AtualizarControleSingleplayer() {
+        if (player1Input == null || player2Input == null) return;
+        TrocarControleSingleplayer(playerAtual);
+    }
+
+    public void TrocarControleSingleplayer(InputAction.CallbackContext ctx) {
+        TrocarControleSingleplayer();
+    }
+
+    public void TrocarControleSingleplayer() {
         if (modoDeJogo != ModoDeJogo.SINGLEPLAYER) return;
 
-        if (playerAtual == QualPlayer.Player1) {
-            playerAtual = QualPlayer.Player2;
-            input.Player.Disable();
-            input2_singleplayer.Player.Enable();
-        } else {
-            playerAtual = QualPlayer.Player1;
-            input2_singleplayer.Player.Disable();
-            input.Player.Enable();
-        }
+        this.playerAtual = (this.playerAtual == QualPlayer.Player1) ? QualPlayer.Player2 : QualPlayer.Player1;
 
-        OnTrocarControle?.Invoke(playerAtual);
+        OnTrocarControle?.Invoke(this.playerAtual);
     }
 
     public void TrocarControleSingleplayer(QualPlayer player){
         if (modoDeJogo != ModoDeJogo.SINGLEPLAYER) return;
+        if (this.playerAtual == player) return;
 
-        if (player == QualPlayer.Player2) {
-            playerAtual = QualPlayer.Player2;
-            input.Player.Disable();
-            input2_singleplayer.Player.Enable();
-        } else {
-            playerAtual = QualPlayer.Player1;
-            input2_singleplayer.Player.Disable();
-            input.Player.Enable();
-        }
-
-        OnTrocarControle?.Invoke(playerAtual);
+        TrocarControleSingleplayer();
     }
 
     #endregion
@@ -191,19 +308,27 @@ public class GameManager : MonoBehaviour {
     #region Sistema de salas
     public List<Player> jogadores = new List<Player>();
     private AsyncOperation cenaProx;
+    private AsyncOperation unloading;
     private sala sala = null;
     public sala salaAtual{ get{return sala;} }
+    public TransicaoDeTela telaDeLoading;
+    public string cenaAtualNome;
 
     
     /// <summary>
     /// Descarrega a sala atual, finaliza o carregamento da proxima e posiciona o jogador no porximo ponto de spawn.
     /// </summary>
-    public void PassaDeSala(){
+    public void PassaDeSala() {
         if (isOnline) RequestPassaDeSalaOnline();
         else PassaDeSalaOffline();
     }
 
     private void PassaDeSalaOffline() {
+        // Inicio da transição
+
+        this.cenaAtualNome = sala.NomeProximaSala();
+
+        sala.enabled = false;
         cenaProx.allowSceneActivation = true;
 
         OnMudaDeSala?.Invoke();
@@ -257,43 +382,52 @@ public class GameManager : MonoBehaviour {
     public void SetSala(sala sala){
 
         // Descarrega a sala anterior :
-        if (this.sala != null){
+        if (this.sala != null) {
             StartCoroutine(UnloadSala(this.sala.gameObject.scene));
         }
 
         // Determina a sala informada como a sala atual :
         this.sala = sala;
+        this.cenaAtualNome = SceneManager.GetActiveScene().name;
 
         // Evita de tentar carregar uma sala quando está voltando para o menu principal:
         if (voltandoParaMenu) return;
 
+        // Carrega informação para lightProbes:
+
         // Inicia o precarregamento da próxima sala :
         string proximaSala = sala.NomeProximaSala();
-        if(proximaSala == string.Empty){
+        if (proximaSala == string.Empty) {
             return;
         }
         StartCoroutine(PreloadProximaSala(proximaSala));
 
     }
 
+    
+
     #region Corotinas de carregamento
 
-    IEnumerator PreloadProximaSala(string salaPCarregar){
+    IEnumerator PreloadProximaSala(string salaPCarregar) {
 
-        if(SceneUtility.GetBuildIndexByScenePath($"Scenes/{salaPCarregar}") == 0){
+        if (SceneUtility.GetBuildIndexByScenePath($"Scenes/{salaPCarregar}") == 0) {
             Debug.Log("Proxima cena não está contida na build ou, não está com o nome correto.");
             yield break;
         }
 
         cenaProx = SceneManager.LoadSceneAsync(salaPCarregar, LoadSceneMode.Additive);
         cenaProx.allowSceneActivation = false;
+
+        yield return new WaitUntil(() => cenaProx.isDone);
+
     }
 
     IEnumerator UnloadSala(Scene scene){
-        AsyncOperation op = SceneManager.UnloadSceneAsync(scene);
+        unloading = SceneManager.UnloadSceneAsync(scene);
         
-        yield return new WaitUntil(() => op.isDone);
-        Debug.Log("Terminou de descarregar : " + scene.name);
+        yield return new WaitUntil(() => unloading.isDone);
+
+        ProbeReferenceVolume.instance.SetActiveScene(SceneManager.GetActiveScene());
     }
 
     #endregion
@@ -363,7 +497,7 @@ public class GameManager : MonoBehaviour {
     /// Envia uma mensagem para servidor pedindo para passar de sala.
     /// </summary>
     private void RequestPassaDeSalaOnline() {
-        NetworkClient.Send(new DishNetworkManager.RequestPassaDeSalaMessage(true));
+        NetworkClient.Send(new DishNetworkManager.RequestPassaDeSalaMessage(true, salaAtual?.GetNome()));
     }
 
     /// <summary>
@@ -372,7 +506,30 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     private void OnRequestedPassaDeSalaOnline(DishNetworkManager.AcaoPassaDeSalaMessage msg) {
         if (isOnline && msg.passarDeSala) {
+            DestruirNetworkIdentityPassaCena();
             PassaDeSalaOffline();
+        }
+    }
+
+    public void DestruirNetworkIdentityPassaCena() {
+        if (!isOnline) return;
+
+        foreach (NetworkIdentity identity in FindObjectsByType<NetworkIdentity>(FindObjectsInactive.Include, FindObjectsSortMode.None)) {
+            if (identity.gameObject.scene.name == "DontDestroyOnLoad") continue; // Não destrói objetos que estão na cena DontDestroyOnLoad
+            DestroyImmediate(identity.gameObject);
+        }
+    }
+
+    public void DesligarOOnline() {
+        if (!isOnline) return;
+
+        NetworkManager networkManager = NetworkManager.singleton;
+        if (networkManager != null) {
+            networkManager.StopHost();
+            networkManager.StopClient();
+            networkManager.StopServer();
+
+            Destroy(networkManager.gameObject);
         }
     }
 
@@ -383,23 +540,11 @@ public class GameManager : MonoBehaviour {
         if (voltandoParaMenu) return;
         voltandoParaMenu = true;
 
-        if (isOnline) {
-            NetworkManager networkManager = NetworkManager.singleton;
-            if (networkManager != null) {
-                networkManager.StopHost();
-                networkManager.StopClient();
-                networkManager.StopServer();
-
-                Destroy(networkManager.gameObject);
-            }
-        }
+        DesligarOOnline();
 
         gameObject.SetActive(true);
 
-        if (cenaProx != null) {
-            cenaProx.allowSceneActivation = true;
-            cenaProx = null;
-        }
+        ForcarCenaAguardando();
 
         StartCoroutine(VoltarParaMenuAsync());
     }
@@ -412,14 +557,20 @@ public class GameManager : MonoBehaviour {
             op.allowSceneActivation = true;
             yield return new WaitUntil(() => op.isDone);
         }
-        
+
         voltandoParaMenu = false;
 
         input.Disable();
-        if (input2_singleplayer != null) input2_singleplayer.Disable();
 
         instance = null;
         Destroy(gameObject);
+    }
+    
+    public void ForcarCenaAguardando() {
+        if (cenaProx != null) {
+            cenaProx.allowSceneActivation = true;
+            cenaProx = null;
+        }
     }
 
 }

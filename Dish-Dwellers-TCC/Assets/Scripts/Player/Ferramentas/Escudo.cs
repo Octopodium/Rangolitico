@@ -5,7 +5,8 @@ public class Escudo : MonoBehaviour, Ferramenta
     public GameObject protecao;
     
     Vector3 direcaoProtecao = Vector3.zero;
-
+    public bool acionada { get; protected set; } = false;
+    
     Player jogador;
 
     public void Inicializar(Player jogador) 
@@ -13,18 +14,31 @@ public class Escudo : MonoBehaviour, Ferramenta
         this.jogador = jogador;
     }
 
-    public void Acionar() 
+    public void Acionar()
     {
+        if (acionada) return;
+
         protecao.SetActive(true);
-        jogador.escudoAtivo = true; 
+        jogador.escudoAtivo = true;
         jogador.MostrarDirecional(true);
+        
+        acionada = true;
     }
 
-    public void Soltar() 
+    public void Soltar()
     {
+        if (!acionada) return;
+
         protecao.SetActive(false);
-        jogador.escudoAtivo = false; 
+        jogador.escudoAtivo = false;
         jogador.MostrarDirecional(false);
+        
+        acionada = false;
+    }
+
+    public void Cancelar()
+    {
+        Soltar();
     }
     
     void FixedUpdate() 

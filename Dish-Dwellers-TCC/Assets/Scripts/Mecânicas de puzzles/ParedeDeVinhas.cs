@@ -1,23 +1,48 @@
 using UnityEngine;
 
-public class ParedeDeVinhas : MonoBehaviour
-{
+[RequireComponent(typeof(Collider))]
+public class ParedeDeVinhas : IResetavel {
     [SerializeField] private int integridade = 3;
     [SerializeField] private Color[] cores;
+    private Renderer[] renderers;
+    private Collider col;
     private MaterialPropertyBlock mpb;
 
-    public void ReduzirIntegridade(){
-        if(--integridade <= 0 ){
-            Destroy(gameObject);
-        }
+    private void Start() {
+        mpb = new MaterialPropertyBlock();
+        renderers = GetComponentsInChildren<Renderer>();
+        col = GetComponent<Collider>();
     }
 
-    private void SetarCor(int integridade){
-        mpb = new MaterialPropertyBlock();
-        Renderer renderer = GetComponent<Renderer>();
+    public override void OnReset() {
+        AtivarVinhas(true);
+    }
 
-        mpb.SetColor("_Color",cores[integridade - 1]);
-        renderer.SetPropertyBlock(mpb);
+    private void AtivarVinhas(bool ativa) {
+        foreach (Renderer render in renderers) {
+            render.gameObject.SetActive(ativa);
+        }
+
+        col.enabled = ativa;
+
+        integridade = 3;
+        SetarCor(integridade);
+    }
+
+    public void ReduzirIntegridade() {
+        if (--integridade <= 0) {
+            AtivarVinhas(false);
+            return;
+        }
+        SetarCor(integridade);
+    }
+
+    private void SetarCor(int integridade) {
+        mpb.SetColor("_BaseColor", cores[integridade - 1]);
+
+        foreach (Renderer render in renderers) {
+            render.SetPropertyBlock(mpb);
+        }
     }
 
 }

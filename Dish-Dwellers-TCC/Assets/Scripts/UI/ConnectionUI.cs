@@ -11,6 +11,8 @@ public class ConnectionUI : MonoBehaviour {
     public string menuInicialScene = "MenuInicial";
     public DishNetworkManager networkManager;
 
+    public Transform canvasDaConexao;
+
 
     [Header("Configuração de Conexão")]
     public TipoDeTransport tipoDeTransport = TipoDeTransport.IP;
@@ -103,6 +105,9 @@ public class ConnectionUI : MonoBehaviour {
         inputP1.text = (p1 != null) ? p1.nome : "???";
         inputP2.text = (p2 != null) ? p2.nome : "???";
 
+        if (p1 != null) UpdatePingUI(p1.ping, p1.personagem == DishNetworkManager.Personagem.Angler);
+        if (p2 != null) UpdatePingUI(p2.ping, p2.personagem == DishNetworkManager.Personagem.Angler);
+
         if (p1 != null && p1.isLocalPlayer) {
             inputP1.interactable = true;
             inputP2.interactable = false;
@@ -135,6 +140,11 @@ public class ConnectionUI : MonoBehaviour {
 
         LobbyPlayer lobbyPlayer = NetworkClient.localPlayer.GetComponent<LobbyPlayer>();
         lobbyPlayer.SetPronto(!lobbyPlayer.pronto);
+    }
+
+    public void UpdateProntoUI() {
+        if (p1 != null) UpdateP1ProntoUI(p1.pronto);
+        if (p2 != null) UpdateP2ProntoUI(p2.pronto);
     }
 
 
@@ -183,6 +193,10 @@ public class ConnectionUI : MonoBehaviour {
         else p2.TentarComecar();
     }
 
+    void OnDestroy() {
+        Destroy(canvasDaConexao.gameObject);
+    }
+
     #endregion
 
 
@@ -218,6 +232,7 @@ public class ConnectionUI : MonoBehaviour {
     // Chamado quando um cliente entra no lobby com sucesso (pelo LobbyPlayer)
     public void EntrouNoLobby() {
         EsconderCarregamento();
+        UpdateProntoUI();
     }
 
     public void CancelarEntrada() {

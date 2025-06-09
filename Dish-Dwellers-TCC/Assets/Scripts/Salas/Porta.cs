@@ -4,15 +4,14 @@ using UnityEngine.Events;
 public class Porta : IResetavel, Interacao{
     [Tooltip ("Colisor que transporta o jogador quando destrancada")]
     [SerializeField]private GameObject portal;
+    [SerializeField] private Animator animator;
     private bool destrancada;
+    public bool trancada => !destrancada;
     public UnityEvent OnDestrancaPorta;
+    
 
 
-    [Space(15)][Header("<color=yellow>Gambiarra pra fazer a porta mudar de cor")]
-    [SerializeField] private Renderer portalRenderer;
-    private MaterialPropertyBlock mpb;
-
-    private void Start(){
+    private void Start() {
         portal.SetActive(false);
     }
 
@@ -34,24 +33,20 @@ public class Porta : IResetavel, Interacao{
         }
     }
 
-    private void Destrancar(){
-        portal.SetActive(true);
+    private void AbrePorta() {
+        animator.SetTrigger("AbrePorta");
+    }
 
-        MudaCorDoPortal(Color.green);
+    public void Destrancar() {
+        AbrePorta();
+        portal.SetActive(true);
 
         OnDestrancaPorta?.Invoke();
 
         // Previne que o jogador possa destrancar a porta duas vezes.
     }
 
-    private void Trancar(){
+    public void Trancar() {
         portal.SetActive(false);
-        MudaCorDoPortal(Color.red);
-    }
-
-    private void MudaCorDoPortal(Color color){
-        mpb = new MaterialPropertyBlock();
-        mpb.SetColor("_Color", color);
-        portalRenderer.SetPropertyBlock(mpb);
     }
 }

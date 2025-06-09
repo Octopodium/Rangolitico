@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!200 &20000000
+ShaderVariantCollection:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: CharacterVariantCollection
+  m_Shaders:
+  - first: {fileID: -6465566751694194690, guid: ccc193f3dd8b04c43bd042a180ecdb4b, type: 3}
+    second:
+      variants:
+      - keywords: _ALPHAMODULATE_ON _ALPHATEST_ON _SPECULAR_SETUP _SPRITE_ONE
+        passType: 13
+      - keywords: _ALPHAMODULATE_ON _ALPHATEST_ON _SPRITE_ONE
+        passType: 13
+      - keywords: _ALPHAMODULATE_ON _SPECULAR_SETUP _SPRITE_ONE
+        passType: 13
+      - keywords: _ALPHAMODULATE_ON _SPRITE_ONE
+        passType: 13
+      - keywords: _ALPHAPREMULTIPLY_ON _SPRITE_ONE
+        passType: 13
+      - keywords: _ALPHATEST_ON _SPECULAR_SETUP _SPRITE_ONE
+        passType: 13
+      - keywords: _ALPHATEST_ON _SPRITE_ONE
+        passType: 13
+      - keywords: _SPECULAR_SETUP _SPRITE_ONE
+        passType: 13

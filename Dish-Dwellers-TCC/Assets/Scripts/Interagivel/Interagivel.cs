@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Sincronizavel))]
 public class Interagivel : MonoBehaviour {
 
     [Header("Indicador de interação")]
@@ -11,6 +12,8 @@ public class Interagivel : MonoBehaviour {
     void Start() {
         GameManager.instance.controle.OnIndicadorChange += OnIndicadorChange;
         indicador = GameManager.instance.controle.indicadorAtual;
+
+        Sincronizavel sinc = gameObject.GetComponent<Sincronizavel>();
     }
 
     void OnDestroy() {
@@ -18,7 +21,7 @@ public class Interagivel : MonoBehaviour {
         GameManager.instance.controle.OnIndicadorChange -= OnIndicadorChange;
     }
 
-    
+
     public void MostarIndicador(bool mostrar) {
         if (indicador) {
             if (mostrar) indicador.Mostrar(this);

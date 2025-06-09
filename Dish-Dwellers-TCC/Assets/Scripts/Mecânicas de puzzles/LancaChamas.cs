@@ -18,7 +18,7 @@ public class LancaChamas : MonoBehaviour
 
         if(Physics.SphereCast(transform.position, 1.0f, transform.forward, out hitInfo, maxComprimento,  layers)){
             
-            Debug.Log(hitInfo.transform.name);
+            // Debug.Log(hitInfo.transform.name);
             if(hitInfo.transform.CompareTag("Player")){
                 hitInfo.transform.GetComponent<Player>().MudarVida(-1);
             }

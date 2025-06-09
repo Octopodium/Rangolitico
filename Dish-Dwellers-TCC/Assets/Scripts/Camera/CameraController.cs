@@ -34,28 +34,27 @@ public class CameraController : MonoBehaviour{
 
         modoDeJogoConfigurado = GameManager.instance.modoDeJogo;
 
-        switch(modoDeJogoConfigurado) {
+        switch (modoDeJogoConfigurado) {
             case ModoDeJogo.SINGLEPLAYER:
-                if(introCamera){
-                    onTerminarIntro.AddListener(() =>{
+                if (introCamera) {
+                    onTerminarIntro.AddListener(() => {
                         GameManager.instance.OnTrocarControle += TrocarCamera;
                         TrocarCamera(GameManager.instance.playerAtual);
                     });
-                }
-                else{
+                } else {
                     GameManager.instance.OnTrocarControle += TrocarCamera;
                 }
-            break;
+                break;
 
             case ModoDeJogo.MULTIPLAYER_LOCAL:
                 UsarSegundaCam();
-                if(!introCamera)
-                    cameras[0].rect = new Rect(0, 0.5f, 1, 1);
-            break;
+                if (!introCamera)
+                    cameras[0].rect = new Rect(-0.5f, 0.0f, 1, 1);
+                break;
 
             case ModoDeJogo.MULTIPLAYER_ONLINE:
                 TrocarCamera1();
-            break;
+                break;
         }
 
     }
@@ -110,15 +109,18 @@ public class CameraController : MonoBehaviour{
             while(timer > 0){
                 timer -= Time.deltaTime;
                 interpolador = timer / 2;
-                y = Mathf.Lerp(0.5f, 0.0f, interpolador);
+                y = Mathf.Lerp(-0.5f, 0.05f, interpolador);
 
-                cameras[0].rect = new Rect(0, y, 1, 1);
-                cameras[1].rect = new Rect(0, -1.0f + y, 1, 1);
+                Debug.Log(y);
 
-                yield return null;
+                cameras[0].rect = new Rect(y, 0, 1, 1);
+                cameras[1].rect = new Rect(1 + y, 0, 1, 1);
+
+                yield return new WaitForFixedUpdate();
             }
-            cameras[0].rect = new Rect(0, 0.5f, 1, 1);
-            cameras[1].rect = new Rect(0, -0.5f, 1, 1);
+            Debug.Log("Terminou");
+            cameras[0].rect = new Rect( -0.5f, 0, 1, 1);
+            cameras[1].rect = new Rect( 0.5f, 0, 1, 1);
         }
 
         else{
@@ -128,8 +130,8 @@ public class CameraController : MonoBehaviour{
         
         SetTempoDeBlend(tempoDBlendNormal);
 
-        onTerminarIntro?.Invoke();
         podeTrocarCamera = true;
+        onTerminarIntro?.Invoke();
         ConfigurarCameras();
     }
 

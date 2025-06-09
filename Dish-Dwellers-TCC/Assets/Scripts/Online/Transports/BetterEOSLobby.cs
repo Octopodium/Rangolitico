@@ -1,8 +1,6 @@
 using EpicTransport;
 using Epic.OnlineServices.Lobby;
-using Epic.OnlineServices.Connect;
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using Mirror;
@@ -27,19 +25,22 @@ public class BetterEOSLobby : MonoBehaviour {
     public EOSSDKComponent eossdkComponent;
 
     public enum Estado {  Nenhum, CriandoLobby, EntrandoLobby }
-    public Estado estado = Estado.Nenhum;
+    public Estado estado {get; protected set;} = Estado.Nenhum;
 
 
     // Variáveis internas
     bool estaLogado = false, pediuPraHostear = false, pediuPraEntrar = false;
     string tentarEntrarNoLobby_Cache = ""; // Quando o jogador tentou entrar em um lobby, mas não estava logado, esse cache vai armazenar o ID do lobby que ele queria entrar.
     string idHost = "", idLobby = "";
+    System.Action<LobbyDetails> encontrarLobbyCallback = null; // Uso interno apenas
 
     public interface ILobbyIDCreator {
+        int maxTentativa {get;}
         string CreateID();
         string FormatID(string id);
     }
     public class AutoIDConfig: ILobbyIDCreator {
+        public int maxTentativa { get { return 10; } } // Quantidade máxima de tentativas para criar um ID único (não repetido)
         public int quantCaracteres = 5; // Quantidade de caracteres do ID (indicado não ser menor que 5)
         public bool usarMaiusculas = true; // Se o ID pode ter letras maiúsculas
         public bool usarMinusculas = false; // Se o ID pode ter letras minúsculas
@@ -90,7 +91,7 @@ public class BetterEOSLobby : MonoBehaviour {
             this.definirLobbyID = definirLobbyID;
         }
     }
-    Configuracao configuracaoPadrao = new Configuracao {
+    public Configuracao configuracaoPadrao = new Configuracao {
         maxPlayers = 2,
         permissionLevel = LobbyPermissionLevel.Publicadvertised,
         presenceEnabled = true,
@@ -103,7 +104,7 @@ public class BetterEOSLobby : MonoBehaviour {
     public System.Action OnLogou;
     public System.Action OnEntrouLobby, OnEntrarLobbyFalhou;
     public System.Action<string> OnLobbyCriado, OnLobbyEncontrado;
-    public System.Action OnCriarLobbyFalhou;
+    public System.Action OnCriarLobbyFalhou, OnLobbyNaoEncontrado;
 
 
     void Awake() {
@@ -134,26 +135,21 @@ public class BetterEOSLobby : MonoBehaviour {
         // Ao encontrar um lobby baseado no ID
         eOSLobby.FindLobbiesSucceeded += (foundLobbies) => {
             string idCorreto = "";
+            LobbyDetails details = null;
 
             foreach (var lobby in foundLobbies) {
                 string id = GetIdFromInfo(lobby);
                 if (id != null && id != "") {
                     idCorreto = id;
+                    details = lobby;
                     idHost = GetHostIDFromInfo(lobby);
                     break;
                 }
             }
 
-            bool lobbyEncontrado = idCorreto != "";
-
-            if (lobbyEncontrado) {
-                OnLobbyEncontrado?.Invoke(idHost);
-                Debug.Log("Host ID: " + idHost);
-                eOSLobby.JoinLobbyByID(idCorreto);
-            } else {
-                Debug.LogError("Nenhum lobby encontrado com o ID fornecido.");
-                OnEntrarLobbyFalhou?.Invoke();
-            }
+            System.Action<LobbyDetails> encontrarLobbyCallback = this.encontrarLobbyCallback;
+            this.encontrarLobbyCallback = null;
+            encontrarLobbyCallback?.Invoke(details);
         };
 
         // Ao entra em um lobby com sucesso, iniciar o cliente
@@ -183,7 +179,7 @@ public class BetterEOSLobby : MonoBehaviour {
     void AoLogar(string id)  {
         estaLogado = true;
 
-        if (pediuPraHostear) CriarHost();
+        if (pediuPraHostear) CriarHost(configuracaoLobbyCache);
         if (pediuPraEntrar) ConectarCliente(tentarEntrarNoLobby_Cache);
 
         OnLogou?.Invoke();
@@ -193,8 +189,13 @@ public class BetterEOSLobby : MonoBehaviour {
         tentarEntrarNoLobby_Cache = "";
     }
 
+    protected void ProcurarLobbyPorId(string id, System.Action<LobbyDetails> callback) {
+        encontrarLobbyCallback = callback;
+        eOSLobby.FindLobbies(1, CriarPesquisa(id));
+    }
+
     Configuracao? configuracaoLobbyCache = null;
-    public void CriarHost(Configuracao? configuracao = null) {
+    public virtual void CriarHost(Configuracao? configuracao = null, int tentativas = 0) {
         configuracaoLobbyCache = configuracao;
     
         if (!estaLogado) {
@@ -209,12 +210,30 @@ public class BetterEOSLobby : MonoBehaviour {
 
         Configuracao configuracaoAtual = configuracaoLobbyCache ?? configuracaoPadrao;
         configuracaoLobbyCache = null;
-        AttributeData[] atributos = SetarIdDoLobby(configuracaoAtual.definirLobbyID, configuracaoAtual.attributes);
-        
-        eOSLobby.CreateLobby(configuracaoAtual.maxPlayers, configuracaoAtual.permissionLevel, configuracaoAtual.presenceEnabled, atributos);
+        AttributeData[] atributos = SetarIdDoLobby(configuracaoAtual.definirLobbyID, configuracaoAtual.attributes, tentativas);
+
+        ProcurarLobbyPorId(idLobby, (lobbyDetail) => {
+            // Caso já exista um lobby com o ID definido, tenta criar outro até o número máximo de tentativas
+            if (lobbyDetail != null) {
+                int maxTentativas = configuracaoAtual.definirLobbyID?.maxTentativa ?? 0;
+                if (tentativas >= maxTentativas) {
+                    Debug.LogError("Falha ao criar lobby: ID já existe e número máximo de tentativas atingido.");
+                    estado = Estado.Nenhum;
+                    OnCriarLobbyFalhou?.Invoke();
+                } else {
+                    Debug.LogError("Lobby já existe com este ID, tentando criar outro. Tentativa: " + (tentativas + 1));
+                    CriarHost(configuracaoAtual, tentativas + 1);
+                }
+                
+                return;
+            }
+
+            // Se não existe, cria o lobby
+            eOSLobby.CreateLobby(configuracaoAtual.maxPlayers, configuracaoAtual.permissionLevel, configuracaoAtual.presenceEnabled, atributos);
+        });
     }
 
-    public void ConectarCliente(string id, Configuracao? configuracao = null) {
+    public virtual void ConectarCliente(string id, Configuracao? configuracao = null) {
         configuracaoLobbyCache = configuracao;
 
         if (!estaLogado) {
@@ -229,16 +248,33 @@ public class BetterEOSLobby : MonoBehaviour {
         string idFormatado = configuracaoAtual.definirLobbyID?.FormatID(id) ?? id;
 
         estado = Estado.EntrandoLobby;
-        eOSLobby.FindLobbies(1, CriarPesquisa(idFormatado));
+        ProcurarLobbyPorId(idFormatado, ConectarCliente_EncontrarLobby);
     }
 
-    public void DesconectarHost() {
+    /// <summary>
+    /// Callback da pesquisa de um lobby para entrar, através do ID. (Apenas para uso interno)
+    /// </summary>
+    protected virtual void ConectarCliente_EncontrarLobby(LobbyDetails details) {
+        if (details != null) {
+            string idVisual = GetHostIDFromInfo(details);
+            OnLobbyEncontrado?.Invoke(idVisual);
+            Debug.Log("Host ID: " + idVisual +"[" + idHost + "]");
+            eOSLobby.JoinLobby(details);
+        } else {
+            Debug.LogError("Nenhum lobby encontrado com o ID fornecido.");
+            estado = Estado.Nenhum;
+            OnLobbyNaoEncontrado?.Invoke();
+            OnEntrarLobbyFalhou?.Invoke();
+        }
+    }
+
+    public virtual void DesconectarHost() {
         networkManager.StopHost();
         networkManager.StopClient();
         networkManager.StopServer();
     }
 
-    public void DesconectarCliente() {
+    public virtual void DesconectarCliente() {
         networkManager.StopClient();
     }
 
@@ -253,12 +289,14 @@ public class BetterEOSLobby : MonoBehaviour {
     }
 
     AttributeData[] CriarAtributos(string id, AttributeData[] atributos) {
-        List<AttributeData> atributosList = new List<AttributeData>(atributos);
+        List<AttributeData> atributosList = atributos == null ? new List<AttributeData>() : new List<AttributeData>(atributos);
 
-        foreach (var atributo in atributos) {
-            if (atributo.Key == "id_jogo") {
-                atributosList.Remove(atributo);
-                break;
+        if (atributos != null) {
+            foreach (var atributo in atributos) {
+                if (atributo.Key == "id_jogo") {
+                    atributosList.Remove(atributo);
+                    break;
+                }
             }
         }
 
@@ -268,35 +306,30 @@ public class BetterEOSLobby : MonoBehaviour {
         return atributosList.ToArray();
     }
 
-    AttributeData[] SetarIdDoLobby(ILobbyIDCreator definirLobby, AttributeData[] atributos) {
+    AttributeData[] SetarIdDoLobby(ILobbyIDCreator definirLobby, AttributeData[] atributos, int tentativas = 0) {
         bool temDefinidor = definirLobby != null;
 
-        if (atributos == null || atributos.Length == 0) {
-            if (temDefinidor) {
-                idLobby = definirLobby.CreateID();
-                return CriarAtributos(idLobby);
-            }
-            return null;
-        }
-
         // Vê se já tem o atributo "id_jogo"
-        for (int i = 0; i < atributos.Length; i++) {
-            var atributo = atributos[i];
+        if (atributos != null && atributos.Length > 0) {
+            for (int i = 0; i < atributos.Length; i++) {
+                var atributo = atributos[i];
 
-            if (atributo.Key == "id_jogo") {
-                if (!temDefinidor) {
-                    idLobby = atributo.Value.ToString();
-                    return atributos;
-                } else {
-                    idLobby = definirLobby.CreateID();
-                    atributos[i].Value = idLobby;
-                    return atributos;
-                } 
+                if (atributo.Key == "id_jogo") {
+                    if (!temDefinidor) {
+                        idLobby = atributo.Value.ToString();
+                        return atributos;
+                    } else {
+                        idLobby = definirLobby.CreateID();;
+                        atributos[i].Value = idLobby;
+                        return atributos;
+                    } 
+                }
             }
         }
         
+        
         if (temDefinidor) {
-            idLobby = definirLobby.CreateID();
+            idLobby = definirLobby.CreateID();;
             return CriarAtributos(idLobby, atributos);
         }
         return null;

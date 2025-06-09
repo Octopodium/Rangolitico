@@ -6,7 +6,13 @@ public class UINavigationManager : MonoBehaviour
     public EventSystem eventSystem;
     public GameObject currentFirstSelected;
 
-    public void TrocaFirstSelected(GameObject firstSelected){
+    void Awake() {
+        if (eventSystem == null) {
+            eventSystem = FindFirstObjectByType<EventSystem>();
+        }
+    }
+
+    public void TrocaFirstSelected(GameObject firstSelected) {
         eventSystem.SetSelectedGameObject(firstSelected);
     }
 }

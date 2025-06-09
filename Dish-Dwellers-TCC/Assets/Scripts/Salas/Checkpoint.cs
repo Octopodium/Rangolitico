@@ -4,6 +4,7 @@ using UnityEngine;
 public class Checkpoint : MonoBehaviour {
     public Transform[] spawnPoints = new Transform[2];
     [HideInInspector]public BoxCollider col;
+    bool habilitado = false;
 
 
     private void Start() {
@@ -35,8 +36,12 @@ public class Checkpoint : MonoBehaviour {
         
     }
 
-    private void HabilitarCheckPoint() {
+    private void HabilitarCheckPoint(){
+        if (habilitado) return;
+
         sala sala = GameManager.instance.salaAtual;
         sala.spawnPoints = spawnPoints;
+
+        habilitado = true;
     }
 }

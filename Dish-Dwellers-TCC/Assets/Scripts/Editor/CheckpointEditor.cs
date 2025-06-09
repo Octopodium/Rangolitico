@@ -59,9 +59,17 @@ public class CheckpointEditor : Editor {
         }
 
         foreach (var point in checkpoint.spawnPoints) {
+            EditorGUI.BeginChangeCheck();
+
             Handles.DrawDottedLine(checkpoint.transform.position + checkpoint.col.center, point.position, 7f);
             Handles.DrawWireDisc(point.position, Vector3.up, 0.75f);
-            point.position = Handles.DoPositionHandle(point.position, point.rotation);
+            Vector3 newPos = Handles.DoPositionHandle(point.position, point.rotation);
+
+            if (EditorGUI.EndChangeCheck()) {
+                Undo.RecordObject(point, "Checkpoint spawn position changed.");
+                point.position = newPos;
+                EditorUtility.SetDirty(point);
+            }
         }
     }
 

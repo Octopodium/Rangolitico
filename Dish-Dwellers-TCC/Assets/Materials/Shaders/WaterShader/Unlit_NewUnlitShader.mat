@@ -28,14 +28,20 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 7453abfe9e8b2c04a8a47eb536fe21eb, type: 3}
+        m_Texture: {fileID: 2800000, guid: ca9eb6f6800f9dc40b9ab50ab2580b41, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _DisplayUV: 0
-    - _Tilling: 3.52
+    - _DistortionStrength: 0.2
+    - _DistortionTilling: 0.1
+    - _Speed: 0.5
+    - _Tilling: 0.1
+    - _UJump: 0.231
+    - _VJump: -0.218
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.19090424, g: 0.6226415, b: 0.5953265, a: 1}
+    - _DeepColor: {r: 0.077830195, g: 0.26900637, b: 0.31132078, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

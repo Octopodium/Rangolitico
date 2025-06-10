@@ -1,0 +1,127 @@
+Shader "Unlit/DistortionShader"
+{
+    Properties
+    {
+        [Header(Texture Configuration)]
+        [Space(15)]
+
+        [MainTexture]_MainTex ("Main Texture", 2D) = "white" {} 
+        _FlowTex ("Flow Texture", 2D) = "black" {}
+        _NormalMap ("Normal Map", 2D) = "black" {}
+        [Toggle]_DisplayUV ("Display UV as color", Float) = 0.0
+
+        _Color ("Color", Color) = (1, 1, 1, 1)
+        _DeepColor ("DeepColor", Color) = (0, 0, 0, 1)
+
+        _Tilling ("Tilling", Range(0.0, 10)) = 1.0 
+        _DistortionTilling ("Tilling for the distortion texture", Range(0.0, 10)) = 1.0
+
+
+        [Space(20)]
+
+        [Header(Animation Configuration)]
+        [Space(15)]
+
+        _UJump ("U Jump per phase", Range(-0.25, 0.25))  = 0.25
+        _VJump ("V Jump per phase", Range(-0.25, 0.25))  = 0.25
+
+        _Speed ("Animation Speed", Float) = 1.0
+        _DistortionStrength("Strength of the distortion applied", Float) = 1.0
+        
+    }
+
+    SubShader
+    {
+        Tags 
+        {
+            "RenderType" = "Opaque" 
+            "RenderPipeline" = "UniversalRenderPipeline" 
+        }
+
+        Pass
+        {
+            HLSLPROGRAM
+
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #pragma shader_feature _DISPLAYUV_ON
+
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"            
+            #include "Flow.cginc"
+
+
+            struct Attributes
+            {
+                float4 positionOS : POSITION;          
+                float3 uv : TEXCOORD0;
+                half3 normal : NORMAL;
+            };
+
+            struct Varyings
+            {
+                float4 positionHCS  : SV_POSITION;
+                float2 uv : TEXCOORD0;
+                half3 normal : TEXCOORD1;
+            };            
+
+            float _Tilling;
+            float _DistortionTilling;
+
+            half4 _Color, _DeepColor;
+
+            float _UJump, _VJump;
+            float _Speed;
+            float _DistortionStrength;
+
+            TEXTURE2D(_FlowTex);
+            TEXTURE2D(_MainTex);
+            SAMPLER(sampler_FlowTex);
+            SAMPLER(sampler_MainTex);
+
+
+            Varyings vert(Attributes IN)
+            {
+                Varyings OUT;
+
+                VertexPositionInputs positions = GetVertexPositionInputs(IN.positionOS);
+                OUT.positionHCS = positions.positionCS;
+                OUT.uv = positions.positionWS.xz;
+
+                return OUT;
+            }
+
+            half4 frag(Varyings IN) : SV_Target
+            {
+                // Sample of the flow texture data:
+                float2 flowVector = SAMPLE_TEXTURE2D(_FlowTex, sampler_FlowTex, IN.uv * _DistortionTilling).rg * 2 - 1;
+                flowVector *= _DistortionStrength;
+                float noise = SAMPLE_TEXTURE2D(_FlowTex, sampler_FlowTex, IN.uv * _DistortionTilling).a;
+
+                float2 jump = float2(_UJump, _VJump);
+
+                float time = _Time.y * _Speed + noise;
+
+                // UV distortion:
+                float3 flowUV1 = FlowUV(IN.uv, flowVector, jump, _DistortionTilling, time, 0.0);
+                float3 pericles = FlowUV(IN.uv, flowVector, jump, _DistortionTilling, time, 0.5);
+
+                //Tilling:
+                half4 col = 0;
+                #if _DISPLAYUV_ON
+                    col = float4(frac(flowUV1.rg * _Tilling), 0, 1) * flowUV1.z;
+                    col += float4(frac(pericles.rg * _Tilling), 0, 1) * pericles.z;
+                #else
+                    col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, frac(flowUV1.rg * _Tilling)) * flowUV1.z;
+                    col += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, frac(pericles.rg * _Tilling)) * pericles.z;
+                #endif
+
+                half4 color = lerp( _DeepColor, _Color, col.r);
+
+                return color;
+            }
+            ENDHLSL
+        }
+    }
+}

@@ -393,11 +393,14 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         if (!GameManager.instance.isOnline || isLocalPlayer)
             CalcularDirecao();
 
-
+/*
         if (CheckEstaNoChao()) coyoteTimer = coyote;
         else coyoteTimer -= coyoteTimer >= 0 ? Time.deltaTime : 0;
 
         estaNoChao = !sendoPuxado && coyoteTimer > 0f;
+*/
+
+        estaNoChao = CheckEstaNoChao();
 
         if(!estaNoChao) MovimentacaoNoAr();
         else MovimentacaoNoChao();

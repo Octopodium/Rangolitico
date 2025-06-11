@@ -380,16 +380,24 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
 
     #region Movimentacao
+
+    public float coyote = 0.5f;
+    float coyoteTimer = 0f;
+
+
     /// <summary>
     /// Trata da movimentação do jogador
     /// </summary>
-
     //Titi: Fiz algumas alterações aqui na movimentação pro escudo ok :3
     void Movimentacao() {
         if (!GameManager.instance.isOnline || isLocalPlayer)
             CalcularDirecao();
 
-        estaNoChao = CheckEstaNoChao();
+
+        if (CheckEstaNoChao()) coyoteTimer = coyote;
+        else coyoteTimer -= coyoteTimer >= 0 ? Time.deltaTime : 0;
+
+        estaNoChao = !sendoPuxado && coyoteTimer > 0f;
 
         if(!estaNoChao) MovimentacaoNoAr();
         else MovimentacaoNoChao();
@@ -429,14 +437,22 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         return v;
     }
 
+    public float tempoAteMovBase = 1f;
+    float movGradual = 0f;
     // Chamado automaticamente pelo método Movimentacao
     void MovimentacaoNoChao() {
         UsarCC();
 
         Vector3 movimentacaoEfetiva = Vector3.zero; 
 
-        if (ehJogadorAtual && !sendoCarregado && podeMovimentar && movimentacao.magnitude > 0) 
-            movimentacaoEfetiva += movimentacao * GetVelocidade();
+        if (ehJogadorAtual && !sendoCarregado && podeMovimentar && movimentacao.magnitude > 0) {
+            Vector3 mov = movimentacao * GetVelocidade();
+            movGradual += Time.deltaTime;
+
+            movimentacaoEfetiva += mov * Mathf.Min(1, movGradual/tempoAteMovBase);
+        } else {
+            movGradual = 0f;
+        }
         
         movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
         /*

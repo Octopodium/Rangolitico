@@ -124,7 +124,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         carregador.OnSoltar += (carregavel) => { if (carregavel != null) collidersIgnoraveis.Remove(carregavel.GetComponent<Collider>()); };
 
         // Se o jogador está sendo carregado, ignora a interação com o carregador
-        carregavel.OnCarregado += (carregador) => { if (carregador != null) collidersIgnoraveis.Add(carregador.GetComponent<Collider>()); };
+        carregavel.OnCarregado += (carregador) => { if (carregador != null) collidersIgnoraveis.Add(carregador.GetComponent<Collider>()); UsarRB(); };
         carregavel.OnSolto += (carregador) => { if (carregador != null) collidersIgnoraveis.Remove(carregador.GetComponent<Collider>()); };
         
     }
@@ -393,14 +393,15 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         if (!GameManager.instance.isOnline || isLocalPlayer)
             CalcularDirecao();
 
-/*
-        if (CheckEstaNoChao()) coyoteTimer = coyote;
-        else coyoteTimer -= coyoteTimer >= 0 ? Time.deltaTime : 0;
+        if (!usandoRb) {
+            if (CheckEstaNoChao()) coyoteTimer = coyote;
+            else coyoteTimer -= coyoteTimer >= 0 ? Time.deltaTime : 0;
 
-        estaNoChao = !sendoPuxado && coyoteTimer > 0f;
-*/
-
-        estaNoChao = CheckEstaNoChao();
+            estaNoChao = /*!sendoPuxado &&*/ coyoteTimer > 0f;
+        } else {
+            coyoteTimer = 0;
+            estaNoChao = CheckEstaNoChao();
+        }
 
         if(!estaNoChao) MovimentacaoNoAr();
         else MovimentacaoNoChao();
@@ -418,8 +419,10 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         float x = input.x;
         float z = input.y;
 
+        if (input.magnitude > 1) input = input.normalized;
+
         Vector3 ultimaMovimentacao = movimentacao;
-        movimentacao = (transform.right * x + transform.forward * z).normalized;
+        movimentacao = transform.right * x + transform.forward * z;
 
         if (!estaMirando && movimentacao.magnitude > 0) {
             direcao = movimentacao;
@@ -442,6 +445,11 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
     public float tempoAteMovBase = 1f;
     float movGradual = 0f;
+
+
+    public float noChaoTempoMin = 0.25f;
+    float noChaoTimer = 0f;
+    bool naoCairCC = false;
     // Chamado automaticamente pelo método Movimentacao
     void MovimentacaoNoChao() {
         UsarCC();
@@ -457,11 +465,23 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
             movGradual = 0f;
         }
         
-        movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
-        /*
-        if (!characterController.isGrounded && !sendoCarregado) {
-
-        }*/
+        // Se marcou que o player está no chão, começa um contador para parar de calcular a gravidade
+        if (estaNoChao) {
+            if (!naoCairCC) {
+                noChaoTimer += Time.deltaTime;
+                if (noChaoTimer > noChaoTempoMin) {
+                    naoCairCC = true;
+                }
+            }
+        } else {
+            noChaoTimer = 0;
+            naoCairCC = false;
+        }
+        
+        
+        if (!naoCairCC && !sendoCarregado) {
+            movimentacaoEfetiva +=  Vector3.down * 9.81f; //Physics.gravity;
+        }
             
         
         if (movimentacaoEfetiva != Vector3.zero) {
@@ -565,6 +585,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         characterController.enabled = true; // Habilita o CharacterController novamente
         rb.linearVelocity = Vector3.zero; // Zera a velocidade do Rigidbody
         rb.isKinematic = true; // Desabilita o Rigidbody para evitar a física
+
+        noChaoTimer = 0;
+        naoCairCC = false;
 
         usandoRb = false;
     }

@@ -112,7 +112,6 @@ MonoBehaviour:
   syncInterval: 0
   personagem: 0
   qualPlayer: 0
-  playerInput: {fileID: 0}
   velocidade: 12
   velocidadeRB: 6.5
   layerChao:
@@ -141,6 +140,9 @@ MonoBehaviour:
   carregador: {fileID: 0}
   estaNoChao: 1
   conectado: 0
+  coyote: 0.1
+  tempoAteMovBase: 0.2
+  noChaoTempoMin: 0.3
   matCAtrito: {fileID: 13400000, guid: f838f97e1c1cd3644a85b3e215779eb4, type: 2}
   matSAtrito: {fileID: 13400000, guid: f838f97e1c1cd3644a85b3e215779eb4, type: 2}
 --- !u!114 &3586145060225408326
@@ -335,9 +337,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugLogMetodosCadastrados: 0
-  id: 
   cadastrarNoInicio: 1
-  autoIDSeVazio: 1
+  naoUsarIDAuto: 0
+  identificador: 
 --- !u!1 &3965158462078731169
 GameObject:
   m_ObjectHideFlags: 0

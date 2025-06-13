@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class SplitFollowTarget : MonoBehaviour {
     [SerializeField] private List<Transform> targetGroup = new List<Transform>(2);
-    [SerializeField] private float distance;
 
 
     private void Start() {
@@ -15,19 +14,19 @@ public class SplitFollowTarget : MonoBehaviour {
 
     private void LateUpdate() {
         transform.position = CalcularPosMedia();
-        distance = CalcularDistancia();
     }
 
-    public float CalcularDistancia() {
-        return (targetGroup[0].position - targetGroup[1].position).magnitude;
+    public Vector3 CalcularDistancia() {
+        return targetGroup[0].position - targetGroup[1].position;
     }
 
     private Vector3 CalcularPosMedia() {
         Vector3 fPos;
+        Vector3 dist = CalcularDistancia();
 
-        fPos = targetGroup[0].position + targetGroup[1].position;
-        fPos /= 2;
-
+        fPos.x = (targetGroup[0].position.x + targetGroup[1].position.x) * 0.5f;
+        fPos.y = (targetGroup[0].position.y + targetGroup[1].position.y) * 0.5f + (Mathf.Abs(dist.y) * 0.25f) ;
+        fPos.z = (targetGroup[0].position.z + targetGroup[1].position.z) * 0.5f - (Mathf.Abs(dist.z) * 0.25f) ;
 
         return fPos;
     }

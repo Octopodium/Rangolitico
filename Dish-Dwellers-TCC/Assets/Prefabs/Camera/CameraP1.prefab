@@ -140,16 +140,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ativo: 1
+  introCamera: {fileID: 0}
   ccameras:
   - {fileID: 0}
   - {fileID: 0}
-  introCamera: {fileID: 0}
+  positionComposers:
+  - {fileID: 0}
+  - {fileID: 0}
   cameras:
   - {fileID: 3814685915380845100}
   - {fileID: 0}
+  splitFollowTarget: {fileID: 0}
+  distanciaQuadrada: 0
+  camDistMin: 9
+  camDistMax: 15
+  threshhold: 14
+  tolerancia: 10
+  fovMin: 75
+  fovMax: 85
   onTerminarIntro:
     m_PersistentCalls:
       m_Calls: []
+  tempoDBlendNormal: 0.5
+  tempoDBlendIntro: 2
+  nomeStageText: {fileID: 0}
+  nomeSalaText: {fileID: 0}
+  fadeDuracao: 1.5
+  displayDuracao: 2
 --- !u!114 &8143623304297069481
 MonoBehaviour:
   m_ObjectHideFlags: 0

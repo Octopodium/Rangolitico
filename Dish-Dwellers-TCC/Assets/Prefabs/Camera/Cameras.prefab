@@ -34,8 +34,53 @@ Transform:
   - {fileID: 4316932076839675648}
   - {fileID: 3817333004083067404}
   - {fileID: 4731370129845810038}
+  - {fileID: 9000754035562082956}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5673286598109859553
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9000754035562082956}
+  - component: {fileID: 7673578360194902260}
+  m_Layer: 0
+  m_Name: SplitFollowTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9000754035562082956
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5673286598109859553}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8787564224961088567}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7673578360194902260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5673286598109859553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8430b4d06a5e5334b8db63f8fa6a4474, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1151954525552820244
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -350,6 +395,10 @@ PrefabInstance:
       propertyPath: introCamera
       value: 
       objectReference: {fileID: 7021994389819034840}
+    - target: {fileID: 19875531106439678, guid: 5ee853b9edae31b42a68ae69da786488, type: 3}
+      propertyPath: splitFollowTarget
+      value: 
+      objectReference: {fileID: 7673578360194902260}
     - target: {fileID: 19875531106439678, guid: 5ee853b9edae31b42a68ae69da786488, type: 3}
       propertyPath: 'cameras.Array.data[1]'
       value: 

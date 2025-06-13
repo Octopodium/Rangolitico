@@ -15263,6 +15263,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1747863479301182481, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1778823401783126719, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
       propertyPath: m_LocalPosition.x
       value: 39.58147
@@ -15298,6 +15302,30 @@ PrefabInstance:
     - target: {fileID: 5804118524100179378, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
       propertyPath: m_LocalPosition.x
       value: 39.58147
+      objectReference: {fileID: 0}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: fovMax
+      value: 85
+      objectReference: {fileID: 0}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: fovMin
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: camDistMax
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: camDistMin
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: threshhold
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: tolerancia
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6257366453768959418, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
       propertyPath: m_Enabled

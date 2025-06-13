@@ -1,24 +1,50 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using TMPro;
-using UnityEngine.UI;
 public class CameraController : MonoBehaviour {
 
     // Informações da câmera : 
     ModoDeJogo modoDeJogoConfigurado = ModoDeJogo.INDEFINIDO;
     public bool ativo = true; // Substitui o modo "INATIVO" previamente implementado.
-    [SerializeField] private CinemachineCamera[] ccameras = new CinemachineCamera[2];
+
+    [Header("Cameras:")]
+    [Space(10)]
+
     [SerializeField] private CinemachineCamera introCamera;
+    [SerializeField] private CinemachineCamera[] ccameras = new CinemachineCamera[2];
+    [SerializeField] private CinemachinePositionComposer[] positionComposers = new CinemachinePositionComposer[2];
     [SerializeField] private Camera[] cameras = new Camera[2];
-    private float tempoDBlendNormal = 0.5f, tempoDBlendIntro = 2.0f;
+
+    [Space(15)]
+
+    [Header("<color=green>Configuração da Camera Dividida :")]
+    [Space(10)]
+
+    [SerializeField] private SplitFollowTarget splitFollowTarget;
+    [SerializeField] private float distanciaAtual;
+    [Range(0, 100)][SerializeField] private float camDistMin;
+    [Range(0, 100)][SerializeField] private float camDistMax;
+    [Range(0, 100)][SerializeField] private float threshhold;
+    [Range(0, 100)][SerializeField] private float tolerancia;
+    [Range(0, 100)][SerializeField] private float fovMin;
+    [Range(0, 100)][SerializeField] private float fovMax;
+
+    [Space(15)]
+
+    [Header("Configuração de Transições :")]
+    [Space(10)]
+
     public UnityEvent onTerminarIntro;
+    [SerializeField] private float tempoDBlendNormal = 0.5f;
+    [SerializeField] private float tempoDBlendIntro = 2.0f;
     private bool podeTrocarCamera = false;
     private bool splitScreen = false;
+
+    [Space(15)]
 
 
     //Titizim coisas
@@ -38,10 +64,19 @@ public class CameraController : MonoBehaviour {
         }
     }
 
+    private void OnValidate() {
+        for (int i = 0; i < 2; i++) {
+            if (ccameras[i] != null && positionComposers[i] == null) {
+                positionComposers[i] = ccameras[i].GetComponent<CinemachinePositionComposer>();
+            }
+        }
+    }
+
     private void DeterminaModoDeCamera() {
         if (!ativo) return;
 
         modoDeJogoConfigurado = GameManager.instance.modoDeJogo;
+        modoDeJogoConfigurado = ModoDeJogo.MULTIPLAYER_LOCAL;
 
         switch (modoDeJogoConfigurado) {
             case ModoDeJogo.SINGLEPLAYER:
@@ -56,6 +91,10 @@ public class CameraController : MonoBehaviour {
                 break;
 
             case ModoDeJogo.MULTIPLAYER_LOCAL:
+
+                UsarCameraDividida();
+                break;
+
                 UsarSegundaCam();
                 if (!introCamera)
                     cameras[0].rect = new Rect(-0.5f, 0.0f, 1, 1);
@@ -68,6 +107,11 @@ public class CameraController : MonoBehaviour {
 
     }
 
+    private void UsarCameraDividida() {
+        splitFollowTarget.gameObject.SetActive(true);
+        ccameras[0].Follow = splitFollowTarget.transform;
+    }
+
     private void UsarSegundaCam() {
         cameras[1].gameObject.SetActive(true);
         ccameras[1].OutputChannel = OutputChannels.Channel02;
@@ -77,6 +121,20 @@ public class CameraController : MonoBehaviour {
         }
 
         splitScreen = true;
+    }
+
+    private void LateUpdate() {
+        if (modoDeJogoConfigurado == ModoDeJogo.MULTIPLAYER_LOCAL) {
+            distanciaAtual = splitFollowTarget.CalcularDistancia();
+
+            if (distanciaAtual > threshhold) {
+                ccameras[0].Lens.FieldOfView = Mathf.Lerp(fovMin, fovMax, (distanciaAtual - threshhold) / tolerancia);
+                positionComposers[0].CameraDistance = Mathf.Lerp(camDistMin, camDistMax, (distanciaAtual - threshhold) / tolerancia);
+            } else {
+                ccameras[0].Lens.FieldOfView = fovMin;
+                positionComposers[0].CameraDistance = camDistMin;
+            }
+        }
     }
 
     void OnDisable() {
@@ -182,6 +240,8 @@ public class CameraController : MonoBehaviour {
         for (int i = 0; i < players.Count; i++) {
             if (players[i].qualPlayer == QualPlayer.Player1) ccameras[0].Follow = players[i].transform;
             else ccameras[1].Follow = players[i].transform;
+
+            if (modoDeJogoConfigurado == ModoDeJogo.MULTIPLAYER_LOCAL) ccameras[0].Follow = splitFollowTarget.transform;
         }
     }
 

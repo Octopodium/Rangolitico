@@ -34,9 +34,13 @@ Shader "Unlit/DistortionShader"
     {
         Tags 
         {
-            "RenderType" = "Opaque" 
+            "Queue" = "Transparent"
+            "RenderType" = "Transparent" 
             "RenderPipeline" = "UniversalRenderPipeline" 
         }
+
+        Blend SrcAlpha OneMinusSrcAlpha
+        ZWrite Off
 
         Pass
         {
@@ -48,8 +52,10 @@ Shader "Unlit/DistortionShader"
             #pragma shader_feature _DISPLAYUV_ON
 
 
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"            
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/DeclareDepthTexture.hlsl"
             #include "Flow.cginc"
+            #include "LookingTroughWater.cginc"
 
 
             struct Attributes
@@ -77,6 +83,7 @@ Shader "Unlit/DistortionShader"
 
             TEXTURE2D(_FlowTex);
             TEXTURE2D(_MainTex);
+
             SAMPLER(sampler_FlowTex);
             SAMPLER(sampler_MainTex);
 
@@ -94,6 +101,7 @@ Shader "Unlit/DistortionShader"
 
             half4 frag(Varyings IN) : SV_Target
             {
+                // TEXTURE DISTORTION :
                 // Sample of the flow texture data:
                 float2 flowVector = SAMPLE_TEXTURE2D(_FlowTex, sampler_FlowTex, IN.uv * _DistortionTilling).rg * 2 - 1;
                 flowVector *= _DistortionStrength;
@@ -117,8 +125,19 @@ Shader "Unlit/DistortionShader"
                     col += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, frac(pericles.rg * _Tilling)) * pericles.z;
                 #endif
 
-                half4 color = lerp( _DeepColor, _Color, col.r);
-
+                //half4 color = lerp( _DeepColor, _Color, col.r);
+                
+                // DEPTH TEXTURE SAMPLING:
+                float2 projUV = IN.positionHCS.xy / _ScaledScreenParams.xy;
+                
+                #if UNITY_REVERSED_Z
+                real depth = SampleSceneDepth(projUV);
+                #else
+                real depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, SampleSceneDepth(UV));
+                #endif
+                
+                half4 color = lerp( _DeepColor, _Color, depth);
+                color.a = 1 - depth;
                 return color;
             }
             ENDHLSL

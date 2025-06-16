@@ -113,8 +113,8 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   decalRender: {fileID: 857454637213199047}
-  corAtivado: {r: 0, g: 0, b: 0, a: 0}
-  corDesativado: {r: 0, g: 0, b: 0, a: 0}
+  corAtivado: {r: 0, g: 1.1199454, b: 1.0875531, a: 1}
+  corDesativado: {r: 1.8778619, g: 0, b: 0, a: 1}
 --- !u!65 &5891275666692182563
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -149,9 +149,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugLogMetodosCadastrados: 0
-  id: P
   cadastrarNoInicio: 1
-  autoIDSeVazio: 1
+  naoUsarIDAuto: 0
+  identificador: 
 --- !u!1 &5422297607839480513
 GameObject:
   m_ObjectHideFlags: 0

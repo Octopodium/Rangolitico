@@ -27,6 +27,12 @@ Shader "Unlit/DistortionShader"
 
         _Speed ("Animation Speed", Float) = 1.0
         _DistortionStrength("Strength of the distortion applied", Float) = 1.0
+
+        [Space(20)]
+
+        [Header(Water Configuration)]
+        _DepthOffset ("Shalow water offset", Range(-10, 10)) = 0.0
+        _TransitionIntensity ("Intensity of the transition of deep to shallow water", Range(1, 20)) = 1
         
     }
 
@@ -68,6 +74,7 @@ Shader "Unlit/DistortionShader"
             struct Varyings
             {
                 float4 positionHCS  : SV_POSITION;
+                float3 positionWS : TEXCOORD2;
                 float2 uv : TEXCOORD0;
                 half3 normal : TEXCOORD1;
             };            
@@ -80,6 +87,9 @@ Shader "Unlit/DistortionShader"
             float _UJump, _VJump;
             float _Speed;
             float _DistortionStrength;
+
+            float _DepthOffset;
+            float _TransitionIntensity;
 
             TEXTURE2D(_FlowTex);
             TEXTURE2D(_MainTex);
@@ -95,6 +105,7 @@ Shader "Unlit/DistortionShader"
                 VertexPositionInputs positions = GetVertexPositionInputs(IN.positionOS);
                 OUT.positionHCS = positions.positionCS;
                 OUT.uv = positions.positionWS.xz;
+                OUT.positionWS = positions.positionWS;
 
                 return OUT;
             }
@@ -125,9 +136,11 @@ Shader "Unlit/DistortionShader"
                     col += SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, frac(pericles.rg * _Tilling)) * pericles.z;
                 #endif
 
-                //half4 color = lerp( _DeepColor, _Color, col.r);
+                half4 surfaceCol = saturate(lerp( _DeepColor, _Color, col.r));
+
                 
-                // DEPTH TEXTURE SAMPLING:
+                
+                // Depth texture sampling:
                 float2 projUV = IN.positionHCS.xy / _ScaledScreenParams.xy;
                 
                 #if UNITY_REVERSED_Z
@@ -135,10 +148,31 @@ Shader "Unlit/DistortionShader"
                 #else
                 real depth = lerp(UNITY_NEAR_CLIP_VALUE, 1, SampleSceneDepth(UV));
                 #endif
+
+                //Reconstructing worldSpacePosition from depth:
+                float3 worldPos = ComputeWorldSpacePosition(projUV, depth, UNITY_MATRIX_I_VP);
                 
-                half4 color = lerp( _DeepColor, _Color, depth);
-                color.a = 1 - depth;
-                return color;
+                /*
+                uint scale = 10;
+                uint3 worldIntPos = uint3(abs(worldPos.xyz * scale));
+                bool white = (worldIntPos.x & 1) ^ (worldIntPos.y & 1) ^ (worldIntPos.z & 1);
+                half4 color = white ? half4(1,1,1,1) : half4(0,0,0,1);
+                */
+
+                #if UNITY_REVERSED_Z
+                    if(depth < 0.0001){
+                        return _DeepColor + surfaceCol;
+                    }
+                #else
+                    if(depth > 0.9999){
+                        return _DeepColor + surfaceCol;
+                    }
+                #endif
+                
+                float compDepth = saturate(1 - ((IN.positionWS.y - (worldPos.y + _DepthOffset)) / _TransitionIntensity));
+                half4 color = lerp( _DeepColor, _Color, compDepth * compDepth);
+
+                return saturate(color + surfaceCol);
             }
             ENDHLSL
         }

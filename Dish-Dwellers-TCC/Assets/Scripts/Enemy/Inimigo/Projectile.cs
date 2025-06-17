@@ -15,6 +15,7 @@ public class Projectile : MonoBehaviour
 
     [Header("<color=green> Lima coisas :")]
     [SerializeField]private bool refletirNormal;
+   
     
     void Start()
     {
@@ -22,8 +23,7 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject, 4f);
     }
 
-    void FixedUpdate()
-    {
+    void FixedUpdate() {
         transform.Translate(direction * projectileSpeed * Time.deltaTime, Space.World);
     }
 
@@ -35,20 +35,28 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Escudo") && !isReflected)
+         if (other.gameObject.CompareTag("Escudo") && !isReflected)
         {
-            Vector3 reflectDirection;
+            //Tenta pegar o centro da proteção (protecao) do escudo para refletir
+            Transform centroDoEscudo = other.transform; 
 
-            if(refletirNormal) 
-                reflectDirection = other.transform.forward;
-            else
-                reflectDirection = (owner.transform.position - transform.position).normalized;
+            Escudo escudo = other.transform.GetComponentInParent<Escudo>();
+            if (escudo != null && escudo.protecao != null)
+            {
+                centroDoEscudo = escudo.protecao.transform;
+            }
 
+            Vector3 reflectDirection = centroDoEscudo.forward;
             reflectDirection.y = 0;
+            reflectDirection = reflectDirection.normalized;
+
+            
+            Debug.DrawRay(centroDoEscudo.position, reflectDirection * 3, Color.cyan, 2f);
+
             direction = reflectDirection;
             isReflected = true;
-            
             transform.rotation = Quaternion.LookRotation(reflectDirection);
+            transform.position = centroDoEscudo.position + reflectDirection * 0.5f;
         }
 
 

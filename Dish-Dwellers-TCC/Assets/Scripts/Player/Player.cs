@@ -63,7 +63,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     // Titizim:
     [Header("Config do Escudo")] [Space(10)]
     public bool escudo;
-    public bool escudoAtivo {get; set;}
+    public bool escudoAtivo { get; set; }
     public float velocidadeComEscudoMult = 0.65f;
 
     [Header("Config de Mira")] [Space(10)]

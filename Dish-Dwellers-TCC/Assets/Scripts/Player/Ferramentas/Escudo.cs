@@ -3,14 +3,13 @@ using UnityEngine;
 public class Escudo : MonoBehaviour, Ferramenta 
 {
     public GameObject protecao;
-    
+
     Vector3 direcaoProtecao = Vector3.zero;
     public bool acionada { get; protected set; } = false;
     
     Player jogador;
 
-    public void Inicializar(Player jogador) 
-    {
+    public void Inicializar(Player jogador) {
         this.jogador = jogador;
     }
 

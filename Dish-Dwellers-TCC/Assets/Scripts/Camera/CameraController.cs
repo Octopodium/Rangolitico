@@ -25,7 +25,7 @@ public class CameraController : MonoBehaviour {
     [Space(10)]
 
     [SerializeField] private SplitFollowTarget splitFollowTarget;
-    [SerializeField] private float distanciaQuadrada;
+    [SerializeField] private float distancia;
     [Range(0, 100)][SerializeField] private float camDistMin;
     [Range(0, 100)][SerializeField] private float camDistMax;
     [Range(0, 100)][SerializeField] private float threshhold;
@@ -128,11 +128,11 @@ public class CameraController : MonoBehaviour {
         if (modoDeJogoConfigurado == ModoDeJogo.MULTIPLAYER_LOCAL) {
             Vector3 vetorDist = splitFollowTarget.CalcularDistancia();
 
-            distanciaQuadrada = vetorDist.magnitude;
+            distancia = vetorDist.magnitude;
 
-            if (distanciaQuadrada > threshhold ) {
-                ccameras[0].Lens.FieldOfView = Mathf.Lerp(fovMin, fovMax, (distanciaQuadrada - threshhold) / tolerancia);
-                positionComposers[0].CameraDistance = Mathf.Lerp(camDistMin, camDistMax, (distanciaQuadrada - threshhold) / tolerancia);
+            if (distancia > threshhold ) {
+                ccameras[0].Lens.FieldOfView = Mathf.Lerp(fovMin, fovMax, (distancia - threshhold) / tolerancia);
+                positionComposers[0].CameraDistance = Mathf.Lerp(camDistMin, camDistMax, (distancia - threshhold) / tolerancia);
             } else {
                 ccameras[0].Lens.FieldOfView = fovMin;
                 positionComposers[0].CameraDistance = camDistMin;

@@ -93,9 +93,11 @@ Shader "Unlit/DistortionShader"
 
             TEXTURE2D(_FlowTex);
             TEXTURE2D(_MainTex);
+            TEXTURE2D(_CameraOpaqueTexture);
 
             SAMPLER(sampler_FlowTex);
             SAMPLER(sampler_MainTex);
+            SAMPLER(sampler_CameraOpaqueTexture);
 
 
             Varyings vert(Attributes IN)
@@ -171,6 +173,10 @@ Shader "Unlit/DistortionShader"
                 
                 float compDepth = saturate(1 - ((IN.positionWS.y - (worldPos.y + _DepthOffset)) / _TransitionIntensity));
                 half4 color = lerp( _DeepColor, _Color, compDepth * compDepth);
+
+                //float3 opaqueUV = FlowUV(projUV, flowVector, jump, 1, time, 0.0);
+                //half4 opaque = SAMPLE_TEXTURE2D(_CameraOpaqueTexture, sampler_CameraOpaqueTexture, frac(opaqueUV.rg * _Tilling)) * opaqueUV.z;
+                //return opaque + 0.1;
 
                 return saturate(color + surfaceCol);
             }

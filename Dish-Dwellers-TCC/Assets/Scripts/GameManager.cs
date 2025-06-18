@@ -20,10 +20,6 @@ public class GameManager : MonoBehaviour {
 
 
     public LeitorDeControle controle;
-    
-    //Variaveis para armazenar nomes dos Stages e Salas
-    public string nomeDaSalaAtual;
-    public string nomeDoStageAtual;
 
     // Eventos
     public Action<QualPlayer> OnTrocarControle; // Chamado no singleplayer, quando o jogador troca de controle, e no online para definir o jogador que está jogando

@@ -10,8 +10,10 @@ public class sala : MonoBehaviour{
     public List<OnTriggerEvent> triggers = new List<OnTriggerEvent>();
     public List<IResetavel> resetaveis = new List<IResetavel>();
     public UnityEvent onResetSala;
+    public string nomeDaSala;
+    public string nomeDoStage;
 
-    [HideInInspector]public int nSala, nFase;
+    [HideInInspector] public int nSala, nFase;
 
     private void Start() {
 
@@ -47,8 +49,11 @@ public class sala : MonoBehaviour{
 
     // Separa o nome da cena para encontrar o numero da fase e da sala.
     private void GetNomeDaSala(){
+
+        nomeDaSala = gameObject.scene.name;
+
         // Separa o nome da cena em partes separadas por '-', seguindo o modelo "sala-fase".
-        string[] nome = gameObject.scene.name.Split('-');
+        string[] nome = nomeDaSala.Split('-');
 
         if(int.TryParse(nome[0], out nSala) && int.TryParse(nome[1], out nFase)){
             Debug.Log($"Sala : {nSala} Fase : {nFase}");

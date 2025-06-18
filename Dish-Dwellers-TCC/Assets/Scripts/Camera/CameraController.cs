@@ -290,8 +290,7 @@ public class CameraController : MonoBehaviour {
         SetAlpha(nomeStageText, 0);
         SetAlpha(nomeSalaText, 0);
 
-        nomeStageText.text = GameManager.instance.nomeDoStageAtual;
-        nomeSalaText.text = GameManager.instance.nomeDaSalaAtual;
+        nomeSalaText.text = GameManager.instance.salaAtual.nomeDaSala;
 
         //Fade In 
         float elapsedTime = 0f;

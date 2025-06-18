@@ -56,6 +56,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
     [Header("Referências")]
     public GameObject visualizarDirecao;
+    public Transform pontoCentral; // pros bicho mirar certo e não atirarem no pé.
     bool podeMovimentar = true; // Solução TEMPORARIA enquanto não há estados implementados
     
 

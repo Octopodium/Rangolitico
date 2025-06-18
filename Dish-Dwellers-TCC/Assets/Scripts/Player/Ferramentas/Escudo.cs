@@ -8,6 +8,13 @@ public class Escudo : MonoBehaviour, Ferramenta
     public bool acionada { get; protected set; } = false;
     
     Player jogador;
+    [SerializeField] private Transform _pontoDeReflexao;
+    public Transform pontoDeReflexao {
+        get {
+            return _pontoDeReflexao;
+        }
+        private set {}
+    }
 
     public void Inicializar(Player jogador) {
         this.jogador = jogador;

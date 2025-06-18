@@ -120,7 +120,7 @@ public class InimigoTorreta : Inimigo
             float distancia = Vector3.Distance(transform.position, jogador.transform.position);
             if (distancia <= zonaDeAtaque && distancia < menorDistancia) {
                 menorDistancia = distancia;
-                maisProximo = jogador.transform;
+                maisProximo = jogador.pontoCentral.transform;
             }
         }
 

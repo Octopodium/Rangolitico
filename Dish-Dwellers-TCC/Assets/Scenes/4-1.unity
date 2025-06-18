@@ -1874,6 +1874,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2650311686811861260, guid: 27da80e2af50a6343bdcea268d402ee1, type: 3}
   m_PrefabInstance: {fileID: 240659144}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &244084354 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8503463931394751878, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+  m_PrefabInstance: {fileID: 1405658157}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &246140567
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4095,6 +4106,17 @@ MonoBehaviour:
   - {r: 1, g: 0.3537736, b: 0.3537736, a: 1}
   - {r: 1, g: 0.6720432, b: 0.3803922, a: 1}
   - {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &497544818 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1656897232514080102, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+  m_PrefabInstance: {fileID: 1405658157}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &508235448
 GameObject:
   m_ObjectHideFlags: 0
@@ -11001,6 +11023,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6266173109802037185, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: nomeDaSalaAtual
+      value: Sala 4-1
+      objectReference: {fileID: 0}
     - target: {fileID: 8783033451288024843, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: qualPlayer
       value: 0
@@ -16407,6 +16433,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -28.33517
       objectReference: {fileID: 0}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: nomeSalaText
+      value: 
+      objectReference: {fileID: 244084354}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: nomeStageText
+      value: 
+      objectReference: {fileID: 497544818}
     - target: {fileID: 7021994389819034840, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
       propertyPath: Target.TrackingTarget
       value: 

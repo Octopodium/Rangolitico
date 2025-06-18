@@ -2251,6 +2251,10 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6266173109802037185, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: nomeDaSalaAtual
+      value: Sala 5-1
+      objectReference: {fileID: 0}
     - target: {fileID: 6803899304941860395, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -3489,6 +3493,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0fe8bbbd306cd6d4ab9e0c104e0b310f, type: 3}
+--- !u!114 &606178303 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8503463931394751878, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+  m_PrefabInstance: {fileID: 254571518}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &609639342
 GameObject:
   m_ObjectHideFlags: 0
@@ -6674,6 +6689,17 @@ Transform:
   - {fileID: 677540196}
   m_Father: {fileID: 1489110783}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1192139496 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1656897232514080102, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+  m_PrefabInstance: {fileID: 254571518}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1192490573
 GameObject:
   m_ObjectHideFlags: 0
@@ -9025,6 +9051,14 @@ PrefabInstance:
       propertyPath: introCamera
       value: 
       objectReference: {fileID: 212023495}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: nomeSalaText
+      value: 
+      objectReference: {fileID: 606178303}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: nomeStageText
+      value: 
+      objectReference: {fileID: 1192139496}
     - target: {fileID: 8787564224961088567, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

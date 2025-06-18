@@ -10390,6 +10390,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b532f46f59587e7439138f36644901bf, type: 3}
+--- !u!114 &1619283502 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8503463931394751878, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+  m_PrefabInstance: {fileID: 1010973050407774235}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1623538648 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
@@ -12584,6 +12595,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e05e198a48cf024988b8c0164067d4c, type: 3}
+--- !u!114 &1901257044 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1656897232514080102, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+  m_PrefabInstance: {fileID: 1010973050407774235}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1906194907 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8098637382453233678, guid: 9606e6ce3a76f594590eb4bb7ddf818d, type: 3}
@@ -14248,6 +14270,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 6266173109802037185, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: nomeDaSalaAtual
+      value: Sala 1-1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -15347,6 +15373,14 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.07232766
       objectReference: {fileID: 0}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: nomeSalaText
+      value: 
+      objectReference: {fileID: 1619283502}
+    - target: {fileID: 6038993663028688158, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: nomeStageText
+      value: 
+      objectReference: {fileID: 1901257044}
     - target: {fileID: 6257366453768959418, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
       propertyPath: m_Enabled
       value: 0

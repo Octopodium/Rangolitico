@@ -50,8 +50,8 @@ public class CameraController : MonoBehaviour {
 
 
     //Titizim coisas
-    [SerializeField] private TextMeshProUGUI nomeStageText;
     [SerializeField] private TextMeshProUGUI nomeSalaText;
+    [SerializeField] private TextMeshProUGUI nomeStageText;
     [SerializeField] private float fadeDuracao = 1.5f;
     [SerializeField] private float displayDuracao = 2.0f;
 
@@ -130,7 +130,7 @@ public class CameraController : MonoBehaviour {
 
             distancia = vetorDist.magnitude;
 
-            if (distancia > threshhold ) {
+            if (distancia > threshhold) {
                 ccameras[0].Lens.FieldOfView = Mathf.Lerp(fovMin, fovMax, (distancia - threshhold) / tolerancia);
                 positionComposers[0].CameraDistance = Mathf.Lerp(camDistMin, camDistMax, (distancia - threshhold) / tolerancia);
             } else {
@@ -203,6 +203,7 @@ public class CameraController : MonoBehaviour {
         ConfigurarCameras();
 
         StartCoroutine(MostrarNomesStageSala());
+
     }
 
 
@@ -278,36 +279,63 @@ public class CameraController : MonoBehaviour {
 
     #region Nomes do Level
 
+    private void SetAlpha(TextMeshProUGUI text, float alpha) {
+        if (text == null) return;
+        Color c = text.color;
+        text.color = new Color(c.r, c.g, c.b, alpha);
+    }
+
     private IEnumerator MostrarNomesStageSala() {
+        //Pra garantir que o texto vai começar invisivel pq tava bugando
+        SetAlpha(nomeStageText, 0);
+        SetAlpha(nomeSalaText, 0);
+
         nomeStageText.text = GameManager.instance.nomeDoStageAtual;
         nomeSalaText.text = GameManager.instance.nomeDaSalaAtual;
 
-        // Fade In
-        yield return StartCoroutine(FadeText(nomeStageText, 0, 1, fadeDuracao));
-        yield return StartCoroutine(FadeText(nomeSalaText, 0, 1, fadeDuracao));
-
-        yield return new WaitForSeconds(displayDuracao);
-
-        // Fade Out
-        yield return StartCoroutine(FadeText(nomeStageText, 1, 0, fadeDuracao));
-        yield return StartCoroutine(FadeText(nomeSalaText, 1, 0, fadeDuracao));
-    }
-
-    // Coroutine para o fade de texto
-    private IEnumerator FadeText(TextMeshProUGUI textElement, float startAlpha, float endAlpha, float duracao) {
-        float elapsedTime = 0;
-        Color color = textElement.color;
-
-        while (elapsedTime < duracao) {
+        //Fade In 
+        float elapsedTime = 0f;
+        while (elapsedTime < fadeDuracao) {
             elapsedTime += Time.deltaTime;
-            float alpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / duracao);
-            textElement.color = new Color(color.r, color.g, color.b, alpha);
+            float alpha = Mathf.Clamp01(elapsedTime / fadeDuracao);
+            SetAlpha(nomeStageText, alpha);
+            SetAlpha(nomeSalaText, alpha);
             yield return null;
         }
 
-        textElement.color = new Color(color.r, color.g, color.b, endAlpha);
+        yield return new WaitForSeconds(displayDuracao);
+
+        //Fade Out 
+        elapsedTime = 0f;
+        while (elapsedTime < fadeDuracao) {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Clamp01(1 - (elapsedTime / fadeDuracao));
+            SetAlpha(nomeStageText, alpha);
+            SetAlpha(nomeSalaText, alpha);
+            yield return null;
+        }
+
+        //Pra garantir o alpha zero no final
+        SetAlpha(nomeStageText, 0);
+        SetAlpha(nomeSalaText, 0);
     }
+
+    // Coroutine para o fade de texto - mudei isso aqui pq tava bugado mas vou manter a lógica aqui pra caso der merda dps e eu lembrar oq fiz 
     
+    // private IEnumerator FadeText(TextMeshProUGUI textElement, float startAlpha, float endAlpha, float duracao) {
+    //     float elapsedTime = 0;
+    //     Color color = textElement.color;
+
+    //     while (elapsedTime < duracao) {
+    //         elapsedTime += Time.deltaTime;
+    //         float alpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / duracao);
+    //         textElement.color = new Color(color.r, color.g, color.b, alpha);
+    //         yield return null;
+    //     }
+
+    //     textElement.color = new Color(color.r, color.g, color.b, endAlpha);
+    // }
+
     #endregion
 
 }

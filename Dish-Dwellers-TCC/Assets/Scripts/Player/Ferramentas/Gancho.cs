@@ -90,7 +90,7 @@ public class Gancho : MonoBehaviour, Ferramenta {
     public void AtirarGancho() {
         gancho = Instantiate(ganchoPrefab, ganchoSpawn.position, Quaternion.identity);
         ProjetilDoGancho projetil = gancho.GetComponent<ProjetilDoGancho>();
-        projetil.Inicializar(this, jogador.direcao, velocidadeGancho);
+        projetil.Inicializar(this, jogador.direcao.normalized, velocidadeGancho);
     }
 
     /// <summary>

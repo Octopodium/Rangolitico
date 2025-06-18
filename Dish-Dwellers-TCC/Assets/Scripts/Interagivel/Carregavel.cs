@@ -78,6 +78,8 @@ public class Carregavel : MonoBehaviour, InteracaoCondicional {
     public void HandleSendoCarregado() {
         _sendoCarregado = true;
         rb.isKinematic = true;
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
         tinhaGravidade = rb.useGravity;
         rb.useGravity = false; // Desabilita a gravidade enquanto o objeto estiver sendo carregado
     }

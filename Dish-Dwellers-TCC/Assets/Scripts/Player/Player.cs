@@ -12,7 +12,7 @@ public enum QualPersonagem { Heater, Angler }
 public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     public QualPersonagem personagem = QualPersonagem.Heater;
     public QualPlayer qualPlayer = QualPlayer.Player1;
-    [HideInInspector] public PlayerInput playerInput => GameManager.instance.GetPlayerInput(this);
+    [HideInInspector] public PlayerInput playerInput => GameManager.instance.inputController.GetPlayerInput(this);
 
 
 
@@ -139,7 +139,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
             qualPlayer = isLocalPlayer ? QualPlayer.Player1 : QualPlayer.Desativado;
         }
 
-        GameManager.instance.OnInputTriggered += OnInputTriggered; // Registra o evento de input do GameManager
+        GameManager.instance.inputController.OnInputTriggered += OnInputTriggered; // Registra o evento de input do GameManager
 
         estaNoChao = CheckEstaNoChao(); // Verifica se o jogador está no chão
         if (estaNoChao){ 
@@ -785,7 +785,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         if (!carregador.estaCarregando) return;
         gameObject.Sincronizar();
 
-        carregador.Soltar(direcao, velocidade, movimentacao.magnitude > 0);
+        carregador.Soltar(direcao.normalized, velocidade, movimentacao.magnitude > 0);
     }
 
     #endregion
@@ -796,18 +796,18 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         
         // Direção
         Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, direcao * 3);
+        Gizmos.DrawRay(transform.position, direcao.normalized * 3);
 
 
         // Previsão arremeresso (Carregador)
         if (carregador != null && carregador.estaCarregando) {
             Gizmos.color = Color.blue;
-            Vector3 direcaoArremesso = direcao;
+            Vector3 direcaoArremesso = direcao.normalized;
             direcaoArremesso.y = carregador.alturaArremesso;
             Vector3 velocidadeInicial = Vector3.zero;
 
             if (movimentacao.magnitude > 0)
-                velocidadeInicial = carregador.influenciaDaInerciaNoArremesso * (direcao * velocidade);
+                velocidadeInicial = carregador.influenciaDaInerciaNoArremesso * (direcao.normalized * velocidade);
 
             Vector3[] pontos = carregador.PreverArremesso(carregador.carregado.GetComponent<Rigidbody>(), direcaoArremesso, carregador.forcaArremesso, velocidadeInicial);
             if (pontos == null) return;

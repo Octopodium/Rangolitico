@@ -1908,16 +1908,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modoDeJogo: 0
-  playerInputManager: {fileID: 5598412577595575007}
+  inputController: {fileID: 1804397907155681246}
   controle: {fileID: 0}
-  nomeDoStageAtual: 
   nomeDaSalaAtual: 
+  nomeDoStageAtual: 
   primeiraFaseSceneName: 1-1
   menuPrincipalSceneName: MainMenu
   offlineAnglerPrefab: {fileID: 4588282149540006099, guid: 0d1a8ccc94036cf4b90e6e5d1c9edfcc, type: 3}
   offlineHeaterPrefab: {fileID: 8083238583546821931, guid: 21cd7b3c7357e38469e9b1ef7955ce59, type: 3}
-  player1Input: {fileID: 5259784120547186662}
-  player2Input: {fileID: 3210754054097040919}
   jogadores: []
   telaDeLoading: {fileID: 7681164146862238776}
   cenaAtualNome: 
@@ -2426,6 +2424,7 @@ GameObject:
   m_Component:
   - component: {fileID: 68371283431814081}
   - component: {fileID: 5598412577595575007}
+  - component: {fileID: 1804397907155681246}
   m_Layer: 0
   m_Name: InputManager
   m_TagString: Untagged
@@ -2494,6 +2493,23 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &1804397907155681246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7171728077318466226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78c619f804efcb045aff7dbca056433b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInputManager: {fileID: 5598412577595575007}
+  anglerColor: {r: 0, g: 0.4960246, b: 1, a: 1}
+  heaterColor: {r: 1, g: 0.5358716, b: 0, a: 1}
+  player1Input: {fileID: 5259784120547186662}
+  player2Input: {fileID: 3210754054097040919}
 --- !u!1 &7957366910565154453
 GameObject:
   m_ObjectHideFlags: 0
@@ -2872,6 +2888,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tempoBase: 3
+  heaterMsg:
+    text: 
+    tempo: 0
+  anglerMsg:
+    text: 
+    tempo: 0
 --- !u!1 &9150138021155688343
 GameObject:
   m_ObjectHideFlags: 0

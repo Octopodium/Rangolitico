@@ -209,12 +209,14 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
                 ultimoInteragivel = null;
             }
 
-            direcao = Vector3.zero;
             movimentacao = Vector3.zero;
+            animacaoJogador.Mover(movimentacao);
         }
 
         if (ehJogadorAtual) ChecarInteragiveis();
         Movimentacao();
+
+        DesenharTrajetoria();
     }
 
 
@@ -274,7 +276,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
         this.estaMirando = estaMirando;
 
-        if (estaMirando || direcao.magnitude != 0) {
+        if (estaMirando || valor.magnitude != 0) {
             direcao = valor;
             visualizarDirecao.transform.forward = direcao;
         } else if (movimentacao.magnitude != 0) {
@@ -514,6 +516,8 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
             Vector3 novaDirecao = new Vector3(inputMira.x, 0, inputMira.y).normalized;
             bool houveMudanca = (direcao != novaDirecao) || (estavaMirando != estaMirando);
 
+            if (novaDirecao.magnitude == 0) return;
+
             direcao = novaDirecao;
             visualizarDirecao.transform.forward = direcao;
 
@@ -748,8 +752,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
 
         // GAMBIARRA DO LIMA:
-        try{interagivelMaisProximo.MostarIndicador(true);}
-        catch{}
+        try { interagivelMaisProximo.MostarIndicador(true); } catch { }
 
 
         ultimoInteragivel = interagivelMaisProximo;
@@ -766,7 +769,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         else if (carregador.estaCarregando) SoltarCarregando();
     }
 
-    void Interagir(InputAction.CallbackContext ctx){
+    void Interagir(InputAction.CallbackContext ctx) {
         Interagir();
     }
 
@@ -789,31 +792,55 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     }
 
     #endregion
-    
+
     void OnDrawGizmos() {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, raioInteracao);
-        
+
         // Direção
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, direcao.normalized * 3);
+    }
 
+    [Header("Trajetória do Arremesso")]
+    public LineRenderer linhaTrajetoria;
+    public Transform pontoFinalTrajetoria;
+    public LayerMask layerTrajetoria;
 
-        // Previsão arremeresso (Carregador)
-        if (carregador != null && carregador.estaCarregando) {
-            Gizmos.color = Color.blue;
-            Vector3 direcaoArremesso = direcao.normalized;
-            direcaoArremesso.y = carregador.alturaArremesso;
-            Vector3 velocidadeInicial = Vector3.zero;
-
-            if (movimentacao.magnitude > 0)
-                velocidadeInicial = carregador.influenciaDaInerciaNoArremesso * (direcao.normalized * velocidade);
-
-            Vector3[] pontos = carregador.PreverArremesso(carregador.carregado.GetComponent<Rigidbody>(), direcaoArremesso, carregador.forcaArremesso, velocidadeInicial);
-            if (pontos == null) return;
-            for (int i = 0; i < pontos.Length - 1; i++) {
-                Gizmos.DrawLine(pontos[i], pontos[i + 1]);
-            }
+    public void DesenharTrajetoria() {
+        if (carregador == null || !carregador.estaCarregando || !ehJogadorAtual) {
+            if (linhaTrajetoria.enabled) linhaTrajetoria.enabled = false; // Desabilita a linha se não estiver carregando
+            pontoFinalTrajetoria.gameObject.SetActive(false);
+            return;
         }
+
+        Vector3 direcaoArremesso = direcao.normalized;
+        direcaoArremesso.y = carregador.alturaArremesso;
+        Vector3 velocidadeInicial = Vector3.zero;
+
+        if (movimentacao.magnitude > 0)
+            velocidadeInicial = carregador.influenciaDaInerciaNoArremesso * (direcao.normalized * velocidade);
+
+        linhaTrajetoria.positionCount = 0; // Limpa a linha anterior
+
+        Vector3[] pontos = carregador.PreverArremesso(carregador.carregado.GetComponent<Rigidbody>(), direcaoArremesso, carregador.forcaArremesso, velocidadeInicial, layer: layerTrajetoria);
+        if (pontos == null) {
+            linhaTrajetoria.enabled = false; // Desabilita a linha se não houver pontos
+            pontoFinalTrajetoria.gameObject.SetActive(false);
+            return;
+        }
+
+        linhaTrajetoria.enabled = true; // Habilita a linha
+        linhaTrajetoria.positionCount = pontos.Length;
+        linhaTrajetoria.SetPositions(pontos);
+
+        Vector3 pontoFinal = pontos[pontos.Length - 1];
+        pontoFinalTrajetoria.position = pontoFinal;
+        pontoFinalTrajetoria.gameObject.SetActive(true);
+    }
+    
+    public void SetPontoFinal(bool ativo, Vector3 posicao = default) {
+        pontoFinalTrajetoria.gameObject.SetActive(ativo);
+        if (ativo) pontoFinalTrajetoria.position = posicao;
     }
 }

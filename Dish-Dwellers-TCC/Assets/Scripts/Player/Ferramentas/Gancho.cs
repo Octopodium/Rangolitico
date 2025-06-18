@@ -7,6 +7,7 @@ public class Gancho : MonoBehaviour, Ferramenta {
     public GameObject ganchoPrefab;
 
     [Header("Configurações do Gancho")]
+    public LayerMask layerGancho;
     public LayerMask layerCortante;
     public float distanciaMaxima = 10f;
     public float velocidadeGancho = 20f;
@@ -23,6 +24,12 @@ public class Gancho : MonoBehaviour, Ferramenta {
 
     public bool acionada { get; protected set; } = false;
     bool acabouDePuxar = false;
+
+    void FixedUpdate() {
+        if (acionada && ganchado == null && gancho == null) {
+            PreverGancho();
+        }
+    }
 
     /// <summary>
     /// Chamado no Awake do Player. Seta o jogador que está usando o gancho.
@@ -57,6 +64,7 @@ public class Gancho : MonoBehaviour, Ferramenta {
         if (!acionada) return;
 
         this.jogador.MostrarDirecional(false);
+        this.jogador.SetPontoFinal(false);
 
         if (gancho == null && ganchado == null && !acabouDePuxar) {
             AtirarGancho();
@@ -70,7 +78,7 @@ public class Gancho : MonoBehaviour, Ferramenta {
         if (!acionada) return;
 
         this.jogador.MostrarDirecional(false);
-        
+
         if (ganchado != null) {
             ganchado.HandleDesganchado();
             ganchado = null;
@@ -170,7 +178,7 @@ public class Gancho : MonoBehaviour, Ferramenta {
                 Vector3 arremeco = Vector3.up * alturaDePuxada;
                 Vector3 puxada = (direcao * distancia * forcaDePuxada) + arremeco;
 
-                rb.AddForce(puxada * rb.mass , ForceMode.Impulse);
+                rb.AddForce(puxada * rb.mass, ForceMode.Impulse);
             }
 
             ganchado.HandleDesganchado();
@@ -181,5 +189,22 @@ public class Gancho : MonoBehaviour, Ferramenta {
 
         yield return null;
     }
+
+
+    public void PreverGancho() {
+        if (gancho != null) return;
+
+        Vector3 posicaoInicial = ganchoSpawn.position;
+        Vector3 direcao = jogador.direcao.normalized;
+        float distanciaMaxima = this.distanciaMaxima;
+
+        RaycastHit hit;
+        if (Physics.Raycast(posicaoInicial, direcao, out hit, distanciaMaxima, layerGancho)) {
+            this.jogador.SetPontoFinal(true, hit.point);
+        } else {
+            this.jogador.SetPontoFinal(false);
+        }
+    }
+
 
 }

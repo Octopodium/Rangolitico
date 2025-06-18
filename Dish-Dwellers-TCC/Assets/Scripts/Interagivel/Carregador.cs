@@ -158,21 +158,39 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
     /// <param name="forca">Força do arremesso</param>
     /// <param name="velocidadeInicial">Velocidade inicial do arremesso</param>
     /// <returns>Retorna um vetor de posições da trajetória, sem considerar posiveis colisões no caminho.</returns>
-    public Vector3[] PreverArremesso(Rigidbody rigidbody, Vector3 direcao, float forca, Vector3 velocidadeInicial) {
+    public Vector3[] PreverArremesso(Rigidbody rigidbody, Vector3 direcao, float forca, Vector3 velocidadeInicial, int quantidadeMaxPontos = 40, int quantidadePontosPorSegundo = 20, LayerMask layer = default) {
         if (rigidbody == null) return null;
 
-        int quantidadeMaxPontos = 20;
-        float tempo = 10 * Time.fixedDeltaTime; // Intervalos de tempo
+        float tempo = 1f / quantidadePontosPorSegundo;
 
-        Vector3[] pontos = new Vector3[quantidadeMaxPontos];
+        Vector3[] pontos = new Vector3[quantidadeMaxPontos+1];
         Vector3 posicao = rigidbody.position;
+        Vector3 posicaoAntiga = rigidbody.position;
         Vector3 velocidade = direcao * forca + velocidadeInicial;
         Vector3 gravidade = 0.5f * Physics.gravity * tempo * tempo;
 
-        for (int i = 0; i < quantidadeMaxPontos; i++) {
+        pontos[0] = posicao;
+
+        RaycastHit hit;
+
+        for (int i = 1; i < quantidadeMaxPontos; i++) {
             posicao += velocidade * tempo + gravidade;
-            velocidade += (Physics.gravity * tempo);
+            velocidade += Physics.gravity * tempo;
             pontos[i] = posicao;
+
+            float distancia = Vector3.Distance(posicao, posicaoAntiga);
+            Vector3 dir = (posicao - posicaoAntiga).normalized;
+
+            Debug.DrawRay(posicao, dir, Color.red, tempo);
+
+            if (Physics.Raycast(posicaoAntiga, dir, out hit, distancia, layer)) {
+                // Se colidir com algo, retorna os pontos até o momento da colisão
+                System.Array.Resize(ref pontos, i + 1);
+                pontos[i] = hit.point;
+                return pontos;
+            }
+
+            posicaoAntiga = posicao;
         }
 
         return pontos;

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3420212575769038362
+--- !u!1 &6297402727541556051
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,46 +8,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2959423552645661722}
-  - component: {fileID: 898214102826036797}
-  - component: {fileID: 1578060860951584015}
+  - component: {fileID: 1723990316663187967}
+  - component: {fileID: 7280687300940451631}
+  - component: {fileID: 8402963911028715413}
   m_Layer: 0
-  m_Name: Vase_00
+  m_Name: BrokenWineBottleBottomVar1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!4 &2959423552645661722
+--- !u!4 &1723990316663187967
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3420212575769038362}
+  m_GameObject: {fileID: 6297402727541556051}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 116985013301782771}
+  m_Father: {fileID: 1187888381762209901}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &898214102826036797
+--- !u!33 &7280687300940451631
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3420212575769038362}
-  m_Mesh: {fileID: -3351887939530131908, guid: e585974d9f7713a488e654c290cd1eb8, type: 3}
---- !u!23 &1578060860951584015
+  m_GameObject: {fileID: 6297402727541556051}
+  m_Mesh: {fileID: 3195539773481238209, guid: e4186a93735e4ec4c8223cd104ec4e36, type: 3}
+--- !u!23 &8402963911028715413
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3420212575769038362}
+  m_GameObject: {fileID: 6297402727541556051}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -64,8 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -4665954753528466798, guid: e585974d9f7713a488e654c290cd1eb8, type: 3}
-  - {fileID: -9207466812533600, guid: e585974d9f7713a488e654c290cd1eb8, type: 3}
+  - {fileID: 5231250494552909025, guid: e4186a93735e4ec4c8223cd104ec4e36, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -87,7 +86,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &5907470283586539420
+--- !u!1 &7171699598421183015
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,49 +94,27 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 116985013301782771}
-  - component: {fileID: 9004040150912335906}
+  - component: {fileID: 1187888381762209901}
   m_Layer: 0
-  m_Name: Vase_00
+  m_Name: BrokenWineBottleBottomVar1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!4 &116985013301782771
+--- !u!4 &1187888381762209901
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5907470283586539420}
+  m_GameObject: {fileID: 7171699598421183015}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2959423552645661722}
+  - {fileID: 1723990316663187967}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &9004040150912335906
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5907470283586539420}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.27629557, y: 0.3057653, z: 0.22679463}
-  m_Center: {x: -0.020505086, y: 0.14693548, z: -0.00061313435}

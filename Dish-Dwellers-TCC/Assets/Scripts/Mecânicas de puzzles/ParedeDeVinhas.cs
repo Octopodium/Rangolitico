@@ -24,8 +24,7 @@ public class ParedeDeVinhas : IResetavel {
         }
 
         col.enabled = ativa;
-
-        integridade = 3;
+        
         SetarCor(integridade);
     }
 

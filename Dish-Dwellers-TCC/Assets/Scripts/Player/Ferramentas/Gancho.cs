@@ -7,6 +7,9 @@ public class Gancho : MonoBehaviour, Ferramenta {
     public GameObject ganchoPrefab;
 
     [Header("Configurações do Gancho")]
+    public bool temMiraAuto = true;
+    public float raioMiraAuto = 0.25f;
+    protected Ganchavel alvoAuto;
     public LayerMask layerGancho;
     public LayerMask layerCortante;
     public float distanciaMaxima = 10f;
@@ -65,6 +68,7 @@ public class Gancho : MonoBehaviour, Ferramenta {
 
         this.jogador.MostrarDirecional(false);
         this.jogador.SetPontoFinal(false);
+        this.jogador.linhaTrajetoria.enabled = false;
 
         if (gancho == null && ganchado == null && !acabouDePuxar) {
             AtirarGancho();
@@ -98,7 +102,15 @@ public class Gancho : MonoBehaviour, Ferramenta {
     public void AtirarGancho() {
         gancho = Instantiate(ganchoPrefab, ganchoSpawn.position, Quaternion.identity);
         ProjetilDoGancho projetil = gancho.GetComponent<ProjetilDoGancho>();
-        projetil.Inicializar(this, jogador.direcao.normalized, velocidadeGancho);
+        Vector3 direcao = jogador.direcao.normalized;
+
+        if (temMiraAuto && alvoAuto != null) {
+            Vector3 dirNova = alvoAuto.transform.position - ganchoSpawn.position;
+            dirNova.y = jogador.direcao.y;
+            direcao = dirNova.normalized;
+        }
+
+        projetil.Inicializar(this, direcao, velocidadeGancho);
     }
 
     /// <summary>
@@ -198,13 +210,72 @@ public class Gancho : MonoBehaviour, Ferramenta {
         Vector3 direcao = jogador.direcao.normalized;
         float distanciaMaxima = this.distanciaMaxima;
 
+        jogador.linhaTrajetoria.enabled = true;
+        jogador.linhaTrajetoria.positionCount = 2;
+        jogador.linhaTrajetoria.SetPosition(0, posicaoInicial);
+
+        Vector3 posicaoFinal;
+        
         RaycastHit hit;
+        Collider hitted = null;
         if (Physics.Raycast(posicaoInicial, direcao, out hit, distanciaMaxima, layerGancho)) {
-            this.jogador.SetPontoFinal(true, hit.point);
+            posicaoFinal = hit.point;
+            hitted = hit.collider;
         } else {
-            this.jogador.SetPontoFinal(false);
+            posicaoFinal = posicaoInicial + direcao * distanciaMaxima;
         }
+
+        posicaoFinal = AutoAim(posicaoFinal, raioMiraAuto, hitted);
+        
+        this.jogador.SetPontoFinal(true, posicaoFinal);
+        jogador.linhaTrajetoria.SetPosition(1, posicaoFinal);
     }
 
+    RaycastHit[] hits = new RaycastHit[24];
+    public Vector3 AutoAim(Vector3 fimPos, float radius = 0.25f, Collider hitted = null) {
+        if (!temMiraAuto) return fimPos;
 
+        if (hitted != null) {
+            Ganchavel alvoRecebido = hitted.GetComponent<Ganchavel>();
+            if (alvoRecebido != null) {
+                alvoAuto = alvoRecebido;
+                return alvoRecebido.meio;
+            }
+        }
+
+        Vector3 direcao = jogador.direcao.normalized;
+        float distanciaMaxima = Vector3.Distance(ganchoSpawn.position, fimPos);
+
+        int hitCount = Physics.SphereCastNonAlloc(fimPos, radius, -direcao, hits, distanciaMaxima, layerGancho);
+        Debug.DrawLine(fimPos, fimPos - direcao * distanciaMaxima, Color.green, 0.1f);
+
+        if (hitCount > 0) {
+            float maisLonge = 0f;
+            Ganchavel alvo = null;
+
+
+            for (int i = 0; i < hitCount; i++) {
+                RaycastHit hit = hits[i];
+                if (hit.collider != null) {
+                    Ganchavel ganchavel = hit.collider.GetComponent<Ganchavel>();
+                    if (ganchavel != null) {
+                        Debug.DrawLine(ganchoSpawn.position, ganchavel.meio, Color.magenta, 0.1f);
+                        float distancia = Vector3.Distance(ganchoSpawn.position, ganchavel.meio);
+                        if (distancia > maisLonge && distancia <= distanciaMaxima) {
+                            maisLonge = distancia;
+                            alvo = ganchavel;
+                        }
+                    }
+                }
+            }
+
+            if (alvo != null) {
+                alvoAuto = alvo;
+                return alvo.meio;
+            }
+        }
+
+        alvoAuto = null;
+        return fimPos;
+    }
 }

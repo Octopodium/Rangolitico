@@ -63,6 +63,8 @@ public class ProjetilDoGancho : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider collider) {
+        if (!movendo) return;
+
         Ganchavel ganchavel = collider.gameObject.GetComponent<Ganchavel>();
         if (ganchavel != null && ganchavel.PodeSerGanchado()) {
             movendo = false;

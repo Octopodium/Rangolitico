@@ -5,13 +5,11 @@ public class InimigoTorreta : Inimigo
 {
     #region Declarações de variáveis
 
-    [Header("Referências de ação do inimigo")]
-    [Space(10)]
+    [Header("Referências de ação do inimigo")] [Space(10)]
     public GameObject projectile;
     public Transform fireAction;
 
-    [Header("Valores de ação do inimigo torreta")]
-    [Space(10)]
+    [Header("Valores de ação do inimigo torreta")] [Space(10)]
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float fireRate;
     [SerializeField] private float nextFire;

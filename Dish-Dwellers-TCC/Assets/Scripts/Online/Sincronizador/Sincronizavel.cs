@@ -5,8 +5,11 @@ using System.Runtime.CompilerServices;
 using UnityEditor;
 using Mirror;
 using System;
-using UnityEditor.SceneManagement;
 using System.Collections;
+
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
 
 /*
     COMO UTILIZAR A SINCRONIZAÇÃO POR ATRIBUTO:

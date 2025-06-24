@@ -81,10 +81,18 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
     /// <param name="carregavel">Objeto a ser carregado</param>
     public bool Carregar(Carregavel carregavel) {
         if (carregado != null || carregavel == null || carregavel == ultimoCarregado) return false;
+
+        // Checa se o carregavel é um carregador e está carregando este objeto, se sim, não permite que este objeto o carregue (não faz sentido e quebra o jogo)
+        Carregador carregavelEhCarregador = carregavel.GetComponent<Carregador>();
+        if (carregavelEhCarregador != null) {
+            if (carregavelEhCarregador.carregado != null && carregavelEhCarregador.carregado.gameObject == gameObject) {
+                return false;
+            }
+            carregavelEhCarregador = null;
+        }
         
         carregado = carregavel;
         ultimoCarregado = carregavel;
-
 
         carregandoParentSourceId = carregavel.parentConstraint.AddSource(new ConstraintSource() {
             sourceTransform = carregarTransform,

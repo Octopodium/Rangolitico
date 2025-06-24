@@ -103,6 +103,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         collidersInteragiveis = new Collider[maxInteragiveisEmRaio];
 
         direcao = new Vector3(0, 0, -1);
+        offsetCheckChao = new Vector3(0, distanciaCheckChao, 0); // Offset para o raycast de verificação do chão
 
         rb = GetComponent<Rigidbody>();
         col = GetComponent<CapsuleCollider>();
@@ -244,6 +245,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
         if (sendoCarregado) carregavel.carregador.Soltar(); // Se o jogador está sendo carregado, se solta
         if (carregando != null) carregador.Soltar(); // Se o jogador está carregando algo, se solta
+        if (!carregador.estaCarregando && ferramenta != null) ferramenta.Cancelar(); // Se o jogador está acionando uma ferramenta, cancela a ação 
     }
 
 
@@ -597,10 +599,10 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         usandoRb = false;
     }
 
-
+    Vector3 offsetCheckChao; // Definido no Awake, mas em suma, é o mesmo valor de distanciaCheckChao, mas com Y positivo (assim a checagem não começa no pé do jogador)
     public bool CheckEstaNoChao() {
         if (sendoPuxado) return false; // Se o jogador está sendo puxado, não está no chão
-        return Physics.Raycast(transform.position, Vector3.down, distanciaCheckChao, layerChao);
+        return Physics.Raycast(transform.position + offsetCheckChao, Vector3.down, 2 * distanciaCheckChao, layerChao);
     }
 
     public void Teletransportar(Vector3 posicao) {

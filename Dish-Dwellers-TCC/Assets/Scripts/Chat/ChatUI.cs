@@ -3,23 +3,48 @@ using UnityEngine.UI;
 
 public class ChatUI : MonoBehaviour {
     public GameObject heaterPanel, anglerPanel;
-    public Text heaterText, anglerText;
+    public Image heaterEmote, anglerEmote;
 
     void Start() {
         ChatController.instance.OnMensagemAngler += AtualizarAngler;
-        ChatController.instance.OnMensagemOffAngler += () => AtualizarAngler();
+        ChatController.instance.OnMensagemOffAngler += AtualizarAngler;
 
         ChatController.instance.OnMensagemHeater += AtualizarHeater;
-        ChatController.instance.OnMensagemOffHeater += () => AtualizarHeater();
+        ChatController.instance.OnMensagemOffHeater += AtualizarHeater;
+    }
+
+    void OnDestroy() {
+        ChatController.instance.OnMensagemAngler -= AtualizarAngler;
+        ChatController.instance.OnMensagemOffAngler -= AtualizarAngler;
+
+        ChatController.instance.OnMensagemHeater -= AtualizarHeater;
+        ChatController.instance.OnMensagemOffHeater -= AtualizarHeater;
+    }
+
+    public void AtualizarHeater() {
+        AtualizarHeater("");
     }
 
     public void AtualizarHeater(string texto = "") {
-        heaterPanel.SetActive(texto != "");
-        heaterText.text = texto;
+        if (texto != "" && ChatController.instance.IsEmote(texto)) {
+            heaterEmote.sprite = ChatController.instance.GetEmoteSprite(texto);
+            heaterPanel.SetActive(true);
+        } else {
+            heaterEmote.sprite = null;
+            heaterPanel.SetActive(false);
+        }
     }
-
+    
+    public void AtualizarAngler() {
+        AtualizarAngler("");
+    }
     public void AtualizarAngler(string texto = "") {
-        anglerPanel.SetActive(texto != "");
-        anglerText.text = texto;
+        if (texto != "" && ChatController.instance.IsEmote(texto)) {
+            anglerEmote.sprite = ChatController.instance.GetEmoteSprite(texto);
+            anglerPanel.SetActive(true);
+        } else {
+            anglerEmote.sprite = null;
+            anglerPanel.SetActive(false);
+        }
     }
 }

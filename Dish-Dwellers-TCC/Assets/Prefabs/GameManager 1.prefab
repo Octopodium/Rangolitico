@@ -2048,8 +2048,6 @@ MonoBehaviour:
   modoDeJogo: 0
   inputController: {fileID: 1804397907155681246}
   controle: {fileID: 0}
-  nomeDaSalaAtual: Sala 3-1
-  nomeDoStageAtual: Stage-1
   primeiraFaseSceneName: 1-1
   menuPrincipalSceneName: MainMenu
   offlineAnglerPrefab: {fileID: 4588282149540006099, guid: 0d1a8ccc94036cf4b90e6e5d1c9edfcc, type: 3}
@@ -3475,14 +3473,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3978844108890528751}
     m_Modifications:
-    - target: {fileID: 1338935797881569404, guid: 76039a181a7c5814ab06532b0ed26156, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1338935797881569404, guid: 76039a181a7c5814ab06532b0ed26156, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1751678650286188301, guid: 76039a181a7c5814ab06532b0ed26156, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -3525,7 +3515,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2309687830982973567, guid: 76039a181a7c5814ab06532b0ed26156, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 134
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2309687830982973567, guid: 76039a181a7c5814ab06532b0ed26156, type: 3}
       propertyPath: m_SizeDelta.y
@@ -3537,7 +3527,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2309687830982973567, guid: 76039a181a7c5814ab06532b0ed26156, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -21
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2733533816249224698, guid: 76039a181a7c5814ab06532b0ed26156, type: 3}
       propertyPath: m_Name

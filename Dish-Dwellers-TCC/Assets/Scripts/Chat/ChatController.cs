@@ -34,6 +34,10 @@ public class ChatController : MonoBehaviour {
         }
     }
 
+    public void MandarMensagem(string text, Player player) {
+        MandarMensagem(text, player.personagem);
+    }
+
     public void MandarMensagem(string text, QualPersonagem personagem) {
         Mensagem msg = PegarMensagem(personagem);
         msg.text = text;
@@ -75,5 +79,13 @@ public class ChatController : MonoBehaviour {
         return OnMensagemOffHeater;
     }
 
-    
+    public bool IsEmote(string mensagem) {
+        return mensagem.StartsWith(":");
+    }
+
+    public Sprite GetEmoteSprite(string mensagem) {
+        if (!IsEmote(mensagem)) return null;
+        string emoteName = mensagem.Substring(1); // Remove o prefixo ":"
+        return Resources.Load<Sprite>("Emotes/" + emoteName);
+    }
 }

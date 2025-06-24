@@ -79,6 +79,8 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     public float componenteVerticalKnockback = 0.2f;
     private bool estaSofrendoKnockback = false;
 
+    public System.Action<bool> onEmoteWheel;
+
 
 
 
@@ -168,6 +170,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
                 break;
             case "Aim":
                 Mira();
+                break;
+            case "EmoteWheel":
+                onEmoteWheel?.Invoke(ctx.performed);
                 break;
         }
     }

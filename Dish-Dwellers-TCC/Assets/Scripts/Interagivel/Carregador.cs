@@ -14,6 +14,7 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
     public LayerMask layerCarregavel;
 
     [HideInInspector] public Carregavel carregado;
+    public Rigidbody carregadoRigidbody {get; private set;}
     Carregavel ultimoCarregado;
     float tempoLimpaUltimoCarregado = 0.25f; // Impede jogador de soltar e pegar um carregavel no mesmo momento
     float timerLimparUltimoCarregado = 0;
@@ -104,7 +105,10 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
 
         Rigidbody cargaRigidbody = carregavel.GetComponent<Rigidbody>();
         if (cargaRigidbody != null) {
+            carregadoRigidbody = cargaRigidbody;
             carregavel.HandleSendoCarregado();
+        } else {
+            carregadoRigidbody = null;
         }
 
         OnCarregar?.Invoke(carregado);
@@ -140,6 +144,7 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
         }
 
         carregado = null;
+        carregadoRigidbody = null;
         timerLimparUltimoCarregado = tempoLimpaUltimoCarregado;
     }
 
@@ -155,6 +160,7 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
         carregado.HandleSolto();
 
         carregado = null;
+        carregadoRigidbody = null;
         timerLimparUltimoCarregado = tempoLimpaUltimoCarregado;
     }
 
@@ -166,13 +172,13 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
     /// <param name="forca">Força do arremesso</param>
     /// <param name="velocidadeInicial">Velocidade inicial do arremesso</param>
     /// <returns>Retorna um vetor de posições da trajetória, sem considerar posiveis colisões no caminho.</returns>
-    public Vector3[] PreverArremesso(Rigidbody rigidbody, Vector3 direcao, float forca, Vector3 velocidadeInicial, int quantidadeMaxPontos = 40, int quantidadePontosPorSegundo = 20, LayerMask layer = default) {
+    public Vector3[] PreverArremesso(Rigidbody rigidbody, Vector3 direcao, float forca, Vector3 velocidadeInicial, int quantidadeMaxPontos = 40, int quantidadePontosPorSegundo = 20, LayerMask layer = default, Vector3 comecarPor = default) {
         if (rigidbody == null) return null;
 
         float tempo = 1f / quantidadePontosPorSegundo;
 
         Vector3[] pontos = new Vector3[quantidadeMaxPontos+1];
-        Vector3 posicao = rigidbody.position;
+        Vector3 posicao = comecarPor == default ? rigidbody.position : comecarPor;
         Vector3 posicaoAntiga = rigidbody.position;
         Vector3 velocidade = direcao * forca + velocidadeInicial;
         Vector3 gravidade = 0.5f * Physics.gravity * tempo * tempo;

@@ -171,6 +171,7 @@ public class Sincronizavel : MonoBehaviour {
     public bool cadastrarNoInicio = true;
     private bool cadastrouUmaVez = false;
     public bool naoUsarIDAuto = false;
+    public bool isSingleton = false;
 
 
 
@@ -241,7 +242,7 @@ public class Sincronizavel : MonoBehaviour {
     }
 
     void OnValidate() {
-        if (IsPrefab()) {
+        if (IsPrefab() && !isSingleton) {
             identificador = "";
             return;
         }

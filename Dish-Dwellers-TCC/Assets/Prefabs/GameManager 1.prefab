@@ -3125,6 +3125,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6072409113587671197}
   - component: {fileID: 160989595908194399}
+  - component: {fileID: 6036751001763857490}
   m_Layer: 0
   m_Name: ChatController
   m_TagString: Untagged
@@ -3166,6 +3167,23 @@ MonoBehaviour:
   anglerMsg:
     text: 
     tempo: 0
+--- !u!114 &6036751001763857490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8893529365533843467}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugLogMetodosCadastrados: 0
+  cadastrarNoInicio: 1
+  naoUsarIDAuto: 0
+  isSingleton: 1
+  identificador: $5d3a27cec83a4b3b84ebd8070c599c3f
 --- !u!1 &9150138021155688343
 GameObject:
   m_ObjectHideFlags: 0

@@ -816,7 +816,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     public LayerMask layerTrajetoria;
 
     public void DesenharTrajetoria() {
-        if (carregador == null || !carregador.estaCarregando || !ehJogadorAtual) {
+        if (carregador == null || !carregador.estaCarregando) {
             if (linhaTrajetoria.enabled) linhaTrajetoria.enabled = false; // Desabilita a linha se não estiver carregando
             pontoFinalTrajetoria.gameObject.SetActive(false);
             return;
@@ -831,7 +831,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
         linhaTrajetoria.positionCount = 0; // Limpa a linha anterior
 
-        Vector3[] pontos = carregador.PreverArremesso(carregador.carregado.GetComponent<Rigidbody>(), direcaoArremesso, carregador.forcaArremesso, velocidadeInicial, layer: layerTrajetoria);
+        Vector3[] pontos = carregador.PreverArremesso(carregador.carregadoRigidbody, direcaoArremesso, carregador.forcaArremesso, velocidadeInicial, layer: layerTrajetoria, comecarPor: carregador.carregarTransform.position);
         if (pontos == null) {
             linhaTrajetoria.enabled = false; // Desabilita a linha se não houver pontos
             pontoFinalTrajetoria.gameObject.SetActive(false);

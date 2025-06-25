@@ -14,7 +14,7 @@ public class EditorSincronizavel : Editor {
 
         serializedObject.Update();
 
-        if (!sincronizavel.IsPrefab()) {
+        if (!sincronizavel.IsPrefab() || sincronizavel.isSingleton) {
             EditorGUILayout.LabelField("ID: " + sincronizavel.identificador);
 
             if (GUILayout.Button("Regerar ID")) {

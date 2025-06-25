@@ -8,7 +8,7 @@ public class Mensagem {
     public bool ativo => tempo > 0f;
 }
 
-public class ChatController : MonoBehaviour {
+public class ChatController : MonoBehaviour, SincronizaMetodo {
     public static ChatController instance;
 
     public float tempoBase;
@@ -38,7 +38,12 @@ public class ChatController : MonoBehaviour {
         MandarMensagem(text, player.personagem);
     }
 
+    [Sincronizar]
     public void MandarMensagem(string text, QualPersonagem personagem) {
+        if (string.IsNullOrEmpty(text)) return;
+        
+        gameObject.Sincronizar(text, personagem);
+
         Mensagem msg = PegarMensagem(personagem);
         msg.text = text;
         msg.tempo = tempoBase;

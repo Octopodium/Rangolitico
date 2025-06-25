@@ -252,7 +252,7 @@ MonoBehaviour:
   interpolateScale: 1
   coordinateSpace: 0
   timelineOffset: 1
-  showGizmos: 1
+  showGizmos: 0
   showOverlay: 0
   overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
   bufferResetMultiplier: 3
@@ -350,6 +350,7 @@ MonoBehaviour:
   debugLogMetodosCadastrados: 0
   cadastrarNoInicio: 1
   naoUsarIDAuto: 0
+  isSingleton: 0
   identificador: 
 --- !u!1 &3965158462078731169
 GameObject:
@@ -1258,7 +1259,7 @@ Transform:
   m_GameObject: {fileID: 8258685257674104123}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

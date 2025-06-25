@@ -2,21 +2,13 @@ using UnityEngine;
 
 public class ActivateObject : MonoBehaviour
 {
-    // Assign this in the inspector
-    public GameObject targetObject;
-
-    // Set to true to activate, false to deactivate
-    public bool activate = true;
-
-    void Start()
+    public void SetActiveState(bool state)
     {
-        if (targetObject != null)
-        {
-            targetObject.SetActive(activate);
-        }
-        else
-        {
-            Debug.LogWarning("Target Object is not assigned!");
-        }
+        gameObject.SetActive(state);
+    }
+
+    public void ToggleActiveState()
+    {
+        gameObject.SetActive(!gameObject.activeSelf);
     }
 }

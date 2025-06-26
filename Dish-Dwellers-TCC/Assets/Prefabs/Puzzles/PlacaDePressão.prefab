@@ -151,6 +151,7 @@ MonoBehaviour:
   debugLogMetodosCadastrados: 0
   cadastrarNoInicio: 1
   naoUsarIDAuto: 0
+  isSingleton: 0
   identificador: 
 --- !u!1 &5422297607839480513
 GameObject:
@@ -163,7 +164,6 @@ GameObject:
   - component: {fileID: 3750078653000798296}
   - component: {fileID: 3611541759335222376}
   - component: {fileID: 857454637213199047}
-  - component: {fileID: 5940388759412625200}
   m_Layer: 0
   m_Name: Decal
   m_TagString: Untagged
@@ -239,28 +239,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5940388759412625200
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5422297607839480513}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1001 &3104843997873636961
 PrefabInstance:
   m_ObjectHideFlags: 0

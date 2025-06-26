@@ -41,11 +41,11 @@ Shader "Unlit/DistortionShader"
         Tags 
         {
             "Queue" = "Transparent"
-            "RenderType" = "Transparent" 
+            "RenderType" = "Transparent"  
             "RenderPipeline" = "UniversalRenderPipeline" 
         }
 
-        Blend SrcAlpha OneMinusSrcAlpha
+        //Blend SrcAlpha OneMinusSrcAlpha
         ZWrite Off
 
         Pass

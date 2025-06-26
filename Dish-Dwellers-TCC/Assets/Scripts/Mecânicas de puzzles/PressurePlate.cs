@@ -21,6 +21,7 @@ public class PressurePlate : IResetavel, SincronizaMetodo
 
     [Header("Decalque")]
     [SerializeField] private Renderer decalRender;
+    [SerializeField] private Renderer segundoDecal;
     [SerializeField][ColorUsage(true, true)] private Color corAtivado, corDesativado;
     private MaterialPropertyBlock decalMPB;
 
@@ -85,6 +86,7 @@ public class PressurePlate : IResetavel, SincronizaMetodo
     private void TrocarCorDoDecalque(Color col) {
         decalMPB.SetColor("_EmissionColor", col);
         decalRender.SetPropertyBlock(decalMPB);
+        segundoDecal.SetPropertyBlock(decalMPB);
     }
 
     IEnumerator CheckSeAindaEmCima() {

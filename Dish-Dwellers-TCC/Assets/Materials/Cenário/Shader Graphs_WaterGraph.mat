@@ -24,24 +24,37 @@ Material:
   m_Shader: {fileID: -6465566751694194690, guid: 980d1971b96507f4c981ca74c063d343, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
+  m_ValidKeywords: []
+  m_InvalidKeywords:
   - _ALPHAPREMULTIPLY_ON
   - _SURFACE_TYPE_TRANSPARENT
-  m_InvalidKeywords: []
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
-  - DepthOnly
-  - SHADOWCASTER
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _FlowTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SideTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SurfaceTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -63,15 +76,23 @@ Material:
     - _BlendModePreserveSpecular: 1
     - _CastShadows: 0
     - _Cull: 2
+    - _DistortionTexTilling: 0.1
     - _DstBlend: 10
     - _FoamIntensity: 1
+    - _MainTexTilling: 0.2
     - _Metallic: 0
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 1
+    - _Speed: 0.75
     - _SrcBlend: 1
+    - _Strength: 0.2
     - _Surface: 1
+    - _TransitionLength: 1
+    - _UJump: 0.231
+    - _VJump: -0.218
+    - _WaterDepthOffset: 0
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 0
@@ -81,5 +102,7 @@ Material:
     m_Colors:
     - _Color: {r: 0.19651122, g: 0.6037736, b: 0.5730895, a: 1}
     - _Color2: {r: 0.07450981, g: 0.40608913, b: 0.4509804, a: 1}
+    - _DeepWaterColor: {r: 0.02352941, g: 0.16078427, b: 0.16862747, a: 0}
+    - _ShallowWaterColor: {r: 0.15686277, g: 0.5490196, b: 0.5215686, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -3204,6 +3204,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tutorial Quad (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8819729038716493907, guid: 497b2389792b87542889ec240ed7141c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9022349958204924942, guid: 497b2389792b87542889ec240ed7141c, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0.066
@@ -3211,14 +3215,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7122166017667223053, guid: 497b2389792b87542889ec240ed7141c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 7121116227590984361, guid: 497b2389792b87542889ec240ed7141c, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 497b2389792b87542889ec240ed7141c, type: 3}
+--- !u!1 &450543611 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8819729038716493907, guid: 497b2389792b87542889ec240ed7141c, type: 3}
+  m_PrefabInstance: {fileID: 450543610}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &452914629
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10079,6 +10082,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8819729038716493907, guid: 497b2389792b87542889ec240ed7141c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1815180905}
     - targetCorrespondingSourceObject: {fileID: 7122166017667223053, guid: 497b2389792b87542889ec240ed7141c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
@@ -12109,6 +12115,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea227763446556143a8b457e7c4aadf7, type: 3}
+--- !u!1 &1815180904 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8819729038716493907, guid: 497b2389792b87542889ec240ed7141c, type: 3}
+  m_PrefabInstance: {fileID: 1544786850}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1815180905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1815180904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 082823efbb543b747a05f4230c8f3a8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tutorialTroca: {fileID: 450543611}
 --- !u!1001 &1815986289
 PrefabInstance:
   m_ObjectHideFlags: 0

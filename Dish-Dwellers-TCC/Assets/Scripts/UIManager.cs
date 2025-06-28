@@ -45,7 +45,7 @@ public class UIManager : MonoBehaviour
             //como temos 3 de vida e a array tem 0,1,2 ele trata por i e nao pelo numero de vida
             img = coracoes[i].GetComponent<Image>();
             
-            img.color = i < player.playerVidas ? Color.red : Color.white;
+            img.color = i < player.playerVidas ? new Color(1f, 0.75f, 0.75f, 1f) : new Color(0.3f, 0.1f, 0.1f, 1f);
             //coracoes[i].SetActive(i < player.playerVidas);
         }
     }

@@ -98,6 +98,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     CharacterController characterController;
     Rigidbody rb; // Rigidbody do jogador (se houver)
     Collider col;
+    Grudavel grudavel;
 
 
     // Awake: trata de referências/configurações internas
@@ -115,7 +116,10 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         ganchavel = GetComponent<Ganchavel>();
         ferramenta = GetComponentInChildren<Ferramenta>();
         ferramenta.Inicializar(this);
-
+        
+        grudavel = gameObject.GetComponent<Grudavel>();
+        if (grudavel == null) grudavel = gameObject.AddComponent<Grudavel>();
+        
         animacaoJogador = GetComponentInChildren<AnimadorPlayer>();
 
         Collider[] colliders = GetComponents<Collider>();
@@ -622,10 +626,40 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         usandoRb = false;
     }
 
+    public Collider chaoAtual;
+
     Vector3 offsetCheckChao; // Definido no Awake, mas em suma, é o mesmo valor de distanciaCheckChao, mas com Y positivo (assim a checagem não começa no pé do jogador)
     public bool CheckEstaNoChao() {
         if (sendoPuxado) return false; // Se o jogador está sendo puxado, não está no chão
-        return Physics.Raycast(transform.position + offsetCheckChao, Vector3.down, 2 * distanciaCheckChao, layerChao);
+        bool isChao =  Physics.Raycast(transform.position + offsetCheckChao,  Vector3.down, out RaycastHit hit, 2 * distanciaCheckChao, layerChao);
+
+        if (isChao) {
+            if (hit.collider != chaoAtual) {
+                if (hit.collider?.tag == "Grudavel") GrudarNoChao(hit.collider.transform);
+                else DesgrudarDoChao();
+                chaoAtual = hit.collider;
+            }
+        } else {
+            DesgrudarDoChao();
+            chaoAtual = null;
+        }
+
+        return isChao;
+    }
+
+    public void GrudarNoChao(Transform chao) {
+        if (chao == null) {
+            DesgrudarDoChao();
+            return;
+        }
+
+        grudavel.Grudar(chao.transform, LimitacaoDoGrude.GrudaY);
+    }
+
+    public void DesgrudarDoChao() {
+        if (chaoAtual != null && chaoAtual.tag == "Grudavel") {
+            grudavel.Desgrudar();
+        }
     }
 
     public void Teletransportar(Vector3 posicao) {
@@ -876,6 +910,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         // Direção
         Gizmos.color = Color.red;
         Gizmos.DrawRay(transform.position, direcao.normalized * 3);
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawLine(transform.position + offsetCheckChao, transform.position + offsetCheckChao + Vector3.down * distanciaCheckChao * 2);
     }
 
 }

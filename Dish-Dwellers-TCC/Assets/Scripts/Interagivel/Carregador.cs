@@ -95,12 +95,7 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
         carregado = carregavel;
         ultimoCarregado = carregavel;
 
-        carregandoParentSourceId = carregavel.parentConstraint.AddSource(new ConstraintSource() {
-            sourceTransform = carregarTransform,
-            weight = 1f
-        });
-        carregavel.parentConstraint.SetTranslationOffset(0, Vector3.zero);
-        carregavel.parentConstraint.constraintActive = true; // Ativa o ParentConstraint para seguir o carregador
+        carregavel.grudavel.Grudar(carregarTransform, LimitacaoDoGrude.GrudaTudo, false); // Gruda o carregador no carregável, sem manter a posição
 
 
         Rigidbody cargaRigidbody = carregavel.GetComponent<Rigidbody>();
@@ -125,8 +120,7 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
     public void Soltar(Vector3 direcao, float velocidade = 0, bool movendo = false) {
         OnSoltar?.Invoke(carregado);
 
-        carregado.parentConstraint.constraintActive = false; // Desativa o ParentConstraint
-        carregado.parentConstraint.RemoveSource(carregandoParentSourceId); // Remove a fonte do ParentConstraint
+        carregado.grudavel.Desgrudar();
 
 
         Rigidbody cargaRigidbody = carregado.GetComponent<Rigidbody>();
@@ -155,8 +149,7 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
     public void Soltar() {
         OnSoltar?.Invoke(carregado);
 
-        carregado.parentConstraint.constraintActive = false; // Desativa o ParentConstraint
-        carregado.parentConstraint.RemoveSource(carregandoParentSourceId); // Remove a fonte do ParentConstraint
+        carregado.grudavel.Desgrudar();
         carregado.HandleSolto();
 
         carregado = null;

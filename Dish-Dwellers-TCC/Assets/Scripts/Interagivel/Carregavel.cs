@@ -11,15 +11,13 @@ public class Carregavel : MonoBehaviour, InteracaoCondicional {
     bool _sendoCarregado = false;
     public bool sendoCarregado => _sendoCarregado;
     public Carregador carregador { get; private set; } // O carregador que está carregando o objeto, se houver
-    [HideInInspector] public ParentConstraint parentConstraint {get; private set; }
+    [HideInInspector] public Grudavel grudavel;
 
     void Awake() {
         rb = GetComponent<Rigidbody>();
 
-        parentConstraint = gameObject.GetComponent<ParentConstraint>();
-        if (parentConstraint == null) parentConstraint = gameObject.AddComponent<ParentConstraint>();
-
-        parentConstraint.rotationAxis = Axis.None; // Desabilita rotação ao ser pego
+        grudavel = gameObject.GetComponent<Grudavel>();
+        if (grudavel == null) grudavel = gameObject.AddComponent<Grudavel>();
     }
 
     void OnDisable() {
@@ -77,9 +75,9 @@ public class Carregavel : MonoBehaviour, InteracaoCondicional {
     /// </summary>
     public void HandleSendoCarregado() {
         _sendoCarregado = true;
-        rb.isKinematic = true;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        rb.isKinematic = true;
         tinhaGravidade = rb.useGravity;
         rb.useGravity = false; // Desabilita a gravidade enquanto o objeto estiver sendo carregado
     }

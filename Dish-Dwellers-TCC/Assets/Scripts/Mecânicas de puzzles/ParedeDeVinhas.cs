@@ -37,6 +37,8 @@ public class ParedeDeVinhas : IResetavel {
     }
 
     private void SetarCor(int integridade) {
+        if (integridade <= 0) return;
+        
         mpb.SetColor("_BaseColor", cores[integridade - 1]);
 
         foreach (Renderer render in renderers) {

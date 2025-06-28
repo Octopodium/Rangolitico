@@ -20,7 +20,6 @@ public class sala : MonoBehaviour{
         GetNomeDaSala();
         PosicionarJogador();
         GameManager.instance.SetSala(this);
-        Debug.Log("Lista formada");
         ResetSala();
     }
 

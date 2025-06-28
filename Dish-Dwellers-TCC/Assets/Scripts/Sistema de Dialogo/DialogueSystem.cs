@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -56,7 +58,16 @@ public class DialogueSystem : MonoBehaviour
             CompleteSentence();
         }
 
-        fullText = currentNode.dialogueText;
+        var localizedString = new LocalizedString(){
+            TableReference = "LocalizationTable",
+            TableEntryReference = currentNode.Guid
+        };
+
+        localizedString.StringChanged += (translatedText) => //evento do localization
+        {
+            fullText = translatedText;
+        };
+
         StartCoroutine("TypeSentence", fullText);
     }
 

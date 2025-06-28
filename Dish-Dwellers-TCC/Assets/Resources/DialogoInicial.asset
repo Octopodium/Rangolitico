@@ -15,41 +15,50 @@ MonoBehaviour:
   NodeLinks:
   - baseNodeGuid: add156c5-2c34-4b74-8270-8320aad27ca1
     portName: Next
-    targetNodeGuid: 1029ccd9-eeab-4d42-83c7-d2b8ed929e65
-  - baseNodeGuid: 1029ccd9-eeab-4d42-83c7-d2b8ed929e65
+    targetNodeGuid: dialogue_heater1
+  - baseNodeGuid: dialogue_heater1
     portName: output
-    targetNodeGuid: a4c636d0-d193-46bd-9eaa-097e6fe2d41a
-  - baseNodeGuid: a4c636d0-d193-46bd-9eaa-097e6fe2d41a
+    targetNodeGuid: dialogue_angler1
+  - baseNodeGuid: dialogue_angler1
     portName: output
-    targetNodeGuid: 6919d937-146c-4882-ba01-142916313eb1
-  - baseNodeGuid: 6919d937-146c-4882-ba01-142916313eb1
+    targetNodeGuid: dialogue_heater3
+  - baseNodeGuid: dialogue_heater3
+    portName: output
+    targetNodeGuid: d1efbd8c-be9f-4c0d-aed6-ec77486b7fa4
+  - baseNodeGuid: d1efbd8c-be9f-4c0d-aed6-ec77486b7fa4
     portName: output
     targetNodeGuid: 39cfd21e-2d47-4ef6-962b-c977362e67d7
   DialogueNodeData:
-  - Guid: 6919d937-146c-4882-ba01-142916313eb1
+  - Guid: dialogue_heater2
     nodeName: Text Node
     dialogueText: "D\xFAvido que voc\xEA e seus peixes molengas consigam sequer enfrentar
       o primeiro desafio."
     position: {x: 689, y: 350}
     sceneName: 
     _loadScene: 0
-  - Guid: a4c636d0-d193-46bd-9eaa-097e6fe2d41a
+  - Guid: dialogue_angler1
     nodeName: Text Node
     dialogueText: "Relaxa, tudo isso vai acabar bem r\xE1pido, quando eu pegar a
       Receita Lend\xE1ria sozinho. "
     position: {x: 438, y: 350}
     sceneName: 
     _loadScene: 0
-  - Guid: 39cfd21e-2d47-4ef6-962b-c977362e67d7
-    nodeName: End
-    dialogueText: Exit Node
-    position: {x: 924, y: 200}
-    sceneName: 1-1
-    _loadScene: 1
-  - Guid: 1029ccd9-eeab-4d42-83c7-d2b8ed929e65
+  - Guid: dialogue_heater1
     nodeName: Text Node
     dialogueText: "N\xE3o acredito que vou ter que entrar nessa Torre com voc\xEA...
       o Mestre deve estar de brincadeira."
     position: {x: 209, y: 350}
     sceneName: 
     _loadScene: 0
+  - Guid: dialogue_angler2
+    nodeName: Text Node
+    dialogueText: "\xC9 o que vamos ver! S\xF3 tenta n\xE3o incendiar a Torre inteira."
+    position: {x: 949, y: 350}
+    sceneName: 
+    _loadScene: 0
+  - Guid: 39cfd21e-2d47-4ef6-962b-c977362e67d7
+    nodeName: End
+    dialogueText: Exit Node
+    position: {x: 1199, y: 221}
+    sceneName: 1-1
+    _loadScene: 1

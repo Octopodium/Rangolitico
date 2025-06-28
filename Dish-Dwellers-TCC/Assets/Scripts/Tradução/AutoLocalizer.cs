@@ -18,6 +18,7 @@ public class AutoLocalizer : MonoBehaviour
     //utilizando listas e dicionarios para automatizar a tradução e nao precisar ter um "Localized string" em cada elemento de texto
 
     void Start(){
+        LoadLanguage();
         LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
         UpdateTextos();
     }
@@ -68,9 +69,22 @@ public class AutoLocalizer : MonoBehaviour
 
     public void SetPortugues(){
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[1];
+        PlayerPrefs.SetString("language", "portugues");
+        PlayerPrefs.Save();
     }
 
     public void SetIngles(){
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[0];
+        PlayerPrefs.SetString("language", "ingles");
+        PlayerPrefs.Save();
+    }
+
+    public void LoadLanguage(){
+        string language = PlayerPrefs.GetString("language");
+        if(language == "portugues"){
+            SetPortugues();
+        }else{
+            SetIngles();
+        }
     }
 }

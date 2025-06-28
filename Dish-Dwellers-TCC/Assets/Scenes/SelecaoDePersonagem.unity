@@ -448,7 +448,7 @@ GameObject:
   - component: {fileID: 188026410}
   - component: {fileID: 188026409}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: cancel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -541,6 +541,10 @@ PrefabInstance:
     - target: {fileID: 1796552454838699881, guid: 9350b2a9f9a04c14cb11e6ff3bb8626f, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1925530142311349095, guid: 9350b2a9f9a04c14cb11e6ff3bb8626f, type: 3}
+      propertyPath: m_Name
+      value: placeholdername
       objectReference: {fileID: 0}
     - target: {fileID: 2252003760332186567, guid: 9350b2a9f9a04c14cb11e6ff3bb8626f, type: 3}
       propertyPath: m_OnDidEndEdit.m_PersistentCalls.m_Calls.Array.size
@@ -1232,6 +1236,61 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 9155797994807033699, guid: 9350b2a9f9a04c14cb11e6ff3bb8626f, type: 3}
   m_PrefabInstance: {fileID: 7863301871511352020}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &601537629
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 601537631}
+  - component: {fileID: 601537630}
+  m_Layer: 0
+  m_Name: Localization
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &601537630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601537629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b560f3e440d671c4d8b64d49f34daa53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _prefixes:
+  - prefix: descrip_
+    textosAfetados:
+    - heatwave
+    - hookline
+  - prefix: selection_
+    textosAfetados:
+    - wait
+    - placeholdername
+    - modal
+    - cancel
+--- !u!4 &601537631
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601537629}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 378.68832, y: 114.45864, z: -2.2063591}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &609321756
 GameObject:
   m_ObjectHideFlags: 0
@@ -1723,7 +1782,7 @@ GameObject:
   - component: {fileID: 782079655}
   - component: {fileID: 782079654}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Canvas Selecao
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2890,6 +2949,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 447813056087286381, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2518817947015586944, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: sceneId
       value: 532189522
@@ -2954,7 +3017,15 @@ PrefabInstance:
       propertyPath: sceneId
       value: 3856777758
       objectReference: {fileID: 0}
+    - target: {fileID: 6803899304941860395, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6845750370830611423, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8211928342829481714, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -3126,7 +3197,7 @@ GameObject:
   - component: {fileID: 1677504839}
   - component: {fileID: 1677504838}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: wait
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3337,7 +3408,7 @@ GameObject:
   - component: {fileID: 2017068257}
   - component: {fileID: 2017068256}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: modal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4422,7 +4493,7 @@ GameObject:
   - component: {fileID: 4306810600588505891}
   - component: {fileID: 2527970248001626248}
   m_Layer: 5
-  m_Name: '#heatwave'
+  m_Name: heatwave
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4500,7 +4571,7 @@ GameObject:
   - component: {fileID: 2291510699095465995}
   - component: {fileID: 6703670257375733746}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: hookline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4566,7 +4637,7 @@ GameObject:
   - component: {fileID: 8188846959809721297}
   - component: {fileID: 2838855936203399097}
   m_Layer: 5
-  m_Name: '#hookline'
+  m_Name: hookline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4933,7 +5004,7 @@ GameObject:
   - component: {fileID: 2324812736800043043}
   - component: {fileID: 8435249539165034222}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: heatwave
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5545,3 +5616,4 @@ SceneRoots:
   - {fileID: 159965722}
   - {fileID: 1787630501}
   - {fileID: 32695370}
+  - {fileID: 601537631}

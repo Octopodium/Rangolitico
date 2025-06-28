@@ -21,14 +21,14 @@ public class PressurePlate : IResetavel, SincronizaMetodo
 
     [Header("Decalque")]
     [SerializeField] private Renderer decalRender;
-    [SerializeField] private Renderer segundoDecal;
+    [SerializeField] private Renderer[] decalsLinkados;
     [SerializeField][ColorUsage(true, true)] private Color corAtivado, corDesativado;
     private MaterialPropertyBlock decalMPB;
 
     private Coroutine corotinaQuandoAtivo = null;
 
     // Animação:
-    private Animator animator;
+    [SerializeField] private Animator animator;
     private AudioSource audioSource;
     public AudioClip botaoApertadoSom;
     public static readonly int pressureID = Animator.StringToHash("Pressure");
@@ -91,7 +91,12 @@ public class PressurePlate : IResetavel, SincronizaMetodo
     private void TrocarCorDoDecalque(Color col) {
         decalMPB.SetColor("_EmissionColor", col);
         decalRender.SetPropertyBlock(decalMPB);
-        segundoDecal.SetPropertyBlock(decalMPB);
+
+        if (decalsLinkados == null) return;
+
+        foreach (Renderer render in decalsLinkados) {
+            render.SetPropertyBlock(decalMPB);
+        }
     }
 
     IEnumerator CheckSeAindaEmCima() {

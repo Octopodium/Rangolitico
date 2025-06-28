@@ -22,6 +22,7 @@ public class UIManager : MonoBehaviour
         if (eventSystem == null) {
             eventSystem = FindFirstObjectByType<EventSystem>();
         }
+        TiraMouse();
     }
 
     private void OnDestroy(){
@@ -48,6 +49,11 @@ public class UIManager : MonoBehaviour
             img.color = i < player.playerVidas ? new Color(1f, 0.75f, 0.75f, 1f) : new Color(0.3f, 0.1f, 0.1f, 1f);
             //coracoes[i].SetActive(i < player.playerVidas);
         }
+    }
+
+    public void TiraMouse(){
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public void HandlePausa(bool estado){

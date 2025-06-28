@@ -29,11 +29,14 @@ public class PressurePlate : IResetavel, SincronizaMetodo
 
     // Animação:
     private Animator animator;
+    private AudioSource audioSource;
+    public AudioClip botaoApertadoSom;
     public static readonly int pressureID = Animator.StringToHash("Pressure");
 
 
     private void Awake() {
         animator = GetComponentInChildren<Animator>();
+        audioSource = GetComponentInChildren<AudioSource>();
         decalMPB = new MaterialPropertyBlock();
     }
 
@@ -41,9 +44,11 @@ public class PressurePlate : IResetavel, SincronizaMetodo
         // Faz a checagem pra desativar o botão depois que a sala reseta.
         ChecarAtivacao();
     }
-    
-    private void OnTriggerEnter(Collider other){
+
+    private void OnTriggerEnter(Collider other) {
         ChecarAtivacao();
+        audioSource.clip = botaoApertadoSom;
+        audioSource.Play();
     }
 
     private void OnTriggerStay(Collider other) {

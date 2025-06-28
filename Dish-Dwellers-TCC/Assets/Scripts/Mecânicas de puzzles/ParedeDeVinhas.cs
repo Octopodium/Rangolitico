@@ -8,7 +8,7 @@ public class ParedeDeVinhas : IResetavel {
     private Collider col;
     private MaterialPropertyBlock mpb;
 
-    private void Start() {
+    private void Awake() {
         mpb = new MaterialPropertyBlock();
         renderers = GetComponentsInChildren<Renderer>();
         col = GetComponent<Collider>();

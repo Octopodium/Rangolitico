@@ -8224,15 +8224,15 @@ MonoBehaviour:
   - {fileID: 831223619}
   triggers: []
   resetaveis:
-  - {fileID: 1701110595}
-  - {fileID: 1618034007}
-  - {fileID: 1663034736}
-  - {fileID: 0}
-  - {fileID: 1413164984}
-  - {fileID: 985220502}
-  - {fileID: 1419634669}
-  - {fileID: 985220503}
   - {fileID: 1886499698}
+  - {fileID: 985220503}
+  - {fileID: 1618034007}
+  - {fileID: 1413164984}
+  - {fileID: 2039652475}
+  - {fileID: 1701110595}
+  - {fileID: 1419634669}
+  - {fileID: 1663034736}
+  - {fileID: 985220502}
   onResetSala:
     m_PersistentCalls:
       m_Calls: []
@@ -15702,6 +15702,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 589745267072308041, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
   m_PrefabInstance: {fileID: 2039652470}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2039652475 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+  m_PrefabInstance: {fileID: 2039652470}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039652472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc93200c27a1ebd46baa712740239991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2042068275
 GameObject:
   m_ObjectHideFlags: 0

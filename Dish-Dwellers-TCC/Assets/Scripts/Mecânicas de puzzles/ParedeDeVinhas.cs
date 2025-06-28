@@ -28,9 +28,12 @@ public class ParedeDeVinhas : IResetavel {
         SetarCor(integridade);
     }
 
-    public void ReduzirIntegridade() {
+    public void ReduzirIntegridade(AudioClip vinhaSom) {
         if (--integridade <= 0) {
             AtivarVinhas(false);
+            AudioSource audioSource = GetComponentInChildren<AudioSource>();
+            audioSource.clip = vinhaSom;
+            audioSource.Play();
             return;
         }
         SetarCor(integridade);

@@ -541,10 +541,12 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     /// devido as complicações com a física atualmente 
     /// </summary>
     /// <param name="executaEmpurrar"></param>
-    public void AplicarKnockback(Transform origem)
+    public void AplicarKnockback(Transform origem, AudioClip soundFx)
     {
         if (estaSofrendoKnockback) return;
-        
+        AudioSource audioSource = GetComponentInChildren<AudioSource>();
+        audioSource.clip = soundFx;
+        audioSource.Play();
         StartCoroutine(ProcessarKnockback(origem));
     }
 

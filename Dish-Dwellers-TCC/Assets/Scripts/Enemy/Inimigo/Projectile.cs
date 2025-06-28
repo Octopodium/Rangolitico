@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -11,6 +12,7 @@ public class Projectile : MonoBehaviour {
     [SerializeField] private VisualEffect trailFx;
     public GameObject owner;
     private Vector3 direction;
+    public AudioClip audioClip;
     private bool isReflected = false;
 
 
@@ -103,7 +105,7 @@ public class Projectile : MonoBehaviour {
             Player player = other.transform.GetComponent<Player>();
             if (player != null) {
                 player.MudarVida(-1);
-                player.AplicarKnockback(transform);
+                player.AplicarKnockback(transform, audioClip);
             }
             Destroy(gameObject);
         }

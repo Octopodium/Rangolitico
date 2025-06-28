@@ -12,13 +12,18 @@ public class Projectile : MonoBehaviour {
     [SerializeField] private VisualEffect trailFx;
     public GameObject owner;
     private Vector3 direction;
+    private AudioSource audioSource;
     public AudioClip audioClip;
+    public AudioClip escudoSom;
     private bool isReflected = false;
 
 
     [Header("<color=green> Lima coisas :")]
     [SerializeField] private bool refletirNormal;
 
+    void Awake() {
+        audioSource = GetComponentInChildren<AudioSource>();
+    }
 
     void Start() {
         direction = transform.forward; //Usa a direção inicial do disparo
@@ -57,7 +62,9 @@ public class Projectile : MonoBehaviour {
             direction = transform.forward;
 
             //FIM DO CÓDIGO DO PEDRO DE LIMA
-
+            audioSource.clip = escudoSom;
+            audioSource.Play();
+            
             isReflected = true;
 
             /*

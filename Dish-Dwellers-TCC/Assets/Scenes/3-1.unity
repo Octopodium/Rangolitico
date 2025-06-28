@@ -12003,6 +12003,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.182
       objectReference: {fileID: 0}
+    - target: {fileID: 7203671272639568686, guid: a3783b7235af19941bfdbf85b9a18796, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 41d42c4164bdeab4db886d9640ac6d02, type: 2}
     - target: {fileID: 7894646617551174629, guid: a3783b7235af19941bfdbf85b9a18796, type: 3}
       propertyPath: m_Size.z
       value: 3.9752307
@@ -12705,6 +12709,14 @@ PrefabInstance:
     - target: {fileID: 5927340053707188262, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
       propertyPath: rotDesejada.z
       value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7955351237861453123, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.22449183
+      objectReference: {fileID: 0}
+    - target: {fileID: 7955351237861453123, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 25.946
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4341461075957568391, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
@@ -13523,92 +13535,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8212571561619811692, guid: 1fed4c6b00e68cb4eb063e44eab40282, type: 3}
   m_PrefabInstance: {fileID: 1784254250}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1788531575
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1788531576}
-  - component: {fileID: 1788531578}
-  - component: {fileID: 1788531577}
-  m_Layer: 0
-  m_Name: Decal (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1788531576
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1788531575}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.22448853, y: 0.9744767, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 2.374}
-  m_LocalScale: {x: 2, y: 2, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1701110594}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: -25.946}
---- !u!23 &1788531577
+--- !u!23 &1788531577 stripped
 MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 2831669640946051816, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
+  m_PrefabInstance: {fileID: 1701110593}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1788531575}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 0a1977a5fbea260439811055ec356cf5, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &1788531578
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1788531575}
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1001 &1796517442
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -10616,61 +10616,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1788531577}
     - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnAtivado.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnDesativado.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: OnAtivado.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1701110595}
     - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnAtivado.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 1419634668}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: OnDesativado.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1701110595}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnDesativado.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 1701110595}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnAtivado.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: AbaixarPonte
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnAtivado.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: AbaixarPonte
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnDesativado.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: LevantarPonte
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnDesativado.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: LevantarPonte
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnAtivado.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PonteLevadica, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnAtivado.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: PonteLevadica, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnDesativado.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PonteLevadica, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-      propertyPath: OnDesativado.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: PonteLevadica, Assembly-CSharp
-      objectReference: {fileID: 0}
     - target: {fileID: 3420029047754408677, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.972
@@ -10720,17 +10672,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
---- !u!1 &1419634668 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 589745267072308041, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
-  m_PrefabInstance: {fileID: 1419634667}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1419634669 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
   m_PrefabInstance: {fileID: 1419634667}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1419634668}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc93200c27a1ebd46baa712740239991, type: 3}
@@ -12766,10 +12713,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1738590348920556429, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1788531576}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1991426118181200099, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1743151474}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
 --- !u!4 &1701110594 stripped
 Transform:
@@ -13052,32 +12996,6 @@ Transform:
   - {fileID: 1233383586}
   m_Father: {fileID: 1097717762}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1743151470 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1991426118181200099, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
-  m_PrefabInstance: {fileID: 1701110593}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &1743151474
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1743151470}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 7.94969, y: 0.30959824, z: 4.000002}
-  m_Center: {x: 3.8833907, y: -0.019523118, z: 0.0000009536743}
 --- !u!1001 &1760221187
 PrefabInstance:
   m_ObjectHideFlags: 0

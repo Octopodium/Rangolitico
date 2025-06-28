@@ -20,7 +20,7 @@ public class LancaChamas : MonoBehaviour
             
             // Debug.Log(hitInfo.transform.name);
             if(hitInfo.transform.CompareTag("Player")){
-                hitInfo.transform.GetComponent<Player>().MudarVida(-1);
+                hitInfo.transform.GetComponent<Player>().MudarVida(-1, "Lança-chamas");
             }
         }
     }

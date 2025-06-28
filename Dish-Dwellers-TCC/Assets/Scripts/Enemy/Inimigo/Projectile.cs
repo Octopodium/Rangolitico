@@ -104,7 +104,7 @@ public class Projectile : MonoBehaviour {
         else if (other.gameObject.CompareTag("Player") && !isReflected) {
             Player player = other.transform.GetComponent<Player>();
             if (player != null) {
-                player.MudarVida(-1);
+                player.MudarVida(-1, "Projetil");
                 player.AplicarKnockback(transform, audioClip);
             }
             Destroy(gameObject);

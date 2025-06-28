@@ -231,7 +231,16 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     /// Aumenta ou diminui a vida do jogador
     /// </summary>
     /// <param name="valor">Valor a ser adicionado ou subtraído da vida do jogador</param>
-    public void MudarVida(int valor){
+    public void MudarVida(int valor, string motivo = "Desconhecido") {
+        if (valor < 0) {
+            motivoDeDano = motivo;
+            if (playerVidas + valor <= 0) {
+                if (!GameManager.instance.isOnline || isServer) {
+                    AnalyticsManager.instance?.RegistrarMorte(motivoDeDano, transform.position);
+                }
+            }
+        }
+
         playerVidas += valor;
     }
 
@@ -246,12 +255,19 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     }
 
     public void Resetar() {
-        MudarVida(3);
+        playerVidas = 3;
 
         if (sendoCarregado) carregavel.carregador.Soltar(); // Se o jogador está sendo carregado, se solta
         if (carregando != null) carregador.Soltar(); // Se o jogador está carregando algo, se solta
         if (!carregador.estaCarregando && ferramenta != null) ferramenta.Cancelar(); // Se o jogador está acionando uma ferramenta, cancela a ação 
     }
+
+    string motivoDeDano = "Desconhecido";
+    public void SetCausaDoDano(string causa) {
+        motivoDeDano = causa;
+    }
+
+    
 
 
     #region Online
@@ -803,14 +819,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
     #endregion
 
-    void OnDrawGizmos() {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, raioInteracao);
 
-        // Direção
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(transform.position, direcao.normalized * 3);
-    }
+
+    #region Trajetoria
 
     [Header("Trajetória do Arremesso")]
     public LineRenderer linhaTrajetoria;
@@ -853,4 +864,18 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         pontoFinalTrajetoria.gameObject.SetActive(ativo);
         if (ativo) pontoFinalTrajetoria.position = posicao;
     }
+
+    #endregion
+
+
+
+    void OnDrawGizmos() {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, raioInteracao);
+
+        // Direção
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(transform.position, direcao.normalized * 3);
+    }
+
 }

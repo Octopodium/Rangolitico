@@ -39,6 +39,9 @@ public class GameManager : MonoBehaviour {
             }
         }
     }
+    public bool isServer {
+        get { return NetworkServer.active; }
+    }
     
     public string primeiraFaseSceneName = "1-1";
     public string menuPrincipalSceneName = "MainMenu"; // Cena do menu do jogo
@@ -51,12 +54,15 @@ public class GameManager : MonoBehaviour {
     public GameObject offlineAnglerPrefab;
     public GameObject offlineHeaterPrefab;
 
+    // Usar > APENAS < na situação que o GameManager é destruido no Awake
+    bool marcadoParaDestruir = false;
 
     void Awake() {
         if (instance == null) {
             instance = this;
         } else {
             Destroy(gameObject);
+            marcadoParaDestruir = true;
             return;
         }
 
@@ -89,16 +95,29 @@ public class GameManager : MonoBehaviour {
 
     void Start() {
         inputController.ConfigurarInputs();
+
+        if (!isOnline && !marcadoParaDestruir) AnalyticsManager.instance?.ComecarPartida();
+    }
+
+    bool partidaConcluida = false;
+    public void SetPartidaConcluida() {
+        partidaConcluida = true;
     }
 
     void OnDestroy() {
+        if (marcadoParaDestruir) return;
+
         if (input != null) {
             input.UI.Pause.started -= Pause;
             input.Geral.TrocarPersonagens.performed -= TrocarControleSingleplayer;
         }
 
-        if (isOnline)
+        if (isOnline) {
+            if (isServer) AnalyticsManager.instance?.FinalizarPartida(partidaConcluida);
             DesligarOOnline();
+        } else {
+            AnalyticsManager.instance?.FinalizarPartida(partidaConcluida);
+        }
 
         if (DialogueSystem.instance != null) {
             Destroy(DialogueSystem.instance.gameObject);
@@ -220,6 +239,8 @@ public class GameManager : MonoBehaviour {
     private void PassaDeSalaOffline() {
         // Inicio da transição
 
+        if (!isOnline || isServer) AnalyticsManager.instance?.FinalizarSala();
+
         this.cenaAtualNome = sala.NomeProximaSala();
 
         sala.enabled = false;
@@ -283,6 +304,9 @@ public class GameManager : MonoBehaviour {
         // Determina a sala informada como a sala atual :
         this.sala = sala;
         this.cenaAtualNome = SceneManager.GetActiveScene().name;
+
+        if (!isOnline || isServer) AnalyticsManager.instance?.ComecarSala(cenaAtualNome);
+
 
         // Evita de tentar carregar uma sala quando está voltando para o menu principal:
         if (voltandoParaMenu) return;
@@ -373,6 +397,8 @@ public class GameManager : MonoBehaviour {
 
         yield return new WaitUntil(() => op.isDone);
 
+        if (isServer) AnalyticsManager.instance?.ComecarPartida();
+
         sala sala = GameObject.FindFirstObjectByType<sala>();
         sala.PosicionarJogador();
 
@@ -433,6 +459,11 @@ public class GameManager : MonoBehaviour {
     public void VoltarParaMenu() {
         if (voltandoParaMenu) return;
         voltandoParaMenu = true;
+
+        if (!isOnline || isServer)  {
+            AnalyticsManager.instance?.FinalizarSala(false);
+            AnalyticsManager.instance?.FinalizarPartida(false);
+        }
 
         DesligarOOnline();
 

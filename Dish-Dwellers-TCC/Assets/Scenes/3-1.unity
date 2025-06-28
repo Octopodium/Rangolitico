@@ -8185,6 +8185,11 @@ Animation:
   m_AnimatePhysics: 0
   m_UpdateMode: 0
   m_CullingType: 0
+--- !u!23 &1165631597 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5247716141449528938, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
+  m_PrefabInstance: {fileID: 1701110593}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1166284911
 GameObject:
   m_ObjectHideFlags: 0
@@ -10616,6 +10621,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1788531577}
     - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: decalsLinkados.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: 'decalsLinkados.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1788531577}
+    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: 'decalsLinkados.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1165631597}
+    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: OnAtivado.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1701110595}
@@ -12646,6 +12663,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1230891192}
     m_Modifications:
+    - target: {fileID: 1565617585553730609, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
+      propertyPath: m_Name
+      value: DecalPonteEsquerda
+      objectReference: {fileID: 0}
     - target: {fileID: 1738590348920556429, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.39
@@ -12690,6 +12711,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BridgeCogs
       objectReference: {fileID: 0}
+    - target: {fileID: 4692763868814457691, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
+      propertyPath: m_Name
+      value: DecalPonteDireita
+      objectReference: {fileID: 0}
     - target: {fileID: 5927340053707188262, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
       propertyPath: duracao
       value: 0.5
@@ -12721,10 +12746,7 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 4341461075957568391, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 1738590348920556429, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1788531576}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
 --- !u!4 &1701110594 stripped
@@ -15541,6 +15563,18 @@ PrefabInstance:
       propertyPath: segundoDecal
       value: 
       objectReference: {fileID: 1153279931}
+    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: decalsLinkados.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: 'decalsLinkados.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1153279931}
+    - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
+      propertyPath: 'decalsLinkados.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1165631597}
     - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: OnAtivado.m_PersistentCalls.m_Calls.Array.size
       value: 1

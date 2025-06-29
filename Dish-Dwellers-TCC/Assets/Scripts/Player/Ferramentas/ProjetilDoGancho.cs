@@ -10,6 +10,7 @@ public class ProjetilDoGancho : MonoBehaviour {
     bool movendo = true;
 
     public Transform ganchoHolder, conexaoGancho;
+    public Rigidbody rb;
 
     public void Inicializar(Gancho gancho, Vector3 direcao, float velocidade) {
         this.gancho = gancho;
@@ -17,6 +18,7 @@ public class ProjetilDoGancho : MonoBehaviour {
         this.velocidade = velocidade;
         this.lineRenderer = gancho.lineRenderer;
         this.baseGancho = gancho.ganchoSpawn;
+        rb.isKinematic = false;
 
         ganchoHolder.forward = direcao;
 
@@ -69,6 +71,7 @@ public class ProjetilDoGancho : MonoBehaviour {
         if (ganchavel != null && ganchavel.PodeSerGanchado()) {
             movendo = false;
             gancho.SetarGanchado(ganchavel);
+            rb.isKinematic = true;
         } else {
             gancho.DestruirGancho();
         }

@@ -265,7 +265,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
         if (sendoCarregado) carregavel.carregador.Soltar(); // Se o jogador está sendo carregado, se solta
         if (carregando != null) carregador.Soltar(); // Se o jogador está carregando algo, se solta
-        if (!carregador.estaCarregando && ferramenta != null) ferramenta.Cancelar(); // Se o jogador está acionando uma ferramenta, cancela a ação 
+        if (ferramenta != null) ferramenta.Cancelar(); // Se o jogador está acionando uma ferramenta, cancela a ação 
     }
 
     string motivoDeDano = "Desconhecido";
@@ -913,6 +913,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
                 spriteTrajetoriaFinal.color = baseColorTrajetoriaFinal;
                 spriteTrajetoriaFinal.transform.localScale = Vector3.one * baseScaleTrajetoriaFinal;
             }
+        } else {
+            spriteTrajetoriaFinal.color = baseColorTrajetoriaFinal;
+            spriteTrajetoriaFinal.transform.localScale = Vector3.one * baseScaleTrajetoriaFinal;
         }
     }
 

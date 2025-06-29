@@ -190,6 +190,8 @@ MonoBehaviour:
   buttonImage: {fileID: 5256312126655703344}
   normalColor: {r: 0.54901963, g: 0.54901963, b: 0.54901963, a: 1}
   selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  scaleNormal: 1
+  scaleSelected: 1.2
   emoteName: 
 --- !u!1 &7002740332805274963
 GameObject:
@@ -224,10 +226,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7516778474891423309}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -10, y: -10}
+  m_SizeDelta: {x: 78, y: 69}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1890668314196928579
 CanvasRenderer:
@@ -257,7 +259,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c02e127bfe06d5d41beadc0a14ce3b3c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0880dbed8ea729f48af501d771da7142, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -274,7 +276,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7002740332805274963}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 

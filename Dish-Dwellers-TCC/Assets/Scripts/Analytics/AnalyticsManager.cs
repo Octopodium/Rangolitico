@@ -9,13 +9,23 @@ public class AnalyticsManager : MonoBehaviour {
     public SalaAnalytics sala = null;
 
     bool inicializado = false;
+    bool marcadoParaDestruir = false;
 
     void Awake() {
         if (instance == null) {
             instance = this;
             DontDestroyOnLoad(gameObject);
         } else {
+            marcadoParaDestruir = true;
             Destroy(gameObject);
+        }
+    }
+
+    void OnDestroy() {
+        if (!marcadoParaDestruir) {
+            instance = null;
+        } else {
+            marcadoParaDestruir = false;
         }
     }
 

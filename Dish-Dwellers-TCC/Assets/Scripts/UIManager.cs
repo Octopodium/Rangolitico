@@ -22,7 +22,7 @@ public class UIManager : MonoBehaviour
         if (eventSystem == null) {
             eventSystem = FindFirstObjectByType<EventSystem>();
         }
-        TiraMouse();
+        //TiraMouse();
     }
 
     private void OnDestroy(){

@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 public class CameraController : MonoBehaviour {
 
     // Informações da câmera : 
@@ -32,8 +34,16 @@ public class CameraController : MonoBehaviour {
     [Range(0, 100)][SerializeField] private float tolerancia;
     [Range(0, 100)][SerializeField] private float fovMin;
     [Range(0, 100)][SerializeField] private float fovMax;
-    [Range(0, 30)][SerializeField] private float dofMin = 15;
-    [Range(0, 30)][SerializeField] private float dofMax = 22;
+
+    [Space(15)]
+
+    [Header("Pós-processamento : ")]
+    [Space(10)]
+
+    [SerializeField] private Volume postProc;
+    private DepthOfField dof;
+    [SerializeField] private float dofMin = 15;
+    [SerializeField] private float dofMax = 22;
 
     [Space(15)]
 
@@ -64,6 +74,8 @@ public class CameraController : MonoBehaviour {
             podeTrocarCamera = true;
             ConfigurarCameras();
         }
+
+        postProc.profile.TryGet<DepthOfField>(out dof);
     }
 
     private void OnValidate() {
@@ -78,6 +90,7 @@ public class CameraController : MonoBehaviour {
         if (!ativo) return;
 
         modoDeJogoConfigurado = GameManager.instance.modoDeJogo;
+        modoDeJogoConfigurado = ModoDeJogo.MULTIPLAYER_LOCAL;
 
         switch (modoDeJogoConfigurado) {
             case ModoDeJogo.SINGLEPLAYER:
@@ -131,11 +144,14 @@ public class CameraController : MonoBehaviour {
             distancia = vetorDist.magnitude;
 
             if (distancia > threshhold) {
-                ccameras[0].Lens.FieldOfView = Mathf.Lerp(fovMin, fovMax, (distancia - threshhold) / tolerancia);
-                positionComposers[0].CameraDistance = Mathf.Lerp(camDistMin, camDistMax, (distancia - threshhold) / tolerancia);
-            } else {
+                ccameras[0].Lens.FieldOfView = Mathf.Lerp(fovMin, fovMax, (distancia - threshhold) / tolerancia); // FOV
+                positionComposers[0].CameraDistance = Mathf.Lerp(camDistMin, camDistMax, (distancia - threshhold) / tolerancia); // distancia da camera
+                dof.gaussianStart.Override(Mathf.Lerp(dofMin, dofMax, (distancia - threshhold) / tolerancia));
+            }
+            else {
                 ccameras[0].Lens.FieldOfView = fovMin;
                 positionComposers[0].CameraDistance = camDistMin;
+                dof.gaussianStart.Override(dofMin);
             }
         }
     }

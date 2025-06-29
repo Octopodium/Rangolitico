@@ -8,6 +8,7 @@ public class AnalyticsManager : MonoBehaviour {
     public PartidaAnalytics partida = null;
     public SalaAnalytics sala = null;
 
+    bool inicializado = false;
 
     void Awake() {
         if (instance == null) {
@@ -21,6 +22,7 @@ public class AnalyticsManager : MonoBehaviour {
     async void Start() {
         await UnityServices.InitializeAsync();
         AnalyticsService.Instance.StartDataCollection();
+        inicializado = true;
         Debug.Log("Unity Services initialized successfully.");
     }
 
@@ -36,10 +38,12 @@ public class AnalyticsManager : MonoBehaviour {
 
 
     public void ComecarPartida() {
+        if (!inicializado) return;
         partida = new PartidaAnalytics();
     }
 
     public void FinalizarPartida(bool concluido) {
+        if (!inicializado) return;
         if (partida != null) {
             partida.FinalizarPartida(concluido);
             partida = null;
@@ -47,6 +51,7 @@ public class AnalyticsManager : MonoBehaviour {
     }
 
     public void ComecarSala(string salaId) {
+        if (!inicializado) return;
         if (sala != null) {
             sala.FinalizarPartida();
         }
@@ -59,6 +64,7 @@ public class AnalyticsManager : MonoBehaviour {
     }
 
     public void FinalizarSala(bool concluido = true) {
+        if (!inicializado) return;
         if (sala != null) {
             sala.FinalizarPartida(concluido);
             sala = null;
@@ -66,6 +72,7 @@ public class AnalyticsManager : MonoBehaviour {
     }
 
     public void RegistrarMorte(string causa, Vector3 pos) {
+        if (!inicializado) return;
         bool checkpoint = false;
         string nomeSala = "";
         float tempoDesdeReset = -1f;

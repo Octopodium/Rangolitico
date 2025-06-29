@@ -225,19 +225,21 @@ public class Gancho : MonoBehaviour, Ferramenta {
             posicaoFinal = posicaoInicial + direcao * distanciaMaxima;
         }
 
-        posicaoFinal = AutoAim(posicaoFinal, raioMiraAuto, hitted);
+        posicaoFinal = AutoAim(posicaoFinal, out bool encontrou, raioMiraAuto, hitted);
         
-        this.jogador.SetPontoFinal(true, posicaoFinal);
+        this.jogador.SetPontoFinal(true, posicaoFinal, encontrou);
         jogador.linhaTrajetoria.SetPosition(1, posicaoFinal);
     }
 
     RaycastHit[] hits = new RaycastHit[24];
-    public Vector3 AutoAim(Vector3 fimPos, float radius = 0.25f, Collider hitted = null) {
+    public Vector3 AutoAim(Vector3 fimPos, out bool encontrou, float radius = 0.25f, Collider hitted = null) {
+        encontrou = false;
         if (!temMiraAuto) return fimPos;
 
         if (hitted != null) {
             Ganchavel alvoRecebido = hitted.GetComponent<Ganchavel>();
             if (alvoRecebido != null) {
+                encontrou = true;
                 alvoAuto = alvoRecebido;
                 return alvoRecebido.meio;
             }
@@ -271,6 +273,7 @@ public class Gancho : MonoBehaviour, Ferramenta {
 
             if (alvo != null) {
                 alvoAuto = alvo;
+                encontrou = true;
                 return alvo.meio;
             }
         }

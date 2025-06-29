@@ -19,7 +19,6 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
     float tempoLimpaUltimoCarregado = 0.25f; // Impede jogador de soltar e pegar um carregavel no mesmo momento
     float timerLimparUltimoCarregado = 0;
 
-    int carregandoParentSourceId = -1;
     public bool estaCarregando => carregado != null;
 
     public System.Action<Carregavel> OnCarregar, OnSoltar; // Chamado quando o carregador carrega ou solta um objeto
@@ -120,7 +119,7 @@ public class Carregador: MonoBehaviour, SincronizaMetodo {
     public void Soltar(Vector3 direcao, float velocidade = 0, bool movendo = false) {
         OnSoltar?.Invoke(carregado);
 
-        carregado.grudavel.Desgrudar();
+        carregado.grudavel.Desgrudar(carregarTransform);
 
 
         Rigidbody cargaRigidbody = carregado.GetComponent<Rigidbody>();

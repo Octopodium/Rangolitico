@@ -663,7 +663,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
     public void DesgrudarDoChao() {
         if (chaoAtual != null && chaoAtual.tag == "Grudavel") {
-            grudavel.Desgrudar();
+            grudavel.Desgrudar(chaoAtual.transform);
         }
     }
 
@@ -866,6 +866,9 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     public LineRenderer linhaTrajetoria;
     public Transform pontoFinalTrajetoria;
     public LayerMask layerTrajetoria;
+    public SpriteRenderer spriteTrajetoriaFinal;
+    public float baseScaleTrajetoriaFinal, selectedScaleTrajetoriaFinal;
+    public Color baseColorTrajetoriaFinal, selectedColorTrajetoriaFinal;
 
     public void DesenharTrajetoria() {
         if (carregador == null || !carregador.estaCarregando) {
@@ -899,9 +902,18 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         pontoFinalTrajetoria.gameObject.SetActive(true);
     }
     
-    public void SetPontoFinal(bool ativo, Vector3 posicao = default) {
+    public void SetPontoFinal(bool ativo, Vector3 posicao = default, bool encontrou = false) {
         pontoFinalTrajetoria.gameObject.SetActive(ativo);
-        if (ativo) pontoFinalTrajetoria.position = posicao;
+        if (ativo) {
+            pontoFinalTrajetoria.position = posicao;
+            if (encontrou) {
+                spriteTrajetoriaFinal.color = selectedColorTrajetoriaFinal;
+                spriteTrajetoriaFinal.transform.localScale = Vector3.one * selectedScaleTrajetoriaFinal;
+            } else {
+                spriteTrajetoriaFinal.color = baseColorTrajetoriaFinal;
+                spriteTrajetoriaFinal.transform.localScale = Vector3.one * baseScaleTrajetoriaFinal;
+            }
+        }
     }
 
     #endregion

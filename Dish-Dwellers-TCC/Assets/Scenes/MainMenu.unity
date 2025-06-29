@@ -9178,7 +9178,7 @@ GameObject:
   - component: {fileID: 1981908032}
   - component: {fileID: 1981908031}
   m_Layer: 5
-  m_Name: Titulo
+  m_Name: volume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10710,6 +10710,14 @@ PrefabInstance:
       propertyPath: dropdown
       value: 
       objectReference: {fileID: 1157129521}
+    - target: {fileID: 8070767003223448316, guid: faa081ca8c0751f449e8a0383bc079c8, type: 3}
+      propertyPath: _prefixes.Array.data[3].textosAfetados.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8070767003223448316, guid: faa081ca8c0751f449e8a0383bc079c8, type: 3}
+      propertyPath: '_prefixes.Array.data[3].textosAfetados.Array.data[8]'
+      value: volume
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

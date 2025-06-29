@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public enum TipoDeTransport { IP, Epic }
 
@@ -12,12 +13,16 @@ public class ConnectionUI : MonoBehaviour {
     public DishNetworkManager networkManager;
 
     public Transform canvasDaConexao;
+    public EventSystem eventSystem;
 
 
     [Header("Configuração de Conexão")]
     public TipoDeTransport tipoDeTransport = TipoDeTransport.IP;
     public GameObject ipPrefab, epicPrefab;
     public GameObject ipPanel, epicPanel;
+    public Button ipButton, epicButton;
+    public Button cancelarConexaoButton;
+    public InputField ipField, epicField;
 
     [HideInInspector] public LobbyPlayer p1, p2;
 
@@ -30,6 +35,7 @@ public class ConnectionUI : MonoBehaviour {
     public Text pingAngler, pingHeater;
     public GameObject anglerReady, heaterReady;
     public Transform logsHolder;
+    public Button trocarPersonagensButton, voltarButton;
     
     ConectorDeTransport conectorDeTransport;
 
@@ -43,12 +49,14 @@ public class ConnectionUI : MonoBehaviour {
                 epicPanel.SetActive(false);
                 prefab = ipPrefab;
                 conectorDeTransport = GetComponent<ConectorOnlineIP>();
+                SelecionarBotao(ipButton);
                 break;
             case TipoDeTransport.Epic:
                 ipPanel.SetActive(false);
                 epicPanel.SetActive(true);
                 prefab = epicPrefab;
                 conectorDeTransport = GetComponent<ConectarComEpic>();
+                SelecionarBotao(epicButton);
                 break;
         }
 
@@ -67,6 +75,37 @@ public class ConnectionUI : MonoBehaviour {
         } else {
             ComecarHostear();
         }
+    }
+
+    public void SelecionarBotao(Button botao) {
+        eventSystem.SetSelectedGameObject(botao.gameObject);
+        SetarNavigation();
+    }
+
+    public void SetarNavigation () {
+        Navigation navigation = voltarButton.navigation;
+        navigation.mode = Navigation.Mode.Explicit;
+
+        bool taCarregando = telaCarregamento.activeSelf;
+        if (taCarregando) {
+            navigation.selectOnRight = cancelarConexaoButton;
+            navigation.selectOnDown = cancelarConexaoButton;
+            voltarButton.navigation = navigation;
+            return;
+        }
+
+        if (tipoDeTransport == TipoDeTransport.IP && ipPanel.activeSelf) {
+            navigation.selectOnRight = ipField;
+            navigation.selectOnDown = ipField;
+        } else if (tipoDeTransport == TipoDeTransport.IP && epicPanel.activeSelf) {
+            navigation.selectOnRight = epicField;
+            navigation.selectOnDown = epicField;
+        } else {
+            navigation.selectOnRight = trocarPersonagensButton;
+            navigation.selectOnDown = trocarPersonagensButton;
+        }
+
+        voltarButton.navigation = navigation;
     }
 
 
@@ -233,6 +272,7 @@ public class ConnectionUI : MonoBehaviour {
     public void EntrouNoLobby() {
         EsconderCarregamento();
         UpdateProntoUI();
+        SelecionarBotao(trocarPersonagensButton);
     }
 
     public void CancelarEntrada() {
@@ -245,16 +285,27 @@ public class ConnectionUI : MonoBehaviour {
     public void HandleCancelarCarregamento() {
         if (OnCancelarCarregamento != null) OnCancelarCarregamento.Invoke();
         OnCancelarCarregamento = null;
+
+        switch (tipoDeTransport) {
+            case TipoDeTransport.IP:
+                SelecionarBotao(ipButton);
+                break;
+            case TipoDeTransport.Epic:
+                SelecionarBotao(epicButton);
+                break;
+        }
     }
 
     public void MostrarCarregamento(string texto, System.Action onCancelar = null) {
         telaCarregamento.SetActive(true);
+        SelecionarBotao(cancelarConexaoButton);
         telaCarregamentoTexto.text = texto;
         OnCancelarCarregamento = onCancelar;
     }
 
     public void EsconderCarregamento() {
         telaCarregamento.SetActive(false);
+        SelecionarBotao(trocarPersonagensButton);
     }
 
     #endregion

@@ -248,11 +248,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnUp: {fileID: 7744477828777225181}
+    m_SelectOnDown: {fileID: 296564846}
+    m_SelectOnLeft: {fileID: 1663398329}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
@@ -353,6 +353,7 @@ GameObject:
   - component: {fileID: 159965721}
   - component: {fileID: 159965720}
   - component: {fileID: 159965719}
+  - component: {fileID: 159965723}
   m_Layer: 0
   m_Name: Conexao
   m_TagString: Untagged
@@ -403,11 +404,17 @@ MonoBehaviour:
   menuInicialScene: MainMenu
   networkManager: {fileID: 0}
   canvasDaConexao: {fileID: 782079657}
+  eventSystem: {fileID: 985964856}
   tipoDeTransport: 1
   ipPrefab: {fileID: 4755543426943370121, guid: 8b0e2859af65f794ba3b26e52fcd1316, type: 3}
   epicPrefab: {fileID: 9117796602290980629, guid: e9ca32a4db49c3e458735df93b580a56, type: 3}
   ipPanel: {fileID: 1176404042}
   epicPanel: {fileID: 609321756}
+  ipButton: {fileID: 296564846}
+  epicButton: {fileID: 1412639498}
+  cancelarConexaoButton: {fileID: 1067791641}
+  ipField: {fileID: 1663398329}
+  epicField: {fileID: 1360276241}
   p1: {fileID: 0}
   p2: {fileID: 0}
   esperandoJogador: {fileID: 2414091}
@@ -420,6 +427,8 @@ MonoBehaviour:
   anglerReady: {fileID: 383250617}
   heaterReady: {fileID: 891712829}
   logsHolder: {fileID: 0}
+  trocarPersonagensButton: {fileID: 8098408970147612679}
+  voltarButton: {fileID: 7744477828777225181}
   entrarLobbyPanel: {fileID: 642120058}
 --- !u!4 &159965722
 Transform:
@@ -436,6 +445,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &159965723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159965718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4849ddc27708f5d42b1e3a7b5dc3f86c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventSystem: {fileID: 985964856}
+  currentFirstSelected: {fileID: 0}
 --- !u!1 &188026407
 GameObject:
   m_ObjectHideFlags: 0
@@ -809,7 +832,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0, g: 0.13333334, b: 0.6039216, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -2041,6 +2064,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 953253852}
   m_CullTransparentMesh: 1
+--- !u!114 &985964856 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4877541325903268814, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+  m_PrefabInstance: {fileID: 1483239779}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1015866546
 GameObject:
   m_ObjectHideFlags: 0
@@ -2169,18 +2203,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
+    m_SelectOnUp: {fileID: 7744477828777225181}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnLeft: {fileID: 7744477828777225181}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.6039216, g: 0.023529412, b: 0, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -2715,11 +2749,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnUp: {fileID: 7744477828777225181}
+    m_SelectOnDown: {fileID: 1412639498}
+    m_SelectOnLeft: {fileID: 7744477828777225181}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
@@ -2860,9 +2894,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
+    m_SelectOnUp: {fileID: 1360276241}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
@@ -2871,7 +2905,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0, g: 0.13333334, b: 0.6039216, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -3001,6 +3035,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4877541325903268814, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: m_FirstSelected
+      value: 
+      objectReference: {fileID: 408979337066249166}
     - target: {fileID: 5370679958162542896, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: m_Name
       value: GameManager
@@ -3092,12 +3130,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnUp: {fileID: 7744477828777225181}
+    m_SelectOnDown: {fileID: 296564846}
+    m_SelectOnLeft: {fileID: 7744477828777225181}
+    m_SelectOnRight: {fileID: 91042535}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}

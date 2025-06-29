@@ -3438,6 +3438,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8226300616583912940, guid: a3783b7235af19941bfdbf85b9a18796, type: 3}
   m_PrefabInstance: {fileID: 491202431}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &491202433 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5400066324714733928, guid: a3783b7235af19941bfdbf85b9a18796, type: 3}
+  m_PrefabInstance: {fileID: 491202431}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 491202432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aafc16a9671c72344b07e5d3004f8557, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &491202436 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5292614015424394989, guid: a3783b7235af19941bfdbf85b9a18796, type: 3}
@@ -7824,13 +7835,13 @@ MonoBehaviour:
   - {fileID: 831223619}
   triggers: []
   resetaveis:
-  - {fileID: 1732071731}
-  - {fileID: 1523637138}
+  - {fileID: 491202433}
   - {fileID: 1715967548}
   - {fileID: 470784379}
-  - {fileID: 556639239}
-  - {fileID: 0}
   - {fileID: 1446854262}
+  - {fileID: 556639239}
+  - {fileID: 1732071731}
+  - {fileID: 1523637138}
   onResetSala:
     m_PersistentCalls:
       m_Calls: []

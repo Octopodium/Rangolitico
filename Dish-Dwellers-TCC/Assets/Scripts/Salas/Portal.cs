@@ -17,8 +17,11 @@ public class Portal : IResetavel, SincronizaMetodo {
         if (sin == null) sin = gameObject.AddComponent<Sincronizavel>();
     }
 
-    public override void OnReset(){
+    public override void OnReset() {
+        Debug.Log("Resetando portal");
         playersNoPortal.Clear();
+        Debug.Log("Portal resetado");
+        Debug.Log(playersNoPortal.Count);
     }
 
     private void OnTriggerEnter(Collider other){
@@ -31,7 +34,6 @@ public class Portal : IResetavel, SincronizaMetodo {
     public void PlayerEntra(GameObject playerObj) {
         Player player = playerObj.GetComponent<Player>();
         if(player == null) return; // Se não for um player, não faz nada.
-        if (playersNoPortal.Contains(player)) return; // Evita que o mesmo player entre várias vezes seguidas no mesmo portal.
 
         bool prosseguir = gameObject.Sincronizar(playerObj);
         if (!prosseguir) return;

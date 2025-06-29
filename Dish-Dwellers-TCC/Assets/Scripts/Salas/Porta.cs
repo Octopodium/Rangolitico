@@ -15,8 +15,9 @@ public class Porta : IResetavel, Interacao{
         portal.SetActive(false);
     }
 
-    public override void OnReset(){
+    public override void OnReset() {
         Trancar();
+        portal.GetComponent<Portal>().OnReset();
     }
 
     public void Interagir(Player jogador){

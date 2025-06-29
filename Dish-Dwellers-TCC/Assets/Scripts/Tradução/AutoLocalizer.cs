@@ -84,10 +84,14 @@ public class AutoLocalizer : MonoBehaviour
         string language = PlayerPrefs.GetString("language");
         if(language == "portugues"){
             SetLanguage(1);
-            dropdown.value = 1;
+            if(dropdown != null){
+                dropdown.value = 1;
+            }
         }else{
             SetLanguage(0);
-            dropdown.value = 0;
+            if(dropdown != null){
+                dropdown.value = 0;
+            }
         }
     }
 }

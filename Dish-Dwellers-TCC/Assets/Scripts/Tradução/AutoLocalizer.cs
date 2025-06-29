@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using TMPro;
@@ -16,6 +17,8 @@ public class AutoLocalizer : MonoBehaviour
 
     private Dictionary<string, LocalizedString> _localizedTexts = new Dictionary<string, LocalizedString>();
     //utilizando listas e dicionarios para automatizar a tradução e nao precisar ter um "Localized string" em cada elemento de texto
+
+    public TMP_Dropdown dropdown;
 
     void Start(){
         LoadLanguage();
@@ -67,24 +70,24 @@ public class AutoLocalizer : MonoBehaviour
         return null;
     }
 
-    public void SetPortugues(){
-        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[1];
-        PlayerPrefs.SetString("language", "portugues");
-        PlayerPrefs.Save();
-    }
-
-    public void SetIngles(){
-        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[0];
-        PlayerPrefs.SetString("language", "ingles");
+    public void SetLanguage(int index){
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[index];
+        if(index == 1){
+            PlayerPrefs.SetString("language", "portugues");
+        }else{
+            PlayerPrefs.SetString("language", "ingles");
+        }
         PlayerPrefs.Save();
     }
 
     public void LoadLanguage(){
         string language = PlayerPrefs.GetString("language");
         if(language == "portugues"){
-            SetPortugues();
+            SetLanguage(1);
+            dropdown.value = 1;
         }else{
-            SetIngles();
+            SetLanguage(0);
+            dropdown.value = 0;
         }
     }
 }

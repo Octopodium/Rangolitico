@@ -27,12 +27,9 @@ public class DialogueSystem : MonoBehaviour
     private void Awake(){
         if (instance == null){
             instance = this;
-            DontDestroyOnLoad(gameObject);
         }else{
             Destroy(gameObject);
         }
-
-        dialoguePanel.SetActive(false);
     }
 
     public void StartDialogue(DialogueContainer dialogue){

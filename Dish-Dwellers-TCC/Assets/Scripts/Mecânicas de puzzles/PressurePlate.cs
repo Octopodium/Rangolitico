@@ -79,7 +79,6 @@ public class PressurePlate : IResetavel, SincronizaMetodo
 
         gameObject.Sincronizar();
 
-        Debug.Log("<color=green>Botão ativado.</color>");
         ativado = true;
 
         OnAtivado?.Invoke();
@@ -111,8 +110,6 @@ public class PressurePlate : IResetavel, SincronizaMetodo
         if (!ativado) return;
 
         gameObject.Sincronizar();
-
-        Debug.Log("<color=red>Botão desativado.</color>");
         ativado = false;
 
         OnDesativado?.Invoke();

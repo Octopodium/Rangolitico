@@ -5521,6 +5521,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3763654424041520862, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: Target.TrackingTarget
+      value: 
+      objectReference: {fileID: 2032096852}
+    - target: {fileID: 4003411983086384470, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
+      propertyPath: Target.TrackingTarget
+      value: 
+      objectReference: {fileID: 1222135231}
     - target: {fileID: 4395727688683058075, guid: 3b7a10fe66fc99e46ab644579b41e033, type: 3}
       propertyPath: m_Name
       value: Cameras
@@ -14128,7 +14136,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3382373732577512877}
-  - component: {fileID: 7284478752684962845}
   m_Layer: 7
   m_Name: DoubleDoor
   m_TagString: Untagged
@@ -14708,28 +14715,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 473745424039d9d4a8d70f8c8d22666b, type: 3}
---- !u!95 &7284478752684962845
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2900966487691945474}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 86856409e02252b4ab1e9dc63a9c058d, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!33 &8350232097914270629
 MeshFilter:
   m_ObjectHideFlags: 0

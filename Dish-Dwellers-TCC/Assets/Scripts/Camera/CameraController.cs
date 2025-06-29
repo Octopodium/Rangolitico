@@ -305,10 +305,15 @@ public class CameraController : MonoBehaviour {
         SetAlpha(nomeStageText, 0);
         SetAlpha(nomeSalaText, 0);
 
-        nomeSalaText.text = GameManager.instance.salaAtual.nomeDaSala;
+        try {
+            nomeSalaText.text = GameManager.instance.salaAtual.nomeDaSala;
+        }
+        catch {
+            
+        }
 
         //Fade In 
-        float elapsedTime = 0f;
+            float elapsedTime = 0f;
         while (elapsedTime < fadeDuracao) {
             elapsedTime += Time.deltaTime;
             float alpha = Mathf.Clamp01(elapsedTime / fadeDuracao);

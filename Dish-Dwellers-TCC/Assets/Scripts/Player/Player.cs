@@ -99,6 +99,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     Rigidbody rb; // Rigidbody do jogador (se houver)
     Collider col;
     Grudavel grudavel;
+    public UnityEvent onTomarDano;
 
 
     // Awake: trata de referências/configurações internas
@@ -243,6 +244,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
                     AnalyticsManager.instance?.RegistrarMorte(motivoDeDano, transform.position);
                 }
             }
+            onTomarDano?.Invoke();
         }
 
         playerVidas += valor;
@@ -589,8 +591,11 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
             tempo += Time.deltaTime;
             float progresso = tempo / duracaoKnockback;
             Vector3 velocidadeAtual = Vector3.Lerp(velocidadeInicial, velocidadeFinal, progresso);
-            
-            characterController.Move(velocidadeAtual * Time.deltaTime);
+
+
+            if (characterController.enabled) {
+                characterController.Move(velocidadeAtual * Time.deltaTime);
+            }
             yield return null;
         }
 

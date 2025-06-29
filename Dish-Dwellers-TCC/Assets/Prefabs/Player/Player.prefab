@@ -146,10 +146,26 @@ MonoBehaviour:
   componenteVerticalKnockback: 0.2
   carregador: {fileID: 0}
   estaNoChao: 1
+  onTomarDano:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5567204804914679160}
+        m_TargetAssemblyTypeName: SpritePisca, Assembly-CSharp
+        m_MethodName: Piscar
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0.75
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   conectado: 0
   coyote: 0.1
   tempoAteMovBase: 0.2
   noChaoTempoMin: 0.3
+  chaoAtual: {fileID: 0}
   matCAtrito: {fileID: 13400000, guid: f838f97e1c1cd3644a85b3e215779eb4, type: 2}
   matSAtrito: {fileID: 13400000, guid: f838f97e1c1cd3644a85b3e215779eb4, type: 2}
   linhaTrajetoria: {fileID: 3508073268175436980}
@@ -196,6 +212,7 @@ MonoBehaviour:
   onSolto:
     m_PersistentCalls:
       m_Calls: []
+  grudavel: {fileID: 0}
 --- !u!114 &6338996827042860619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2474,7 +2491,10 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2002138346091126905}
     - targetCorrespondingSourceObject: {fileID: 3434192582031992743, guid: 0072445ab1b877c42a3fc483e7f23c0f, type: 3}
-      insertIndex: -1
+      insertIndex: 1
+      addedObject: {fileID: 5567204804914679160}
+    - targetCorrespondingSourceObject: {fileID: 3434192582031992743, guid: 0072445ab1b877c42a3fc483e7f23c0f, type: 3}
+      insertIndex: 2
       addedObject: {fileID: 4375565127652537501}
   m_SourcePrefab: {fileID: 100100000, guid: 0072445ab1b877c42a3fc483e7f23c0f, type: 3}
 --- !u!1 &5128473730756422474 stripped
@@ -2482,6 +2502,20 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3434192582031992743, guid: 0072445ab1b877c42a3fc483e7f23c0f, type: 3}
   m_PrefabInstance: {fileID: 7530946955617553645}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5567204804914679160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5128473730756422474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7cd2eb91ad26ff4292da21d864a65dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  piscaMat: {fileID: 2100000, guid: 95a6166d86adc0a4cbe67d5b3debb7eb, type: 2}
+  piscadas: 11
 --- !u!114 &4375565127652537501
 MonoBehaviour:
   m_ObjectHideFlags: 0

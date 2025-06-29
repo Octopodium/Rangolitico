@@ -245,6 +245,14 @@ PrefabInstance:
       propertyPath: velocidadeRB
       value: 6.5
       objectReference: {fileID: 0}
+    - target: {fileID: 8982251984172959260, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
+      propertyPath: onTomarDano.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3412798674166718709}
+    - target: {fileID: 8982251984172959260, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
+      propertyPath: onTomarDano.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Piscar
+      objectReference: {fileID: 0}
     - target: {fileID: 9131585098068641555, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
       propertyPath: protecao
       value: 
@@ -679,6 +687,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 34da197582ebb744eb522f1a1ea5ca9a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4878544313403074635}
+    - targetCorrespondingSourceObject: {fileID: -7900843096670403149, guid: 34da197582ebb744eb522f1a1ea5ca9a, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 3412798674166718709}
   m_SourcePrefab: {fileID: 100100000, guid: 34da197582ebb744eb522f1a1ea5ca9a, type: 3}
 --- !u!1 &7333197233537152778 stripped
 GameObject:
@@ -737,3 +748,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 34da197582ebb744eb522f1a1ea5ca9a, type: 3}
   m_PrefabInstance: {fileID: 7567641485602376283}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8889886614320041960 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -7900843096670403149, guid: 34da197582ebb744eb522f1a1ea5ca9a, type: 3}
+  m_PrefabInstance: {fileID: 7567641485602376283}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3412798674166718709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8889886614320041960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7cd2eb91ad26ff4292da21d864a65dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  piscaMat: {fileID: 2100000, guid: 95a6166d86adc0a4cbe67d5b3debb7eb, type: 2}
+  piscadas: 11

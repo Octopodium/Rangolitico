@@ -21,19 +21,19 @@ MonoBehaviour:
     targetNodeGuid: dialogue_angler1
   - baseNodeGuid: dialogue_angler1
     portName: output
-    targetNodeGuid: dialogue_heater3
-  - baseNodeGuid: dialogue_heater3
+    targetNodeGuid: dialogue_heater2
+  - baseNodeGuid: dialogue_heater2
     portName: output
-    targetNodeGuid: d1efbd8c-be9f-4c0d-aed6-ec77486b7fa4
-  - baseNodeGuid: d1efbd8c-be9f-4c0d-aed6-ec77486b7fa4
+    targetNodeGuid: dialogue_angler2
+  - baseNodeGuid: dialogue_angler2
     portName: output
     targetNodeGuid: 39cfd21e-2d47-4ef6-962b-c977362e67d7
   DialogueNodeData:
-  - Guid: dialogue_heater2
+  - Guid: dialogue_heater1
     nodeName: Text Node
-    dialogueText: "D\xFAvido que voc\xEA e seus peixes molengas consigam sequer enfrentar
-      o primeiro desafio."
-    position: {x: 689, y: 350}
+    dialogueText: "N\xE3o acredito que vou ter que entrar nessa Torre com voc\xEA...
+      o Mestre deve estar de brincadeira."
+    position: {x: 209, y: 350}
     sceneName: 
     _loadScene: 0
   - Guid: dialogue_angler1
@@ -43,11 +43,11 @@ MonoBehaviour:
     position: {x: 438, y: 350}
     sceneName: 
     _loadScene: 0
-  - Guid: dialogue_heater1
+  - Guid: dialogue_heater2
     nodeName: Text Node
-    dialogueText: "N\xE3o acredito que vou ter que entrar nessa Torre com voc\xEA...
-      o Mestre deve estar de brincadeira."
-    position: {x: 209, y: 350}
+    dialogueText: "D\xFAvido que voc\xEA e seus peixes molengas consigam sequer enfrentar
+      o primeiro desafio."
+    position: {x: 689, y: 350}
     sceneName: 
     _loadScene: 0
   - Guid: dialogue_angler2

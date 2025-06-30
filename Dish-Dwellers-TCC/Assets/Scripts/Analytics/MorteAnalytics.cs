@@ -46,7 +46,8 @@ public class MorteAnalytics {
             quadrante = quadrante
         };
 
-       AnalyticsService.Instance.RecordEvent(analytics);
+       
+        try { AnalyticsService.Instance.RecordEvent(analytics); } catch (Exception e) { Debug.LogError($"Erro ao registrar evento de morte: {e.Message}"); }
     }
 
 }

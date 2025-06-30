@@ -48,7 +48,7 @@ public class SalaAnalytics {
             mortes = mortes
         };
 
-       AnalyticsService.Instance.RecordEvent(analytics);
+        try { AnalyticsService.Instance.RecordEvent(analytics); } catch (Exception e) { Debug.LogError($"Erro ao registrar evento de sala: {e.Message}"); }
     }
 
     public void AtualizarTempo(float deltaTime) {

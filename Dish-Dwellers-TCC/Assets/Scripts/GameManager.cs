@@ -445,9 +445,13 @@ public class GameManager : MonoBehaviour {
 
         NetworkManager networkManager = NetworkManager.singleton;
         if (networkManager != null) {
-            networkManager.StopHost();
-            networkManager.StopClient();
-            networkManager.StopServer();
+            try {
+                networkManager.StopClient();
+                networkManager.StopServer();
+            } catch (Exception e) {
+                Debug.LogError($"Erro ao parar o NetworkManager: {e.Message}");
+            }
+            
 
             Destroy(networkManager.gameObject);
         }

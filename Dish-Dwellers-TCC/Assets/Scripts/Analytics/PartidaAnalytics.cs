@@ -38,7 +38,7 @@ public class PartidaAnalytics {
             mortes = mortes
         };
 
-        AnalyticsService.Instance.RecordEvent(analytics);
+        try { AnalyticsService.Instance.RecordEvent(analytics); } catch (Exception e) { Debug.LogError($"Erro ao registrar evento de partida: {e.Message}"); }
     }
 
     public void AtualizarTempo(float deltaTime) {

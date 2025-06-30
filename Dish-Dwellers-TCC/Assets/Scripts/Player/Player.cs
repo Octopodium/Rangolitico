@@ -231,6 +231,12 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         DesenharTrajetoria();
     }
 
+    void OnDestroy() {
+        if (GameManager.instance?.isOnline == true) {
+            GameManager.instance?.VoltarParaMenu();
+        }
+    }
+
 
     /// <summary>
     /// Aumenta ou diminui a vida do jogador
@@ -265,7 +271,8 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
         if (sendoCarregado) carregavel.carregador.Soltar(); // Se o jogador está sendo carregado, se solta
         if (carregando != null) carregador.Soltar(); // Se o jogador está carregando algo, se solta
-        if (ferramenta != null) ferramenta.Cancelar(); // Se o jogador está acionando uma ferramenta, cancela a ação 
+        if (ferramenta != null) ferramenta.Cancelar(); // Se o jogador está acionando uma ferramenta, cancela a ação
+        grudavel.Desgrudar();
     }
 
     string motivoDeDano = "Desconhecido";

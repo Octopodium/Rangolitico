@@ -63,15 +63,17 @@ public class DishNetworkManager : NetworkManager {
     }
 
     public override void OnServerDisconnect(NetworkConnectionToClient conn) {
-        if (lobbyPlayers[0] != null && lobbyPlayers[0].connectionToClient == conn) {
-            lobbyPlayers[0].FoiDesconectado();
-            lobbyPlayers[0] = null;
+        if (conn != null) {
+            if (lobbyPlayers[0] != null && lobbyPlayers[0].connectionToClient == conn) {
+                lobbyPlayers[0].FoiDesconectado();
+                lobbyPlayers[0] = null;
+            }
+            else if (lobbyPlayers[1] != null && lobbyPlayers[1].connectionToClient == conn) {
+                lobbyPlayers[1].FoiDesconectado();
+                lobbyPlayers[1] = null;
+            }
         }
-        else if (lobbyPlayers[1] != null && lobbyPlayers[1].connectionToClient == conn) {
-            lobbyPlayers[1].FoiDesconectado();
-            lobbyPlayers[1] = null;
-        }
-
+        
         if (players != null && players.Length > 0) {
             if (players[0] != null) players[0].conectado = false;
             if (players.Length > 1 && players[1] != null) players[1].conectado = false;

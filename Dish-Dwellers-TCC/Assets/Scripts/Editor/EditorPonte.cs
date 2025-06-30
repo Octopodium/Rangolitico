@@ -20,6 +20,7 @@ public class EditorPonte : Editor
     }
 
     public override void OnInspectorGUI(){
+        base.OnInspectorGUI();
         serializedObject.Update();
         PonteLevadica ponte = target as PonteLevadica;
 

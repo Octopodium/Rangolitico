@@ -116,11 +116,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1218548246126819929}
-  - {fileID: 2906820991830544839}
-  - {fileID: 8185318399212063452}
   - {fileID: 8084720659290975300}
   - {fileID: 7955351237861453123}
+  - {fileID: 6138810450306230986}
+  - {fileID: 8517484969945299013}
+  - {fileID: 8720158075743876907}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5927340053707188262
@@ -137,6 +137,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotDesejada: {x: -0.37864146, y: -0.5971857, z: 0.37864146, w: 0.5971857}
   duracao: 3
+  decals: []
+  corAtivado: {r: 0, g: 1.0528396, b: 1.0388873, a: 1}
+  corDesativado: {r: 1.3316575, g: 0, b: 0, a: 1}
 --- !u!1 &4692763868814457691
 GameObject:
   m_ObjectHideFlags: 0
@@ -280,10 +283,10 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a2689bb49a0fe1d44a7b7cf9037f762c, type: 3}
---- !u!4 &8122456011142706416 stripped
+--- !u!4 &8517484969945299013 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7014269707930592759, guid: a2689bb49a0fe1d44a7b7cf9037f762c, type: 3}
-  m_PrefabInstance: {fileID: 1292378713745903879}
+  m_PrefabInstance: {fileID: 1685364756408245682}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1971635244679814218
 PrefabInstance:

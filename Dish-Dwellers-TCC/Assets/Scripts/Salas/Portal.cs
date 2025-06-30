@@ -34,6 +34,7 @@ public class Portal : IResetavel, SincronizaMetodo {
     public void PlayerEntra(GameObject playerObj) {
         Player player = playerObj.GetComponent<Player>();
         if(player == null) return; // Se não for um player, não faz nada.
+        if (playersNoPortal.Contains(player)) return;
 
         bool prosseguir = gameObject.Sincronizar(playerObj);
         if (!prosseguir) return;

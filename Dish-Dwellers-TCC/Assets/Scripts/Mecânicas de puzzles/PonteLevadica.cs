@@ -1,44 +1,66 @@
-using System.Collections;
 using UnityEngine;
 
-public class PonteLevadica : IResetavel
-{
+public class PonteLevadica : IResetavel {
     [SerializeField] public Quaternion rotDesejada;
-    private Quaternion rotInicial;
     [SerializeField] private float duracao;
+    [SerializeField] private Renderer[] decals;
+    private MaterialPropertyBlock mpb;
+    private Quaternion rotInicial;
     private float progresso = 0.0f;
-    private bool rolando = false;
+    private int ativacoes = 0;
+    [SerializeField][ColorUsage(true, true)] private Color corAtivado, corDesativado;
 
 
     private void Awake() {
         rotInicial = transform.rotation;
+        mpb = new MaterialPropertyBlock();
     }
 
     private void FixedUpdate() {
 
-        if (rolando) {
+        if (ativacoes > 0) {
             progresso += Time.fixedDeltaTime;
         }
-        else if (rolando == false) {
+        else if (ativacoes <= 0) {
             progresso -= Time.fixedDeltaTime;
         }
         progresso = Mathf.Clamp(progresso, 0, duracao);
 
         float t = progresso / duracao;
- 
+
         transform.rotation = Quaternion.Lerp(rotInicial, rotDesejada, t);
     }
 
     public override void OnReset() {
-        StopAllCoroutines();
         transform.rotation = rotInicial;
     }
 
+    private void TrocarCorDoDecalque(Color col) {
+        mpb.SetColor("_EmissionColor", col);
+
+        if (decals != null) {
+            foreach (Renderer render in decals) {
+                render.SetPropertyBlock(mpb);
+            }
+        }
+    }
+
     public void AbaixarPonte() {
-        rolando = true;
+        ativacoes++;
+        ChecarAtivacao();
     }
 
     public void LevantarPonte() {
-        rolando = false;
+        ativacoes--;
+        ChecarAtivacao();
+    }
+    
+    private void ChecarAtivacao() {
+        if (ativacoes > 0) {
+            TrocarCorDoDecalque(corAtivado);
+        }
+        else {
+            TrocarCorDoDecalque(corDesativado);
+        }
     }
 }

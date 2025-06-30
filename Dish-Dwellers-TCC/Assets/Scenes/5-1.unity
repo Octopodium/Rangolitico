@@ -3251,7 +3251,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: decalsLinkados.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: 'decalsLinkados.Array.data[0]'
@@ -3689,7 +3689,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 64463a66951003449a37b0d22c576524, type: 2}
     - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: decalsLinkados.Array.size
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2652810447332975667, guid: 0dceb1236f1e91f459f6eec8708b54b8, type: 3}
       propertyPath: 'decalsLinkados.Array.data[0]'
@@ -12619,6 +12619,18 @@ PrefabInstance:
       propertyPath: rotDesejada.z
       value: 0.71533096
       objectReference: {fileID: 0}
+    - target: {fileID: 5927340053707188262, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
+      propertyPath: decals.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5927340053707188262, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
+      propertyPath: 'decals.Array.data[0]'
+      value: 
+      objectReference: {fileID: 6537732546770195762}
+    - target: {fileID: 5927340053707188262, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
+      propertyPath: 'decals.Array.data[1]'
+      value: 
+      objectReference: {fileID: 130874375}
     - target: {fileID: 7955351237861453123, guid: 3be12674abbb57e44b0826a4ad5067df, type: 3}
       propertyPath: m_LocalScale.x
       value: 1

@@ -39,7 +39,7 @@ public class UIManager : MonoBehaviour
     }
 
     public void HandleDisplayVida(Player player, int valor){
-        GameObject[] coracoes = player.qualPlayer == QualPlayer.Player1 ? coracoesEsquerda : coracoesDireita;
+        GameObject[] coracoes = player.personagem == QualPersonagem.Angler ? coracoesEsquerda : coracoesDireita;
 
         for (int i = 0; i < coracoes.Length; i++){ 
             //percorre pela array de coracoes e ativa caso ele for menor que as vidas

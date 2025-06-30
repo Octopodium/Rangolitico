@@ -393,8 +393,6 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     /// <param name="mostrar">Se irá mostrar ou não</param>
     public void MostrarDirecional(bool mostrar) {
         visualizarDirecao.SetActive(mostrar);
-        if (personagem == QualPersonagem.Heater) return;
-        podeMovimentar = !mostrar;
     }
 
     /// <summary>
@@ -905,8 +903,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         linhaTrajetoria.SetPositions(pontos);
 
         Vector3 pontoFinal = pontos[pontos.Length - 1];
-        pontoFinalTrajetoria.position = pontoFinal;
-        pontoFinalTrajetoria.gameObject.SetActive(true);
+        SetPontoFinal(true, pontoFinal);
     }
     
     public void SetPontoFinal(bool ativo, Vector3 posicao = default, bool encontrou = false) {

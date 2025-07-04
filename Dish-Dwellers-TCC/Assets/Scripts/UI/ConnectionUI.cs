@@ -233,7 +233,8 @@ public class ConnectionUI : MonoBehaviour {
     }
 
     void OnDestroy() {
-        Destroy(canvasDaConexao.gameObject);
+        if (canvasDaConexao != null && canvasDaConexao.gameObject != null)
+            Destroy(canvasDaConexao.gameObject);
     }
 
     #endregion

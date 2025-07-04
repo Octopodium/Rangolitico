@@ -9,27 +9,19 @@ public class AnalyticsManager : MonoBehaviour {
     public SalaAnalytics sala = null;
 
     bool inicializado = false;
-    bool marcadoParaDestruir = false;
 
     void Awake() {
         if (instance == null) {
             instance = this;
             DontDestroyOnLoad(gameObject);
         } else {
-            marcadoParaDestruir = true;
             Destroy(gameObject);
         }
     }
 
-    void OnDestroy() {
-        if (!marcadoParaDestruir) {
-            instance = null;
-        } else {
-            marcadoParaDestruir = false;
-        }
-    }
-
     async void Start() {
+        if (instance != this) return;
+
         await UnityServices.InitializeAsync();
         AnalyticsService.Instance.StartDataCollection();
         inicializado = true;
@@ -43,6 +35,27 @@ public class AnalyticsManager : MonoBehaviour {
 
         if (sala != null) {
             sala.AtualizarTempo(Time.fixedDeltaTime);
+        }
+    }
+
+    void OnApplicationQuit() {
+        if (!inicializado) return;
+
+        if (partida != null) {
+            partida.FinalizarPartida(false);
+            partida = null;
+        }
+
+        if (sala != null) {
+            sala.FinalizarPartida(false);
+            sala = null;
+        }
+
+        try { 
+            AnalyticsService.Instance.Flush();
+            Debug.Log("Unity Services flushed on application quit.");
+        } catch (System.Exception e) {
+            Debug.LogError($"Error flushing Unity Services (OnApplicationQuit): {e.Message}");
         }
     }
 
@@ -81,8 +94,23 @@ public class AnalyticsManager : MonoBehaviour {
         }
     }
 
+    public void LimparPartida() {
+        if (!inicializado) return;
+        partida = null;
+        sala = null;
+    }
+
     public void RegistrarMorte(string causa, Vector3 pos) {
         if (!inicializado) return;
+
+        if (causa == null || causa.Length == 0) {
+            causa = "Desconhecida";
+        }
+
+        if (pos == null) {
+            pos = Vector3.zero;
+        }
+
         bool checkpoint = false;
         string nomeSala = "";
         float tempoDesdeReset = -1f;
@@ -96,16 +124,18 @@ public class AnalyticsManager : MonoBehaviour {
             sala.RegistrarMorte();
         }
 
+        ModoDeJogo modoDeJogo = GameManager.instance != null ? GameManager.instance.modoDeJogo : ModoDeJogo.INDEFINIDO;
+
         if (partida != null) partida.RegistrarMorte();
 
         var analytics = new MorteAnalytics {
             sala = nomeSala,
-            modoDeJogo = GameManager.instance.modoDeJogo,
+            modoDeJogo = modoDeJogo,
             causa = causa,
             tempoDesdeReset = tempoDesdeReset,
             usandoCheckpoint = checkpoint,
             pos = pos,
-            quadrante = quadrante
+            quad = quadrante
         };
 
         analytics.Registrar();
@@ -119,5 +149,5 @@ public class AnalyticsManager : MonoBehaviour {
         // ignorar a quantidade de quadrantes
 
         return $"{x},{y},{z}";
-    }
+    }    
 }

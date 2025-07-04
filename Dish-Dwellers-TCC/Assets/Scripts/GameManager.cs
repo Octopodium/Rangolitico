@@ -138,6 +138,10 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public void Despausar() {
+        Pause(false);
+    }
+
     public void Pause(bool pausar) {
         if (pausar) {
             OnPause?.Invoke(true);
@@ -462,7 +466,8 @@ public class GameManager : MonoBehaviour {
 
     public void VoltarParaMenu() {
         if (voltandoParaMenu) return;
-        voltandoParaMenu = true;
+
+        Time.timeScale = 1;
 
         if (!isOnline || isServer)  {
             AnalyticsManager.instance?.FinalizarSala(false);
@@ -476,6 +481,7 @@ public class GameManager : MonoBehaviour {
         ForcarCenaAguardando();
 
         StartCoroutine(VoltarParaMenuAsync());
+        voltandoParaMenu = true;
     }
 
     IEnumerator VoltarParaMenuAsync() {
@@ -488,6 +494,8 @@ public class GameManager : MonoBehaviour {
         }
 
         voltandoParaMenu = false;
+
+        AnalyticsManager.instance?.LimparPartida();
 
         input.Disable();
 

@@ -58,12 +58,12 @@ public class UIManager : MonoBehaviour
 
     public void HandlePausa(bool estado){
         if (estado) eventSystem.SetSelectedGameObject(primeiroSelecionadoPause);
-        AtivarEDesativarObjeto(telaPause);
+        telaPause.SetActive(estado);
     }
 
     public void DespauseNoResume(){ 
         if(GameManager.instance != null){
-            GameManager.instance.Pause();
+            GameManager.instance.Despausar();
         }
     }
 

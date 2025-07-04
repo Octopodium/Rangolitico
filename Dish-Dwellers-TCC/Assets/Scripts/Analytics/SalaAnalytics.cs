@@ -36,7 +36,7 @@ public class SalaAnalytics {
 
     public void FinalizarPartida(bool concluido = true) {
         concluida = concluido;
-        modoDeJogo = GameManager.instance.modoDeJogo;
+        modoDeJogo = GameManager.instance != null ? GameManager.instance.modoDeJogo : ModoDeJogo.INDEFINIDO;
 
         var analytics = new SalaAnalyticsEvent {
             sala = sala,

@@ -44,6 +44,8 @@ GameObject:
   - component: {fileID: 5712742811618593561}
   - component: {fileID: 6124558498290349827}
   - component: {fileID: 6256612259639094559}
+  - component: {fileID: 8799356313804197169}
+  - component: {fileID: 7696791253315843194}
   m_Layer: 0
   m_Name: InimigoTorretaOnline
   m_TagString: Torreta
@@ -82,8 +84,8 @@ MonoBehaviour:
   vidas: 3
   velocidade: 7
   dano: 1
-  campoDeVisao: 12
-  zonaDeAtaque: 10
+  campoDeVisao: 9.1
+  zonaDeAtaque: 9.3
   target: {fileID: 0}
   playerLayer:
     serializedVersion: 2
@@ -101,6 +103,10 @@ MonoBehaviour:
   stunDuration: 5
   animator: {fileID: 2238304358611569112}
   delayDoTiro: 0.825
+  audioClips:
+  - {fileID: 8300000, guid: 134f6787e49ed314ba401cf0f39b72d0, type: 3}
+  - {fileID: 8300000, guid: c4e5bbad73b9dc64ca8d25c9b2114881, type: 3}
+  - {fileID: 8300000, guid: a073f873f852080479ebb5c811249352, type: 3}
 --- !u!65 &5712742811618593561
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -161,6 +167,122 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!82 &8799356313804197169
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8853058106906630733}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 24300002, guid: c0a4c2e4f998b4d488946cafef7b2d7b, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 8.091515
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &7696791253315843194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8853058106906630733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugLogMetodosCadastrados: 0
+  cadastrarNoInicio: 1
+  naoUsarIDAuto: 0
+  isSingleton: 0
+  posInicial: {x: 0, y: 0, z: 0}
+  networkIdentity: {fileID: 0}
+  identificador: $f973744bd45946aebb17032777005295
 --- !u!1001 &152763950772956694
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -451,6 +451,7 @@ public class Sincronizavel : MonoBehaviour {
         if (metodosSincronizados.ContainsKey(nome)) {
             return metodosSincronizados[nome];
         } else {
+            Debug.Log("metodo nao cadastrado");
             return new InformacoesMetodo();
         }
     }

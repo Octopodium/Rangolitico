@@ -19,6 +19,10 @@ public class Projectile : MonoBehaviour, SincronizaMetodo {
     public AudioClip vinhaQueimandoSom;
     private bool isReflected = false;
 
+    Vector3 posCatchUp;
+    float catchupCounter = 0.0f;
+    float catchupTime = 0.01f;
+
 
     [Header("<color=green> Lima coisas :")]
     [SerializeField] private bool refletirNormal;
@@ -35,6 +39,11 @@ public class Projectile : MonoBehaviour, SincronizaMetodo {
     void FixedUpdate() {
         transform.Translate(direction * projectileSpeed * Time.deltaTime, Space.World);
 
+        if (GameManager.instance.isOnline){
+            if (GameManager.instance.isServer) SetPosCatchUp(transform.position, false);
+            else transform.position = posCatchUp;
+        }
+
         if (currentLifeTime <= 0) {
             Destroy(gameObject);
         }
@@ -47,11 +56,10 @@ public class Projectile : MonoBehaviour, SincronizaMetodo {
 
     }
 
-    private void DeixarMarcaDeQueimado(ContactPoint contactPoint) {
+    private void DeixarMarcaDeQueimado(Vector3 contato, Vector3 normal) {
         GameObject decal = Instantiate(decalQueimado);
-        decal.transform.position = contactPoint.point;
-        Debug.Log(contactPoint.normal);
-        decal.transform.forward = contactPoint.normal;
+        decal.transform.position = contato;
+        decal.transform.forward = normal;
     }
 
     [Sincronizar]
@@ -73,18 +81,40 @@ public class Projectile : MonoBehaviour, SincronizaMetodo {
     }
 
     private void OnCollisionEnter(Collision other) {
-        Debug.Log("Colidiu com: " + other.gameObject.tag);
+        GameObject objeto = other.gameObject;
+        ContactPoint contact = other.GetContact(0);
 
-        if (other.gameObject.CompareTag("Escudo") && !isReflected) {
+        if (!GameManager.instance.isOnline || objeto.GetComponent<Sincronizavel>() != null || objeto.GetComponent<SubSincronizavel>() != null)
+            LidarComColisao(objeto.tag, contact.point, contact.normal, objeto, false);
+        else
+            LidarComColisaoSemObjeto(objeto.tag, contact.point, contact.normal);
+    }
 
+    [Sincronizar]
+    public void LidarComColisaoSemObjeto(string tag, Vector3 contact, Vector3 contactNormal) {
+        gameObject.Sincronizar(tag, contact, contactNormal);
+        LidarComColisao(tag, contact, contactNormal, null, true);
+    }
+
+    [Sincronizar]
+    public void LidarComColisao(string tag, Vector3 contact, Vector3 contactNormal, GameObject objeto, bool redirecionado) {
+        if (!redirecionado)
+            gameObject.Sincronizar(tag, contact, contactNormal, objeto, false);
+
+        // Debug.Log("Colidiu com: " + tag + " " + contact + " "+ contactNormal + " "+ objeto + " ");
+
+        if (tag == "Escudo") {
             //Tenta pegar o centro da proteção (protecao) do escudo para refletir 
+            Debug.Log("ref");
+            if (!isReflected) {
+                Escudo escudo = objeto.transform.GetComponentInParent<Escudo>();
 
-            Escudo escudo = other.transform.GetComponentInParent<Escudo>();
-
-            Refletir(escudo.pontoDeReflexao.position, escudo.pontoDeReflexao.rotation);
+                Refletir(escudo.pontoDeReflexao.position, escudo.pontoDeReflexao.rotation);
+            }
+           
         }
 
-        else if (isReflected && other.gameObject == owner) {
+        else if (isReflected && objeto != null && objeto == owner) {
             Debug.Log("Colidiu");
 
             //Quando acerta o proprietário do projetil(ou seja, a torreta) coloca o mesmo no estado de stunado
@@ -95,18 +125,18 @@ public class Projectile : MonoBehaviour, SincronizaMetodo {
             Destroy(gameObject);
         }
 
-        else if (other.gameObject.CompareTag("Torreta") && !isReflected) {
+        else if (tag == "Torreta" && !isReflected) {
             return;
         }
 
-        else if (other.transform.CompareTag("Queimavel")) {
-            other.transform.GetComponent<ParedeDeVinhas>().ReduzirIntegridade(transform.position);
+        else if (tag == "Queimavel") {
+            objeto.transform.GetComponent<ParedeDeVinhas>().ReduzirIntegridade(transform.position);
             Destroy(gameObject);
         }
 
-        else if (other.gameObject.CompareTag("Player") && !isReflected) {
-            Player player = other.transform.GetComponent<Player>();
-            if (player != null) {
+        else if (tag == "Player" && !isReflected) {
+            Player player = objeto.transform.GetComponent<Player>();
+            if (player != null && (!GameManager.instance.isOnline || GameManager.instance.isServer)) {
                 player.MudarVida(-1, AnimadorPlayer.fonteDeDano.FOGO);
                 player.AplicarKnockback(transform);
                 AudioManager.PlaySounds(TiposDeSons.KNOCKBACK);
@@ -114,15 +144,29 @@ public class Projectile : MonoBehaviour, SincronizaMetodo {
             Destroy(gameObject);
         }
         
-        else if (other.transform.CompareTag("Chao") || other.transform.CompareTag("Parede")) {
-            DeixarMarcaDeQueimado(other.GetContact(0));
+        else if (tag == "Chao" ||  tag == "Parede") {
+            DeixarMarcaDeQueimado(contact, contactNormal);
             Destroy(gameObject);
         }
 
         //previsão pra caso houver colisão com outros obstáculos
         else {
-            DeixarMarcaDeQueimado(other.GetContact(0));
+            DeixarMarcaDeQueimado(contact, contactNormal);
             Destroy(gameObject);
         }
+    }
+
+    [Sincronizar]
+    public void SetPosCatchUp(Vector3 pos, bool bypassCheck) {
+        if (!GameManager.instance.isOnline) return;
+        if (!bypassCheck && catchupCounter < catchupTime) {
+            gameObject.Sincronizar(pos, false);
+            catchupCounter += Time.fixedDeltaTime;
+            return;
+        }
+
+        gameObject.Sincronizar(pos, true);
+        catchupCounter = 0;
+        posCatchUp = transform.position;
     }
 }

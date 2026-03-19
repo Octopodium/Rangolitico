@@ -1,8 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(Collider))]
-public class ParedeDeVinhas : IResetavel {
+[RequireComponent(typeof(Collider)), RequireComponent(typeof(Sincronizavel))]
+public class ParedeDeVinhas : IResetavel, SincronizaMetodo {
     [SerializeField] private int integridade = 3;
     [SerializeField] private Color[] cores;
     private Renderer[] renderers;
@@ -28,7 +28,6 @@ public class ParedeDeVinhas : IResetavel {
     }
     
     private void OnControllerColliderHit(ControllerColliderHit hit) {
-        Debug.Log("CharacterController Collision detected!");
         Player player = hit.controller.GetComponent<Player>();
         player.AplicarKnockback(transform);
     }
@@ -43,17 +42,23 @@ public class ParedeDeVinhas : IResetavel {
         col.enabled = true;
     }
 
+    
     public void ReduzirIntegridade(Vector3 pontoDeContato) {
+        gameObject.Sincronizar(pontoDeContato);
         if (--integridade <= 0) {
-            //AtivarVinhas(false);
-            mpb.SetVector(pointOfContactID, pontoDeContato);
-            foreach(Renderer render in renderers) {
-                render.SetPropertyBlock(mpb);
-            }
-            StartCoroutine(QueimarVinhas());
-            AudioManager.PlaySounds(TiposDeSons.VINESBURNING);
-            return;
+            ProcessarQueima(pontoDeContato);
         }
+    }
+
+    [Sincronizar]
+    public void ProcessarQueima(Vector3 pontoDeContato) {
+        //AtivarVinhas(false);
+        mpb.SetVector(pointOfContactID, pontoDeContato);
+        foreach(Renderer render in renderers) {
+            render.SetPropertyBlock(mpb);
+        }
+        StartCoroutine(QueimarVinhas());
+        AudioManager.PlaySounds(TiposDeSons.VINESBURNING);
     }
 
     private void SetarCor(int integridade) {

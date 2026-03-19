@@ -4,6 +4,11 @@ using UnityEngine;
 public class SubSincronizavel : MonoBehaviour {
     public Sincronizavel dono;
     public int id;
+    public bool autoCadastro = false;
+
+    public void Start() {
+        if (autoCadastro) dono.AddSub(this);
+    }
 
     public string GetIdentificador() {
         return dono.identificador + "***SUB_"  +id;

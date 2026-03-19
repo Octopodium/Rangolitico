@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9065377999698166213}
   - component: {fileID: 2583164641293623794}
   - component: {fileID: 1515880990132512928}
+  - component: {fileID: 2038745176870129566}
   m_Layer: 12
   m_Name: ColliderEscudo
   m_TagString: Escudo
@@ -81,6 +82,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &2038745176870129566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2437579116685383321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57e8da7b6cdb6d54e9bdcff650f9f027, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dono: {fileID: 939933573213825239}
+  id: 0
+  autoCadastro: 1
 --- !u!1001 &3390068998467412371
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -95,7 +111,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6773236473951336124, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
       propertyPath: identificador
-      value: $f0f64e35cbb743fc9af24dc322f67683
+      value: $bd7f0a295db3465299dd3b56bb5a89ab
       objectReference: {fileID: 0}
     - target: {fileID: -6773236473951336124, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
       propertyPath: idObjetoSincronizado
@@ -156,10 +172,6 @@ PrefabInstance:
     - target: {fileID: 2555070452025545546, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2555070452025545546, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
-      propertyPath: m_TagString
-      value: Escudo
       objectReference: {fileID: 0}
     - target: {fileID: 2828260846703549952, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
       propertyPath: m_Name
@@ -366,6 +378,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &939933573213825239 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: -6773236473951336124, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}
+  m_PrefabInstance: {fileID: 3390068998467412371}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 597836957717888915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebe0644f5332e474ca26b8e5a890d138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &2414328040528346660 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1047820585503170487, guid: 2395aaa16ceb2334aa61f683e605a068, type: 3}

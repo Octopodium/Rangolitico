@@ -426,70 +426,7 @@ public class Sincronizador : NetworkBehaviour {
         }
     }
 
-    Dictionary<uint, List<SpawnInfo>> spawnHandlers = new Dictionary<uint, List<SpawnInfo>>();
-    SpawnInfo GetSpawnInfo(uint id, Sincronizavel sinc) {
-        if (!spawnHandlers.ContainsKey(id)) {
-            Debug.Log("Key " + id + " not found!");
-            return null;
-        }
-
-        foreach (SpawnInfo info in spawnHandlers[id]) {
-            if (info.id == sinc.identificador) {
-                return info;
-            }
-        }
-
-        return null;
-    }
-
-    public void RegistrarSpawner(GameObject prefab, Vector3 position, Sincronizavel sincronizavel, System.Action<GameObject> callback) {
-        SpawnInfo info = new SpawnInfo(sincronizavel.identificador, position, callback);
-        Debug.Log("Registrando spawner " + sincronizavel.identificador + " - " + prefab.name);
-
-        NetworkIdentity netId = prefab.GetComponent<NetworkIdentity>();
-        if (netId == null) {
-            Debug.LogError("O prefab [" + prefab.name + "] não possui um NetworkIdentity. Não é possível instanciar objetos de rede sem este componente.");
-            return;
-        }
-
-        uint id = netId.assetId;
-        
-        bool isSpawning = spawnHandlers.ContainsKey(id);
-
-        if (isSpawning) {
-            if (GetSpawnInfo(id, sincronizavel) == null) {
-                spawnHandlers[id].Add(info);
-            }
-        } 
-        else {
-            List<SpawnInfo> lista = new List<SpawnInfo> { info };
-            spawnHandlers.Add(id, lista);
-        }
-    }
-
-    public void DesregistrarSpawner(GameObject prefab, Sincronizavel sincronizavel) {
-        NetworkIdentity netId = prefab.GetComponent<NetworkIdentity>();
-        if (netId == null) {
-            Debug.LogError("O prefab [" + prefab.name + "] não possui um NetworkIdentity. Não é possível instanciar objetos de rede sem este componente.");
-            return;
-        }
-
-        uint id = netId.assetId;
-        if (spawnHandlers.ContainsKey(id) && spawnHandlers[id] != null && spawnHandlers[id].Count > 0) {
-            List<SpawnInfo> spawners = spawnHandlers[id];
-            for (int i = spawners.Count - 1; i >= 0; i--) {
-                SpawnInfo info = spawners[i];
-                if (info.id == sincronizavel.identificador)
-                    spawners.RemoveAt(i);
-            }
-
-            if (spawners.Count == 0) {
-                spawnHandlers.Remove(id);
-            }
-        }
-    }
-
-    public bool InstanciarNetworkObject(GameObject prefab, Sincronizavel sincronizavel, Quaternion rotation = default, string spawn_id = "0") {
+    public bool InstanciarNetworkObject(GameObject prefab, Sincronizavel sinc, Vector3 pos, Quaternion rotation = default) {
         if (!GameManager.instance.isOnline) return false;
         
 
@@ -499,50 +436,21 @@ public class Sincronizador : NetworkBehaviour {
             return false;
         }
 
-        uint id = netId.assetId;
-        SpawnInfo info = GetSpawnInfo(id, sincronizavel);
-        if (info == null) {
-            Debug.LogError("Tentativa de instanciar o prefab [" + prefab.name + "] utilizando o sincronizavel [" + sincronizavel.identificador + "] sem registrar. Por favor utilize RegistrarSpawner antes de tentar spawnar com este método.");
-            return false;
-        }
-
-        info.AddId(spawn_id);
-
         if (isServer) {
-            GameObject objeto = Instantiate(prefab, info.position, rotation);
+            GameObject objeto = Instantiate(prefab, pos, rotation);
             NetworkServer.Spawn(objeto);
+            AposInstanciado(objeto, sinc.GetID());
         }
 
         return true;
     }
 
-
-    /// <summary>
-    /// Quando um Sincronizavel é instanciado possuindo um NetworkIdentity, chama este método para verificar se a instanciação foi através do InstanciarNetworkObject.
-    /// Se sim, chama o callback associado ao assetId do NetworkIdentity.
-    /// </summary>
-    /// <param name="netId"></param>
-    public void CheckSeAguardandoSpawn(Sincronizavel sinc) {
-        NetworkIdentity netId = sinc.networkIdentity;
-        uint id = netId.assetId;
-        if (spawnHandlers.ContainsKey(id) && spawnHandlers[id].Count > 0) {
-            SpawnInfo info = GetSpawnerMaisProvavel(sinc, spawnHandlers[id]);
-            GameObject objeto = netId.gameObject;
-
-/*
-            if (!info.TemId()) {
-                Debug.Log("Destruindo o objeto " + objeto.name);
-                Destroy(objeto);
-                return;
-            }
-*/
-            if (info.TemId())
-                info.FreeId();
-
-            Action<GameObject> handler = info.callback;
-            handler?.Invoke(objeto);
-        }
+    [ClientRpc]
+    public void AposInstanciado(GameObject objeto, string sincId) {
+        Sincronizavel sinc = GetSincronizavel(sincId);
+        sinc?.HandleObjetoSpawnado(objeto);
     }
+
 
     SpawnInfo GetSpawnerMaisProvavel(Sincronizavel sinc, List<SpawnInfo> list) {
         if (list.Count == 1) return list[0];
@@ -566,20 +474,6 @@ public class Sincronizador : NetworkBehaviour {
 
         // Se ainda sim, ainda não há criterio de desempate. Pega o primeiro :/
         return possiveis_pos[0];
-    }
-
-    public bool IsSpawning(uint assetId) {
-        return spawnHandlers.ContainsKey(assetId);
-    }
-
-    public bool IsSpawning(NetworkIdentity netId) {
-        return IsSpawning(netId.assetId);
-    }
-
-    public bool IsSpawning(GameObject obj) {
-        NetworkIdentity netId = obj.GetComponent<NetworkIdentity>();
-        if (netId == null) return false;
-        return IsSpawning(netId);
     }
 
     #endregion

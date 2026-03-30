@@ -220,14 +220,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pos1: {fileID: 6843548425338465746}
   pos2: {fileID: 7425655851777134249}
-  outPos: {fileID: 0}
   inicialPos: {fileID: 0}
+  pier: {fileID: 0}
   pontoPuxada: {x: 0, y: 0, z: 0}
   sendoPuxado: 0
   distanciaMinimaParada: 1
   forcaPuxada: 220
   parentConstraint: {fileID: 0}
-  noPier: 0
   playerNoBarco: 0
   angler: {fileID: 0}
   heater: {fileID: 0}
@@ -248,7 +247,6 @@ MonoBehaviour:
   naoUsarIDAuto: 0
   isSingleton: 0
   posInicial: {x: 0, y: 0, z: 0}
-  rotInicial: {x: 0, y: 0, z: 0, w: 0}
   networkIdentity: {fileID: 0}
   identificador: $9ecd696cdef94ac19f4e685a91b470fb
 --- !u!114 &1243624956876016432
@@ -264,6 +262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offsetIndicador: {x: 0, y: 1, z: 0}
+  overrideIndicadorTransform: {fileID: 0}
   ultimoPonto: {fileID: 0}
   podeInteragirDiretamente: 1
 --- !u!114 &-9073692347927833534

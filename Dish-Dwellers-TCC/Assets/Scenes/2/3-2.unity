@@ -11078,6 +11078,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dono: {fileID: 0}
   id: 0
+  autoCadastro: 0
 --- !u!1001 &731072607
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11667,6 +11668,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dono: {fileID: 0}
   id: 0
+  autoCadastro: 0
 --- !u!4 &759776888 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6272425965626286260, guid: fa6ffc59aacccf84885781caa65f2a59, type: 3}
@@ -19591,6 +19593,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dono: {fileID: 0}
   id: 0
+  autoCadastro: 0
 --- !u!1 &1075485165
 GameObject:
   m_ObjectHideFlags: 0
@@ -21673,6 +21676,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dono: {fileID: 0}
   id: 0
+  autoCadastro: 0
 --- !u!1001 &1346615556
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22434,6 +22438,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763973379}
     m_Modifications:
     - target: {fileID: 1551003777162414195, guid: 32c486e121c311a41af4ba3d633c8897, type: 3}
+      propertyPath: pier
+      value: 
+      objectReference: {fileID: 1675028675}
+    - target: {fileID: 1551003777162414195, guid: 32c486e121c311a41af4ba3d633c8897, type: 3}
       propertyPath: outPos
       value: 
       objectReference: {fileID: 970980982}
@@ -22952,7 +22960,7 @@ Transform:
   m_GameObject: {fileID: 1501177058}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.785137, y: 4.125784, z: 9.425689}
+  m_LocalPosition: {x: -14.785145, y: 4.125784, z: 9.425689}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22971,7 +22979,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mode: 0
-  size: {x: 101.92974, y: 25.820366, z: 41.352417}
+  size: {x: 101.929726, y: 25.820366, z: 41.352417}
   overrideRendererFilters: 0
   minRendererVolumeSize: 0.1
   objectLayerMask:
@@ -23468,6 +23476,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dono: {fileID: 0}
   id: 0
+  autoCadastro: 0
 --- !u!1 &1567826677
 GameObject:
   m_ObjectHideFlags: 0
@@ -24091,6 +24100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dono: {fileID: 0}
   id: 0
+  autoCadastro: 0
 --- !u!1 &1634968424
 GameObject:
   m_ObjectHideFlags: 0
@@ -26320,6 +26330,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dono: {fileID: 0}
   id: 0
+  autoCadastro: 0
 --- !u!1 &1946261636
 GameObject:
   m_ObjectHideFlags: 0
@@ -27490,6 +27501,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1692890033}
     m_Modifications:
     - target: {fileID: 1551003777162414195, guid: 32c486e121c311a41af4ba3d633c8897, type: 3}
+      propertyPath: pier
+      value: 
+      objectReference: {fileID: 1096819212}
+    - target: {fileID: 1551003777162414195, guid: 32c486e121c311a41af4ba3d633c8897, type: 3}
       propertyPath: outPos
       value: 
       objectReference: {fileID: 970980982}
@@ -28302,6 +28317,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2741045660898804849}
     m_Modifications:
+    - target: {fileID: 1551003777162414195, guid: 32c486e121c311a41af4ba3d633c8897, type: 3}
+      propertyPath: pier
+      value: 
+      objectReference: {fileID: 1145591608}
     - target: {fileID: 1551003777162414195, guid: 32c486e121c311a41af4ba3d633c8897, type: 3}
       propertyPath: outPos
       value: 

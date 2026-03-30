@@ -196,8 +196,6 @@ public class Sincronizavel : MonoBehaviour {
 
     IEnumerator EsperandoNetID() {
         yield return new WaitUntil(() => networkIdentity != null && networkIdentity.netId != 0);
-        
-        Sincronizador.instance.CheckSeAguardandoSpawn(this);
 
         identificador = networkIdentity.netId + "";
         naoUsarIDAuto = true;
@@ -263,29 +261,19 @@ public class Sincronizavel : MonoBehaviour {
         }
     }
 
-    Dictionary<GameObject, (System.Action<GameObject>, Vector3)> _offlineSpawnCallbackHandler = new Dictionary<GameObject, (System.Action<GameObject>, Vector3)>();
 
-    bool _spawnerSetted = false;
-    public void HandleRegistarSpawner(GameObject prefab, Vector3 pos, System.Action<GameObject> callback) {
-        if (_spawnerSetted) return;
-        _spawnerSetted = true;
+    public System.Action<GameObject> onObjetoSpawnado;
 
-        if (!GameManager.instance.isOnline) {
-            _offlineSpawnCallbackHandler[prefab] = (callback, pos);
-            return;
-        }
-
-        Sincronizador.instance.RegistrarSpawner(prefab, pos, this, callback);
+    public void HandleObjetoSpawnado(GameObject objeto) {
+        onObjetoSpawnado?.Invoke(objeto);
     }
 
-    public bool Spawnar(GameObject prefab, Quaternion rotation = default) {
+    public bool Spawnar(GameObject prefab, Vector3 pos, Quaternion rotation = default) {
         if (!GameManager.instance.isOnline) {
-            if (!_offlineSpawnCallbackHandler.ContainsKey(prefab)) return false; 
-            (System.Action<GameObject> callback, Vector3 pos) = _offlineSpawnCallbackHandler[prefab];
-            callback?.Invoke(Instantiate(prefab, pos, rotation));
+            onObjetoSpawnado?.Invoke(Instantiate(prefab, pos, rotation));
             return true;
         }
-        else if (Sincronizador.instance.InstanciarNetworkObject(prefab, this, rotation))
+        else if (Sincronizador.instance.InstanciarNetworkObject(prefab, this, pos, rotation))
             return true;
         return false;
     }

@@ -47,7 +47,7 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
     public float raioInteracao = 1f;
     public LayerMask layerInteragivel;
     public float velocidadeCarregandoMult = 0.85f;
-    InteragivelBase ultimoInteragivel;
+    public InteragivelBase ultimoInteragivel;
     Collider[] collidersInteragiveis;
     public List<Collider> collidersIgnoraveis = new List<Collider>(); // Lista de colisores que o jogador não pode interagir
     public float velocidadeEmpurrandoMult = 0.5f;
@@ -887,7 +887,13 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
             if (collider == null) continue; // Ignora objetos removidos
 
             InteragivelBase interagivelAtual = PegaInteragivelDoCache(collider);
-            if (interagivelAtual == null || !interagivelAtual.PodeInteragir(this) || !interagivelAtual.enabled || !PodeInteragir(interagivelAtual, collider)) continue; // Ignora objetos removidos ou sem o componente Interagivel
+            if (interagivelAtual == null || !interagivelAtual.PodeInteragir(this) || !interagivelAtual.enabled || !PodeInteragir(interagivelAtual, collider)) {
+                if (interagivelAtual != null)
+                    Debug.Log("Barrado " + interagivelAtual.name + " pois: " + !interagivelAtual.PodeInteragir(this)  + " " +  !interagivelAtual.enabled  + " " +  !PodeInteragir(interagivelAtual, collider));
+                
+                continue; // Ignora objetos removidos ou sem o componente Interagivel
+                
+            }
 
             float distancia = Vector3.Distance(transform.position, collider.transform.position);
             if (distancia < menorDistancia) {

@@ -52,8 +52,7 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
 
         GameObject prefabToUse = prefabOnline != null ? prefabOnline : prefab;
         if (sinc == null) sinc = GetComponent<Sincronizavel>();
-
-        Sincronizador.instance.RegistrarSpawner(prefabToUse, transform.TransformPoint(respawnPos), sinc, AposSpawn);
+        sinc.onObjetoSpawnado += AposSpawn;
     }
 
     void OnDestroy() {
@@ -66,12 +65,6 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
             Destroy(objeto);
             objeto = null;
         }
-
-
-        GameObject prefabToUse = prefabOnline != null ? prefabOnline : prefab;
-        if (sinc == null) sinc = GetComponent<Sincronizavel>();
-        if (sinc != null)
-            Sincronizador.instance?.DesregistrarSpawner(prefabToUse, sinc);
     }
 
     public override void OnReset() {
@@ -99,6 +92,12 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
         //     if (Sincronizador.instance.InstanciarNetworkObject(prefabToUse, sinc))
         //         spawnando = true;
         // }
+        
+        if(!habilitado) return;
+        if (objeto != null) return;
+        if (spawnando) return;
+        gameObject.Sincronizar();
+        
         StartCoroutine(SpawnCoroutine());
     }
 
@@ -108,7 +107,6 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
         if (objeto != null) yield break;
         if (spawnando) yield break;
 
-        gameObject.Sincronizar();
         
         if (!GameManager.instance.isOnline) {
             spawnando = true;
@@ -117,7 +115,7 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
         else {
             SetupSpawner();
             GameObject prefabToUse = prefabOnline != null ? prefabOnline : prefab;
-            if (Sincronizador.instance.InstanciarNetworkObject(prefabToUse, sinc, transform.rotation))
+            if (Sincronizador.instance.InstanciarNetworkObject(prefabToUse, sinc, transform.TransformPoint(respawnPos), transform.rotation))
                 spawnando = true;
         }
     }

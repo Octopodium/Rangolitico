@@ -44,7 +44,7 @@ public class InimigoTorreta : Inimigo, SincronizaMetodo
         animator = GetComponentInChildren<AnimatorTorreta>();
         audioSource = GetComponentInChildren<AudioSource>();
         sincronizavel = GetComponent<Sincronizavel>();
-        sincronizavel.AposSetup(() => sincronizavel.HandleRegistarSpawner(projectile, fireAction.transform.position, AposSpawnTiro));
+        sincronizavel.AposSetup(() => sincronizavel.onObjetoSpawnado += AposSpawnTiro);
     }
 
     private void Start()
@@ -112,14 +112,14 @@ public class InimigoTorreta : Inimigo, SincronizaMetodo
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         sincronizavel.AposSetup(() => {
-            sincronizavel.HandleRegistarSpawner(projectile, fireAction.transform.position, AposSpawnTiro);
-            sincronizavel.Spawnar(projectile, targetRotation);
+            sincronizavel.Spawnar(projectile, fireAction.transform.position, targetRotation);
             base.Atacar();
         });
     }
 
 
     void AposSpawnTiro(GameObject tiro) {
+        Debug.Log(tiro?.name, tiro);
         if (tiro != null) {
             tiro.transform.LookAt(target);
             Projectile proj = tiro.GetComponent<Projectile>();

@@ -333,6 +333,8 @@ public class CameraController : MonoBehaviour {
     }
 
     private IEnumerator MostrarNomesStageSala() {
+        yield break;
+
         //Pra garantir que o texto vai começar invisivel pq tava bugando
         SetAlpha(nomeStageText, 0);
         SetAlpha(nomeSalaText, 0);

@@ -72,7 +72,7 @@ public class AutoLocalizer : MonoBehaviour
 
     public void SetLanguage(){
         //LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[index];
-        if(dropdown.value == 1){
+        if(dropdown == null || dropdown.value == 1){
             PlayerPrefs.SetString("language", "portugues");
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[1];
         }else{

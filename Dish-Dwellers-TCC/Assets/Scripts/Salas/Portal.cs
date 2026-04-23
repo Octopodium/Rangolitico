@@ -101,10 +101,7 @@ public class Portal : IResetavel, SincronizaMetodo {
     public string cenaDoFim = "Fim";
 
     public void VaiParaOFim() {
-        if (GameManager.instance.isOnline)
-            GameManager.instance.DesligarOOnline();
-            
-        GameManager.instance.ForcarCenaAguardando();
+        GameManager.instance.HandleChegouNoFim();
         SceneManager.LoadScene(cenaDoFim, LoadSceneMode.Single);
     }
 

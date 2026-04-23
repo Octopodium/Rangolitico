@@ -17,7 +17,12 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance;
     public InputController inputController; // Controlador de inputs do jogo, que gerencia os inputs dos jogadores
     public SelacaoDePersonagem selecaoDePersonagem;
+    public UIManager uiManager;
     public Actions input => inputController.actions; // Acesso ao InputActions do jogo
+
+    public GameTime gameTime;
+    public float gameTimer {get {return gameTime.timer;}}
+    public static float ultimoTimer;
 
 
     // Eventos
@@ -88,12 +93,15 @@ public class GameManager : MonoBehaviour {
 
         if (!isOnline) {
             // Apenas no modo offline que o GameManager deve instanciar os jogadores, no modo online o NetworkManager faz isso
+            gameTime.Play();
             GerarPlayersOfline();
         } else {
             // No modo online, não se muda a sala diretamente, mas sim através de uma mensagem
             NetworkClient.RegisterHandler<DishNetworkManager.AcaoPassaDeSalaMessage>(OnRequestedPassaDeSalaOnline);
             NetworkClient.RegisterHandler<DishNetworkManager.HadPreReadyMessage>(OnHadPreReady);
         }
+
+        gameTime.OnPause += RegistrarTimer;
     }
 
     void Start() {
@@ -127,6 +135,9 @@ public class GameManager : MonoBehaviour {
         if (DialogueSystem.instance != null) {
             Destroy(DialogueSystem.instance.gameObject);
         }
+
+        if (gameTime != null) 
+            gameTime.OnPause -= RegistrarTimer;
     }
 
     public void Pause(InputAction.CallbackContext ctx) {
@@ -282,9 +293,11 @@ public class GameManager : MonoBehaviour {
     IEnumerator PassaDeSalaOffline() {
         // Inicio da transição
         carregando = true;
+        gameTime.Pause();
         telaDeLoading.AtivarTelaDeCarregamento(true);
         yield return new WaitForSeconds(telaDeLoading.GetTempoDeTransicao());
         Debug.Log("Acabou a transição");
+        gameTime.Play();
 
         if (!isOnline || isServer) AnalyticsManager.instance?.FinalizarSala();
 
@@ -310,6 +323,7 @@ public class GameManager : MonoBehaviour {
         telaDeLoading.AtivarTelaDeCarregamento(true);
         yield return new WaitForSeconds(telaDeLoading.GetTempoDeTransicao());
         cenaAtualNome = nomeDaSala;
+        gameTime.Play();
 
         SceneManager.LoadScene(nomeDaSala, LoadSceneMode.Additive);
         OnMudaDeSala?.Invoke();
@@ -338,7 +352,9 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator TocarTransicao(ITransicao transicao) {
         transicao.gameObject.SetActive(true);
+        gameTime.Pause();
         yield return new WaitForSecondsRealtime(transicao.GetDuracao());
+        gameTime.Play();
         Debug.Log("Desmorreu");
         jogadorMorto = false;
     }
@@ -549,7 +565,6 @@ public class GameManager : MonoBehaviour {
 
         OnPlayersInstanciados?.Invoke(jogadores[0], jogadores[1]);
 
-        UIManager uiManager = GetComponentInChildren<UIManager>(true);
         if (uiManager != null) {
             uiManager.gameObject.SetActive(true);
         }
@@ -587,8 +602,6 @@ public class GameManager : MonoBehaviour {
         sala.SoftReset();
 
         // OnPlayersInstanciados?.Invoke(jogadores[0], jogadores[1]);
-
-        UIManager uiManager = GetComponentInChildren<UIManager>(true);
         if (uiManager != null) {
             uiManager.gameObject.SetActive(true);
         }
@@ -660,6 +673,15 @@ public class GameManager : MonoBehaviour {
 
     #endregion
 
+    // Chamado pelo Portal.cs
+    public void HandleChegouNoFim() {
+        gameTime.Pause();
+
+        if (isOnline) DesligarOOnline();
+            
+        ForcarCenaAguardando();
+    }
+
 
     public void VoltarParaMenu() {
         if (voltandoParaMenu) return;
@@ -677,6 +699,8 @@ public class GameManager : MonoBehaviour {
         gameObject.SetActive(true);
 
         ForcarCenaAguardando();
+
+        gameTime.Pause();
 
         StartCoroutine(VoltarParaMenuAsync());
     }
@@ -705,6 +729,10 @@ public class GameManager : MonoBehaviour {
             cenaProx.allowSceneActivation = true;
             cenaProx = null;
         }
+    }
+
+    public void RegistrarTimer() {
+        ultimoTimer = gameTime.timer;
     }
 
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.EventSystems;
-using Unity.VisualScripting;
 
 public class PauseUI : MonoBehaviour {
     public GameObject[] telasInternasPause;
@@ -17,11 +17,19 @@ public class PauseUI : MonoBehaviour {
     public Selectable campoEmCimaDoPainelDeControles;
     public GameObject controlesLocaisPanel;
     public Button singleplayerButton, multiplayerButton, ajustarMultiplayerButton;
+    public TextMeshProUGUI habilitarTimerText, desativarTimerText, mostrarTimerText;
+
+    public System.Action<bool> OnTimerHabilitadoChange;
+
+    void Start() {
+        RefreshHabilitarTimer();
+    }
 
 
     // Chamado no UIManager
     public void Inicializar() {
-        GameManager.OnPause += HandlePausa;
+        if (GameManager.instance != null)
+            GameManager.OnPause += HandlePausa;
 
         if (eventSystem == null) {
             eventSystem = FindFirstObjectByType<EventSystem>();
@@ -32,7 +40,9 @@ public class PauseUI : MonoBehaviour {
 
 
     private void OnDestroy() {
-        GameManager.OnPause -= HandlePausa;
+        if (GameManager.instance != null)
+            GameManager.OnPause -= HandlePausa;
+        
         inicializado = false;
     }
 
@@ -123,5 +133,28 @@ public class PauseUI : MonoBehaviour {
 
         if (GameManager.instance.modoDeJogo == ModoDeJogo.MULTIPLAYER_ONLINE) GameManager.instance.RedefinirControlesMultiplayerOnline();
         else GameManager.instance.RedefinirControlesMultiplayerLocal();
+    }
+
+    public void ToggleHabilitarTimer() {
+        bool habilitado = GetTimerHabilitado();
+        SetTimerMode(!habilitado);
+    }
+
+    public void RefreshHabilitarTimer() {
+        bool habilitado = GetTimerHabilitado();
+        SetTimerMode(habilitado);
+    }
+
+    public void SetTimerMode(bool habilitado = true) {
+        habilitarTimerText.gameObject.SetActive(!habilitado);
+        desativarTimerText.gameObject.SetActive(habilitado);
+        
+        PlayerPrefs.SetInt("mostra_timer", habilitado ? 1 : 0);
+        OnTimerHabilitadoChange?.Invoke(habilitado);
+        PlayerPrefs.Save();
+    }
+
+    public bool GetTimerHabilitado() {
+        return PlayerPrefs.HasKey("mostra_timer") && (PlayerPrefs.GetInt("mostra_timer") == 1);
     }
 }

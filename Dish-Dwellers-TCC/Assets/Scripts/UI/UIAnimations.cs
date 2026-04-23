@@ -16,6 +16,7 @@ public class UIAnimations : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     void Awake(){
         buttonText = GetComponent<Button>();
+        buttonInitialFactor = buttonDefaultFactor;
     }
 
     public void OnSelect(BaseEventData eventData){

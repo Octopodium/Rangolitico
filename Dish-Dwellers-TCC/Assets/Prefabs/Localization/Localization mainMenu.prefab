@@ -45,9 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _prefixes:
-  - prefix: credits_
-    textosAfetados:
-    - tasks
   - prefix: tutorial_
     textosAfetados:
     - move
@@ -69,3 +66,59 @@ MonoBehaviour:
     - criar_partida
     - entrar_partida
     - voltar
+    - volume
+    - local
+    - fase_1
+    - fase_2
+    - sala_1
+    - sala_2
+    - sala_3
+    - sala_4
+    - sala_5
+    - sala_5
+    - mecanica_interna
+    - interna_texto
+    - mecanicas_texto
+    - mecanica_principal
+    - agradecimento
+    - tasks_center
+    - tasks_center
+    - tasks_left
+  - prefix: ui_
+    textosAfetados:
+    - tasks_right
+    - skip
+    - cancelar
+    - Aguarde
+    - joining_lobby
+    - Label_seletor_fase
+    - criar
+    - lobby_online_warn
+    - criar_lobby
+    - Placeholder_code
+    - entrar
+    - lobby_code
+    - entrar_lobby
+    - language
+    - habilitartimer
+    - escondertimer
+    - temponojogo
+  - prefix: ui_
+    textosAfetados:
+    - tasks_right
+    - skip
+    - cancelar
+    - Aguarde
+    - joining_lobby
+    - Label_seletor_fase
+    - criar
+    - comecar_partir
+    - criar_lobby
+    - Placeholder_code
+    - entrar
+    - lobby_code
+    - entrar_lobby
+    - language
+    - HabilitarTimerText
+    - EsconderTimerText
+  dropdown: {fileID: 0}

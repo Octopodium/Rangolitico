@@ -772,11 +772,12 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
         if (sendoPuxado) return false; // Se o jogador está sendo puxado, não está no chão
         return andador.ChecarChao();
     }
-
+    
     public void Teletransportar(Vector3 posicao) {
         if (!usandoRb) characterController.enabled = false; // Desabilita o CharacterController para evitar colisões
         transform.position = posicao;
         if (!usandoRb) characterController.enabled = true; // Habilita o CharacterController novamente
+        ultimaPosicao = transform.position;
     }
 
     public void Teletransportar(Transform posicao) {
@@ -888,11 +889,10 @@ public class Player : NetworkBehaviour, SincronizaMetodo, IGanchavelAntesPuxar {
 
             InteragivelBase interagivelAtual = PegaInteragivelDoCache(collider);
             if (interagivelAtual == null || !interagivelAtual.PodeInteragir(this) || !interagivelAtual.enabled || !PodeInteragir(interagivelAtual, collider)) {
-                if (interagivelAtual != null)
-                    Debug.Log("Barrado " + interagivelAtual.name + " pois: " + !interagivelAtual.PodeInteragir(this)  + " " +  !interagivelAtual.enabled  + " " +  !PodeInteragir(interagivelAtual, collider));
+                //if (interagivelAtual != null)
+                //    Debug.Log("Barrado " + interagivelAtual.name + " pois: " + !interagivelAtual.PodeInteragir(this)  + " " +  !interagivelAtual.enabled  + " " +  !PodeInteragir(interagivelAtual, collider));
                 
                 continue; // Ignora objetos removidos ou sem o componente Interagivel
-                
             }
 
             float distancia = Vector3.Distance(transform.position, collider.transform.position);

@@ -136,8 +136,8 @@ GameObject:
   - component: {fileID: 8964549140698296782}
   - component: {fileID: 766650910295189992}
   - component: {fileID: 1558266408792354022}
-  - component: {fileID: 7794790135364069372}
   - component: {fileID: 1227149752010330989}
+  - component: {fileID: 6895999567730709740}
   m_Layer: 24
   m_Name: CaixaOnline
   m_TagString: Grudavel
@@ -235,7 +235,7 @@ MonoBehaviour:
   isSingleton: 0
   posInicial: {x: 0, y: 0, z: 0}
   networkIdentity: {fileID: 0}
-  identificador: $b073454ab1fb485994d3cff2e425eb30
+  identificador: $7c1f0dc7e5074d709ebbbb369131eef6
 --- !u!114 &1873889337308912667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,7 +341,23 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &7794790135364069372
+--- !u!208 &1227149752010330989
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4088332650357128873}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1, y: 1, z: 1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
+--- !u!114 &6895999567730709740
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -360,11 +376,11 @@ MonoBehaviour:
   syncPosition: 1
   syncRotation: 1
   syncScale: 0
-  onlySyncOnChange: 1
+  onlySyncOnChange: 0
   compressRotation: 1
   interpolatePosition: 1
   interpolateRotation: 1
-  interpolateScale: 1
+  interpolateScale: 0
   coordinateSpace: 0
   timelineOffset: 1
   showGizmos: 0
@@ -375,19 +391,3 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
---- !u!208 &1227149752010330989
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4088332650357128873}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 1, y: 1, z: 1}
-  m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 0
-  m_Center: {x: 0, y: 0, z: 0}
-  m_TimeToStationary: 0.5

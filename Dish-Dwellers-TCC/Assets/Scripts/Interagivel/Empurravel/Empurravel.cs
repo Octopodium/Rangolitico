@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Mirror;
 
 [RequireComponent(typeof(Rigidbody)), RequireComponent(typeof(BoxCollider)), RequireComponent(typeof(Interagivel))]
 public class Empurravel : MonoBehaviour, InteracaoCondicional, IRecebeTemplate, Pesavel {
@@ -11,6 +12,7 @@ public class Empurravel : MonoBehaviour, InteracaoCondicional, IRecebeTemplate, 
         public bool direita = true;
     }
 
+    NetworkIdentity netID;
     public Transform triggerHolder;
     public GameObject encostouPorUltimoEm;
 
@@ -37,6 +39,7 @@ public class Empurravel : MonoBehaviour, InteracaoCondicional, IRecebeTemplate, 
         rb = GetComponent<Rigidbody>();
         col = GetComponent<BoxCollider>();
         interagivel = GetComponent<Interagivel>();
+        netID = GetComponent<NetworkIdentity>();
 
         Setup();
     }
@@ -124,7 +127,7 @@ public class Empurravel : MonoBehaviour, InteracaoCondicional, IRecebeTemplate, 
     }
 
     public bool PodeInteragir(Player jogador) {
-        return !jogador.carregador.estaCarregando && jogador.transform.position.y + paddingTrigger < (transform.position.y + topoOffset.y);
+        return !jogador.carregador.estaCarregando && jogador.transform.position.y + paddingTrigger < (transform.position.y + topoOffset.y) && !sendoEmpurrado;
     }
 
     public MotivoNaoInteracao NaoPodeInteragirPois(Player jogador) {
@@ -157,6 +160,9 @@ public class Empurravel : MonoBehaviour, InteracaoCondicional, IRecebeTemplate, 
         Vector3 direcao = GetDirecaoPlayer(jogador);
         if (!IsDirecaoPermitida(direcao)) return;
 
+        if (GameManager.instance.isOnline)
+            Sincronizador.instance.SetarAutoridade(netID, jogador);
+
         // Posiciona o jogador bem no meio da caixa
         Vector3 novaPosicaoPlayer = transform.right * direcao.x + transform.forward * direcao.z;
         novaPosicaoPlayer += novaPosicaoPlayer * distBordaInteracao;
@@ -181,8 +187,9 @@ public class Empurravel : MonoBehaviour, InteracaoCondicional, IRecebeTemplate, 
         yield return null;
         yield return null;
 
-        if (jogadorEmpurrando != null)
+        if (jogadorEmpurrando != null) {
             jogadorEmpurrando.OnPositionChange += OnMovimento;
+        }
     }
 
     void SoltarEmpurro() {
@@ -215,6 +222,11 @@ public class Empurravel : MonoBehaviour, InteracaoCondicional, IRecebeTemplate, 
             SoltarEmpurro();
     }
 
+    bool EstaIndoNoEixo(Vector3 direcaoIndo) {
+        return (direcaoIndo.z == 0 && ((eixoInvertido.x > 0 && direcaoIndo.x > 0) || (eixoInvertido.x < 0 && direcaoIndo.x < 0))) || 
+        (direcaoIndo.x == 0 && ((eixoInvertido.z > 0 && direcaoIndo.z > 0) || (eixoInvertido.z < 0 && direcaoIndo.z < 0)));
+    }
+
 
     void OnMovimento(Vector3 variacaoPos) {
         if (!sendoEmpurrado) return;
@@ -225,18 +237,17 @@ public class Empurravel : MonoBehaviour, InteracaoCondicional, IRecebeTemplate, 
             return;
         }
 
-        if (Vector3.Dot(eixoInvertido, jogadorEmpurrando.direcao.normalized) < 0f) {
+        if (!EstaIndoNoEixo(variacaoPos)) {
             SoltarEmpurro();
             return;
         }
 
-        if (Vector3.Dot(variacaoPos, jogadorEmpurrando.direcao.normalized) < 0f) return;
+        if (Vector3.Dot(variacaoPos, jogadorEmpurrando.direcao) < 0f) return;
 
         
         Vector3 movimento = transform.position;
         movimento.x += Mathf.Abs(eixo.x) * variacaoPos.x;
         movimento.z += Mathf.Abs(eixo.z) * variacaoPos.z;
-
         transform.position = movimento;
     }
 

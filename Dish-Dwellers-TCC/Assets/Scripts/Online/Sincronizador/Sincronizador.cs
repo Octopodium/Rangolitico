@@ -516,4 +516,26 @@ public class Sincronizador : NetworkBehaviour {
 
     #endregion
 
+    public void TeleportNetTrans(NetworkTransformBase netTrans, Vector3 pos, Quaternion rot) {
+        if (isServer)
+            TeleportNetTransCmd(netTrans, pos, rot);
+    }
+
+    [Command(requiresAuthority = false)]
+    void TeleportNetTransCmd(NetworkTransformBase netTrans, Vector3 pos, Quaternion rot) {
+        netTrans.ServerTeleport(pos, rot);
+    }
+
+
+    public void SetarAutoridade(NetworkIdentity netId, Player p) {
+        if (isServer)
+            SetarAutoridadeCmd(netId, p);
+    }
+
+    [Command(requiresAuthority = false)]
+    void SetarAutoridadeCmd(NetworkIdentity netId, Player p) {
+        NetworkIdentity pId = p.GetComponent<NetworkIdentity>();
+        NetworkConnectionToClient c = pId.connectionToClient;
+        netId.AssignClientAuthority(c);
+    }
 }

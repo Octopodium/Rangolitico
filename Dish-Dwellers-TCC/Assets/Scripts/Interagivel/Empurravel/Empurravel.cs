@@ -223,8 +223,8 @@ public class Empurravel : MonoBehaviour, InteracaoCondicional, IRecebeTemplate, 
     }
 
     bool EstaIndoNoEixo(Vector3 direcaoIndo) {
-        return (direcaoIndo.z == 0 && ((eixoInvertido.x > 0 && direcaoIndo.x > 0) || (eixoInvertido.x < 0 && direcaoIndo.x < 0))) || 
-        (direcaoIndo.x == 0 && ((eixoInvertido.z > 0 && direcaoIndo.z > 0) || (eixoInvertido.z < 0 && direcaoIndo.z < 0)));
+        return (eixoInvertido.x > 0 && direcaoIndo.x > 0) || (eixoInvertido.x < 0 && direcaoIndo.x < 0) || 
+        (eixoInvertido.z > 0 && direcaoIndo.z > 0) || (eixoInvertido.z < 0 && direcaoIndo.z < 0);
     }
 
 
@@ -242,9 +242,9 @@ public class Empurravel : MonoBehaviour, InteracaoCondicional, IRecebeTemplate, 
             return;
         }
 
+
         if (Vector3.Dot(variacaoPos, jogadorEmpurrando.direcao) < 0f) return;
 
-        
         Vector3 movimento = transform.position;
         movimento.x += Mathf.Abs(eixo.x) * variacaoPos.x;
         movimento.z += Mathf.Abs(eixo.z) * variacaoPos.z;

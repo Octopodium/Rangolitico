@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class SeletorDeFase : MonoBehaviour {
     public bool irParaCena = true;
@@ -8,9 +9,23 @@ public class SeletorDeFase : MonoBehaviour {
     public System.Action<SalaInfo> salaSelecionada;
 
     public UnityEvent OnFechado;
+    public EventSystem eventSystem;
+    public GameObject primeiraSelecao;
+
+
+    void Awake() {
+        if (eventSystem == null) {
+            eventSystem = FindFirstObjectByType<EventSystem>();
+        }
+    }
+
+    public void Selecionar(GameObject selecao) {
+        eventSystem.SetSelectedGameObject(selecao);
+    }
 
     public void Mostrar() {
         gameObject.SetActive(true);
+        Selecionar(primeiraSelecao);
     }
 
     public void SalaSelecionada(SalaInfo sala) {

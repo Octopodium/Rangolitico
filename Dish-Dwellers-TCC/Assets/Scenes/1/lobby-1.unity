@@ -904,6 +904,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobby: {fileID: 978575530}
   seletor: {fileID: 1519831338}
+  supostaPrimeiraSala: {fileID: 11400000, guid: ca60761044f701d4089451b6ea71150e, type: 2}
+  primeirissimaSala: {fileID: 11400000, guid: 869f608db277a9746ad90aeec3c7f60a, type: 2}
 --- !u!114 &92265694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14715,17 +14717,6 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
---- !u!114 &1829738773 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5626417669170722668, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
-  m_PrefabInstance: {fileID: 1010973050407774235}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b560f3e440d671c4d8b64d49f34daa53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1847519384
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18044,7 +18035,7 @@ PrefabInstance:
     - target: {fileID: 517637579339879481, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1829738773}
+      objectReference: {fileID: 0}
     - target: {fileID: 517637579339879481, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetLanguage
@@ -18060,6 +18051,26 @@ PrefabInstance:
     - target: {fileID: 1005416056623385808, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1154675705451630435, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1154675705451630435, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1154675705451630435, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 132
+      objectReference: {fileID: 0}
+    - target: {fileID: 1154675705451630435, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 1154675705451630435, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 1315965125564629966, guid: cc9c62b6ac48180459e01f94c907e5cb, type: 3}
       propertyPath: m_IsActive

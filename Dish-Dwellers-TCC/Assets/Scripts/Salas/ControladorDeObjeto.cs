@@ -38,7 +38,7 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
         if (template != null) template.SetActive(false);
 
         sinc = GetComponent<Sincronizavel>();
-        sinc.ComSincronizador(SetupSpawner);
+        SetupSpawner();
 
         if (spawnNoInicio)
             sinc.ComSincronizador(Spawn);
@@ -49,6 +49,8 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
         if (!GameManager.instance.isOnline) return;
         if (spawnerSetted) return;
         spawnerSetted = true;
+
+        // Debug.Log("Setupado o " + gameObject.name + " de " + prefab.name);
 
         GameObject prefabToUse = prefabOnline != null ? prefabOnline : prefab;
         if (sinc == null) sinc = GetComponent<Sincronizavel>();
@@ -68,7 +70,10 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
     }
 
     public override void OnReset() {
-        Reiniciar();
+        if (GameManager.instance.isOnline) {
+            if (sinc == null) sinc = GetComponent<Sincronizavel>();
+            sinc.ComSincronizador(()=> gameObject.NaoSincronizar(Reiniciar));
+        } else Reiniciar();
     }
 
     /// <summary>
@@ -107,6 +112,7 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
         if (objeto != null) yield break;
         if (spawnando) yield break;
 
+        // Debug.Log("Spawnando " + prefab.name);
         
         if (!GameManager.instance.isOnline) {
             spawnando = true;
@@ -121,6 +127,7 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
     }
 
     void AposSpawn(GameObject objeto) {
+        // Debug.Log("Spawnou " + objeto, objeto);
         if (objeto != null)
             spawnando = false;
 
@@ -164,15 +171,17 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
         // } else {
         //     Spawn();
         // }
-        
+
+        gameObject.Sincronizar();
         StartCoroutine(RespawnCoroutine());
     }
 
     IEnumerator RespawnCoroutine() {
+        // Debug.Log("Calling respawn of " + prefab.name);
         yield return new WaitForSecondsRealtime(dellay);
-        gameObject.Sincronizar();
         
         if (objeto != null) {
+            // Debug.Log("Respawn of " + prefab.name + " objeto ja existia!");
             objeto.transform.position = transform.TransformPoint(respawnPos);
 
             // Perseguidor perseguidor = objeto.GetComponent<Perseguidor>();
@@ -183,6 +192,7 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
             if(!objeto.activeInHierarchy)
                 objeto.SetActive(true);
         } else {
+            // Debug.Log("Respawn of " + prefab.name + " objeto não existia!");
             Spawn();
         }
         
@@ -193,9 +203,13 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
     /// </summary>
     [Sincronizar]
     public void Reiniciar() {
+        if (spawnando) return;
+    
         gameObject.Sincronizar();
 
+        // Debug.Log("Reiniciar of " + prefab.name);
         if (objeto != null) {
+            // Debug.Log("Reiniciar of " + prefab.name + " objeto ja existia!");
             // Essa parte é exclusiva pra esse código, instanciar e desinstanciar 
             objeto.SetActive(false);
 
@@ -209,6 +223,7 @@ public class ControladorDeObjeto : IResetavel, SincronizaMetodo {
         }
 
         if (spawnNoInicio) {
+            // Debug.Log("Reiniciar on inicio of " + prefab.name);
             if (sinc == null) sinc = GetComponent<Sincronizavel>();
             sinc.ComSincronizador(Spawn);
         }

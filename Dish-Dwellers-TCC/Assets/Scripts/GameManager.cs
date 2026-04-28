@@ -477,6 +477,20 @@ public class GameManager : MonoBehaviour {
         ProgressManager.Instance.SalvarProgresso(progresso);
     }
 
+    // Failsafe de problemas esquisitos
+    public sala PegarSalaDaCena(Scene cenaDesejada) {
+        GameObject[] salaObjs = GameObject.FindGameObjectsWithTag("Sala");
+
+        foreach (GameObject salaObj in salaObjs) {
+            if (salaObj.scene == cenaDesejada) {
+                sala salaComp = salaObj.GetComponent<sala>();
+                if (salaComp != null) return salaComp;
+            }
+        }
+
+        return null;
+    }
+
     
 
     #region Corotinas de carregamento
@@ -654,8 +668,8 @@ public class GameManager : MonoBehaviour {
         DishNetworkManager networkManager = NetworkManager.singleton as DishNetworkManager;
         if (networkManager != null) {
             try {
-                networkManager.SairDoLobby();
-                networkManager.StopClient();
+                networkManager?.SairDoLobby();
+                networkManager?.StopClient();
                 if (isServer) networkManager.StopServer();
             } catch (Exception e) {
                 Debug.LogError($"Erro ao parar o NetworkManager: {e.Message}");

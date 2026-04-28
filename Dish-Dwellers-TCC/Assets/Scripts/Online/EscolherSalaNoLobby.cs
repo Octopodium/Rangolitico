@@ -3,6 +3,8 @@ using UnityEngine;
 public class EscolherSalaNoLobby : MonoBehaviour, InteracaoCondicional, SincronizaMetodo{
     public LobbyController lobby;
     public SeletorDeFase seletor;
+    public SalaInfo supostaPrimeiraSala;
+    public SalaInfo primeirissimaSala;
 
     void Start() {
         seletor.salaSelecionada += HandleSalaSecionada;
@@ -24,6 +26,7 @@ public class EscolherSalaNoLobby : MonoBehaviour, InteracaoCondicional, Sincroni
 
     void HandleSalaSecionada(SalaInfo sala) {
         seletor.gameObject.SetActive(false);
+        if (sala == supostaPrimeiraSala) sala = primeirissimaSala;
         SelecionarSala(sala.caminhoParaSala, sala.nomeDaSala);
     }
 

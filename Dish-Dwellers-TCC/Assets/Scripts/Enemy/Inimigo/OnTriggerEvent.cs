@@ -9,7 +9,8 @@ public class OnTriggerEvent : MonoBehaviour
 
     private void Start()
     {
-        sala sala = GameObject.FindWithTag("Sala").GetComponent<sala>();
+        sala sala = GameManager.instance.PegarSalaDaCena(gameObject.scene);
+
         if(!sala.triggers.Contains(this)){
             sala.triggers.Add(this);
         }

@@ -300,4 +300,8 @@ public class Gancho : MonoBehaviour, Ferramenta {
         alvoAuto = null;
         return fimPos;
     }
+
+    public Player GetJogador() {
+        return jogador;
+    }
 }
